@@ -40,7 +40,7 @@ station_file = '/home/verif/verif-post-process/input/station_list_master.txt'
 models_file = '/home/verif/verif-post-process/input/model_list.txt'
 
 #folder where the stats save
-textfile_folder = '/verification/Statistics/t_test'
+textfile_folder = '/verification/Statistics/t_test/'
 
 #editting mode for textfile
 

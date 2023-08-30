@@ -120,7 +120,7 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 
 # The stat you want to base your weights off of:
 #choose "CAT_" for categorical scores (PCPT6, PCPTOT, SFCWSPD, SFCWSPD_KF) only, "MAE_", "RMSE_" or "SPCORR_"
-stat_type = "CAT_"
+stat_type = "spcorr_"
 
 # weighting curve steepness, Stull chose 100, so will test with that
 k = 100

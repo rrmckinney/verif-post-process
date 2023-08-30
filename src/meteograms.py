@@ -196,18 +196,69 @@ def areEqual(arr):
            
     return True;
 
+#lists the hour filenames that we are running for
+def get_filehours(hour1,hour2):
+     
+    hours_list = []
+    for i in range(hour1,hour2+1):
+        i = i-1
+        if i < 10:
+            hour = "0" + str(i)
+        else:
+            hour = str(i)
+        hours_list.append(hour)
+        
+    return(hours_list)
+
+# makes a list of the dates you want from start to end, used to make sure the models and obs have the right dates
+# obs get their own list because it will be different days than the initializition dates from the models for anything
+#   past hours 0-24
+def listofdates(start_date, end_date, obs = False):
+    if obs == False:
+        start = datetime.strptime(start_date, "%y%m%d").date()
+        end = datetime.strptime(end_date, "%y%m%d").date()
+
+    elif obs == True:
+        startday = 0 #forhour 1
+        endday = 7 #for hour 180
+        
+        start = datetime.strptime(start_date, "%y%m%d").date() + timedelta(days=startday)
+        end = datetime.strptime(end_date, "%y%m%d").date() + timedelta(days=endday)
+    
+    numdays = (end-start).days 
+    date_list = [(start + timedelta(days=x)).strftime("%y%m%d") for x in range(numdays+1)]
+
+    return(date_list)
+
+def make_df(start_date, end_date):
+    date_list_obs = listofdates(start_date, end_date, obs=True)
+    df_new = pd.DataFrame()
+    for day in date_list_obs:
+        dates = [day] * 24
+        filehours_obs = get_filehours(1, 24)
+        
+        df = pd.DataFrame({'date': dates, 'time': filehours_obs})
+        df['datetime'] = pd.to_datetime(df['date']+' '+df['time'], format = '%y%m%d %H')
+        
+        df_new = pd.concat([df_new, df])
+    df_new = df_new.set_index('datetime') 
+    return(df_new)
 
 # returns the fcst data for the given model/grid, as well as the forecast hours
 def get_data(filepath, station, variable, obs):
     
-    # the last date we want to plot
-    delta = 6
-    end_date = input_date + timedelta(days = delta)
+    # how many days in the future the end date should be, subtracts one bc we count the start date
+    delta = timedelta(days=days-1)
     
+    # the last date we want to plot
+    end_date = (input_date + delta).strftime("%y%m%d")
+    
+    df_new = make_df(start_date, end_date)
+
     sql_con = sqlite3.connect(filepath + station + ".sqlite")
     sql_query = "SELECT *from 'All' WHERE date BETWEEN 20" + str(start_date) + " AND 20" + str(end_date)
     fcst = pd.read_sql_query(sql_query, sql_con)
-
+    
     fcst['dateime'] = None
     hours = []
     hr = 0
@@ -216,19 +267,20 @@ def get_data(filepath, station, variable, obs):
         hr = hr + 1
         hours.append(hr)
     
-    #fcst = fcst.set_index('datetime')
-
+    fcst = fcst.set_index('datetime')
+    df_all = df_new.join(fcst, on='datetime')
+    
     #removes bad/missing data data
-    fcst = remove_missing_data(fcst)
+    #fcst = remove_missing_data(fcst)
     
     # gets 6hr sums for precip for the stations that need it
-    if station in precip6hrs_stations and "PCP" in variable:
+    if station in precip6hrs_stations and "PCPT" in variable:
         fcst = accum_6hr(fcst)
 
     # removes forecast data where there is no obs data
-    fcst = remove_missing_obs(fcst, obs)
-
-    return(hours, fcst, obs)
+    #fcst = remove_missing_obs(fcst, obs)
+    
+    return(hours, fcst['Val'], obs)
 
 # returns the obs data for the given station, as well as the hours
 def get_obs(filepath,station,variable):    
@@ -237,8 +289,10 @@ def get_obs(filepath,station,variable):
     delta = timedelta(days=days-1)
     
     # the last date we want to plot
-    end_date = (input_date + delta).strftime("%y%m%d%H")
+    end_date = (input_date + delta).strftime("%y%m%d")
     
+    df_new = make_df( start_date, end_date)
+
     # ignore the "KF" in the variable list, since its the same thing as the non-KF variable for obs
     if "_KF" in variable:
         variable = variable[:-3]
@@ -263,8 +317,9 @@ def get_obs(filepath,station,variable):
         hr = hr + 1
         hours.append(hr)
     
-    #obs = obs.set_index('datetime')
-     
+    obs = obs.set_index('datetime')
+    df_all = df_new.join(obs, on='datetime')
+
     # this means the user picked a date to plot that there is no obs for (or it was the wrong format)
     #if start_date not in obs['Date']:
     #    raise Exception("Invalid start date: " + start_date  + " not in output data collected. Make sure it is YYMMDD.")
@@ -316,8 +371,7 @@ def time_series(station, variable, ylabel, title, filepath, gridname):
     
     # gets the obs data and hours
     hrs_obs, obs = get_obs(obs_filepath,station,variable)
-    print(hrs_obs)
-    print(obs)
+    
     # this allows a cumulative sum with Nans in it (it just ignores the Nans). 
     # Might want to change this process in the future
     if "PCPT" in variable:
@@ -330,7 +384,43 @@ def time_series(station, variable, ylabel, title, filepath, gridname):
         linetype_i = 0 #variable for plotting
 
         for grid in grids[i].split(","): #loops through each grid size for each model
-        
+            
+            if "_KF" in variable:
+                file_var = variable[:-3]
+            else:
+                file_var = variable
+
+            if model == 'ENS' and '_KF' in variable:
+                filepath = fcst_filepath + model + '/' + file_var + '/fcst.KF_MH.t/'
+                gridname = ''
+            elif model == 'ENS':
+                filepath = fcst_filepath + model + '/' + file_var + '/fcst.t/'
+                gridname = ''
+            elif model == "ENS_LR" and "_KF" in variable:
+                filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.LR.KF_MH.t/'
+                gridname = ''
+            elif model == "ENS_lr" and "_KF" in variable:
+                filepath = fcst_filepath+model[:-3] + '/' + file_var + '/fcst.lr.KF_MH.t/'
+                gridname = ''
+            elif model == "ENS_hr" and "_KF" in variable:
+                filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.hr.KF_MH.t/'
+                gridname = ''
+            elif model =="ENS_hr":
+                filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.hr.t/"
+                gridname = ''
+            elif model =="ENS_lr":
+                filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.lr.t/"
+                gridname = ''
+            elif model =="ENS_LR":
+                filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.LR.t/"
+                gridname = ''
+            elif "_KF" in variable:
+                filepath = fcst_filepath +model + '/' + grid + '/' + file_var + "/fcst.KF_MH/"
+                gridname = "_" + grid
+            else:
+                filepath = fcst_filepath + model + '/' + grid + '/' + file_var + '/fcst.t/'
+                gridname = "_" + grid
+            
             #ENS only has one grid (and its not saved in a g folder)
             #if  "ENS" in model:
             #    filepath = fcst_filepath + "ENS" + '/'

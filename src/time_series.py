@@ -87,6 +87,7 @@ for i in range(len(model_names)):
         
         if model == "SREF" or "ENS_" in model:
             grid = ""
+        print(model+grid)
         legend_labels.append(model + grid)
         
         model_colors.append(colors[i])

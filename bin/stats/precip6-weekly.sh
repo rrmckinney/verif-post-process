@@ -9,13 +9,13 @@ conda activate verification
 
 cd /home/verif/verif-post-process/src/
 
-start_date='211008'
-end_date='211014'
+start_date='230728'
+end_date='230803'
 
-while [ $((start_date)) -lt 230731 ]
+while [ $((start_date)) -lt 230813 ]
 do
 	python3 precip_wind_verif.py $start_date $end_date PCPT6 small > log/lb_txt_PCPT6_sm.log
-	
+ 	python3 precip_wind_verif.py $start_date $end_date PCPT6 large > log/lb_txt_PCPT6_lrg.log	
 	start_date=$(date -d $start_date"+7 days" +%y%m%d)
         end_date=$(date -d $end_date"+7 days" +%y%m%d)
 done

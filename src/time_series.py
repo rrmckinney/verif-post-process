@@ -14,7 +14,7 @@ import os
 import numpy as np
 import datetime #import datetime, timedelta
 import sys
-
+import pandas as pd
 
 import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)
@@ -107,7 +107,7 @@ def get_statistics(variable,time_domain):
      leg_count = 0
      color_count = 0
     
-     all_MAE_lists, all_RMSE_lists, all_spcorr_lists, all_startdate_lists,modelnames,modelcolors = [],[],[],[],[],[]
+     all_MAE_lists, all_RMSE_lists, all_spcorr_lists, all_startdate_lists,modelnames,skipped_modelnames,modelcolors = [],[],[],[],[],[],[]
      for i in range(len(models)):
         model = models[i] #loops through each model
         
@@ -116,18 +116,30 @@ def get_statistics(variable,time_domain):
         
             #ENS only has one grid (and its not saved in a g folder)
             if "ENS" in model:
-                modelpath = model + '/'
+                modelpath = model + '/' + input_domain + '/' + variable + '/'
             else:
-                modelpath = model + '/' + grid + '/'
-                
+                modelpath = model + '/' + grid + '/' + input_domain + '/' + variable + '/'
+             
             MAE_file = textfile_folder +  modelpath + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"
-                                              
            #skips time_domains that dont exist for this model
             if os.path.isfile(MAE_file):
+                MAE_txt = pd.read_csv(MAE_file, sep="   | ", names=['start', 'end','stat', 'num hours', 'num stations'])
+                MAE_txt = MAE_txt.sort_values(by=['start'])
+                MAE_txt = MAE_txt.drop_duplicates()
                 
-                MAE_start = np.loadtxt(MAE_file,usecols=0,dtype=str)
-                MAE_end = np.loadtxt(MAE_file,usecols=1,dtype=str)
+                data_check = False 
                 
+                MAE_start = MAE_txt['start']
+                MAE_end = MAE_txt['end']
+                
+                if date_entry1 in MAE_start and date_entry2 in MAE_end:
+                    data_check = True
+                else:
+                    print("   **Skipping " + model + grid + ", no data yet**")
+                    skipped_modelnames.append(legend_labels[leg_count] + ":  (none)")
+                    leg_count = leg_count+1
+                    continue
+
                 start_ind = np.where(MAE_start == date_entry1)[0]
                 end_ind = np.where(MAE_end == date_entry2)[0]
                 
@@ -157,7 +169,7 @@ def get_statistics(variable,time_domain):
                 all_MAE_lists.append(MAE_list)
                 all_RMSE_lists.append(RMSE_list)
                 all_spcorr_lists.append(spcorr_list)
-                
+                print(all_MAE_lists)
                 all_startdate_lists.append(startdate_list)
                 modelnames.append(legend_labels[leg_count])
                 modelcolors.append(model_colors[color_count])
@@ -175,7 +187,6 @@ def get_statistics(variable,time_domain):
 def plot_timeseries(var, var_name, var_unit, time_domain, MAE,RMSE,spcorr,startdates,modelnames,modelcolors):
                            
     fig, (ax1, ax2, ax3) = plt.subplots(3, 1,figsize=(25,17),dpi=150)
-    
     total = len(modelnames)
     for i in range(total):
         model = modelnames[i]
@@ -197,7 +208,7 @@ def plot_timeseries(var, var_name, var_unit, time_domain, MAE,RMSE,spcorr,startd
     plt.setp(ax1.get_xticklabels(), visible=False)
     plt.setp(ax2.get_xticklabels(), visible=False)
     
-    plt.legend(bbox_to_anchor=(1, -0.4),ncol=12)
+    #plt.legend(bbox_to_anchor=(1, -0.4),ncol=12)
     
     if savetype=="monthly":
         plt.xlabel('verification ' + savetype[:-2],fontsize=18)
@@ -232,7 +243,6 @@ def main(args):
             
             #these returned variables are lists that contain one stat for each model (so length=#num of models)
             MAE,RMSE,corr,startdates,modelnames,modelcolors = get_statistics(var,time_domain)
-            
             plot_timeseries(var, variable_names[var_i], variable_units[var_i], time_domain, MAE,RMSE,corr,startdates,modelnames,modelcolors)
 
         var_i=var_i+1

@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "leaderboards-plots.py", line 525, in <module>
+    main(sys.argv)
+  File "leaderboards-plots.py", line 514, in main
+    make_leaderboard_sorted(var, variable_names[var_i], variable_units[var_i], time_domain,time_label, MAE,RMSE,corr,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+  File "leaderboards-plots.py", line 277, in make_leaderboard_sorted
+    MAE_sorted, modelnames_sortedMAE,modelcolors_sortedMAE = zip(*sorted(zip(MAE, modelnames,modelcolors),reverse=True))
+ValueError: not enough values to unpack (expected 3, got 0)
+Traceback (most recent call last):
+  File "leaderboards-plots.py", line 525, in <module>
+    main(sys.argv)
+  File "leaderboards-plots.py", line 514, in main
+    make_leaderboard_sorted(var, variable_names[var_i], variable_units[var_i], time_domain,time_label, MAE,RMSE,corr,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+  File "leaderboards-plots.py", line 277, in make_leaderboard_sorted
+    MAE_sorted, modelnames_sortedMAE,modelcolors_sortedMAE = zip(*sorted(zip(MAE, modelnames,modelcolors),reverse=True))
+ValueError: not enough values to unpack (expected 3, got 0)

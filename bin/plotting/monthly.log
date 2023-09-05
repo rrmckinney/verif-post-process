@@ -1,0 +1,74 @@
+Traceback (most recent call last):
+  File "leaderboards-plots.py", line 525, in <module>
+    main(sys.argv)
+  File "leaderboards-plots.py", line 514, in main
+    make_leaderboard_sorted(var, variable_names[var_i], variable_units[var_i], time_domain,time_label, MAE,RMSE,corr,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+  File "leaderboards-plots.py", line 349, in make_leaderboard_sorted
+    plt.savefig(save_folder + 'continuous/' + start_date[:-2] + '/' + input_domain + '_' + var + '_' + savetype + '_' + time_domain + '.png',bbox_inches='tight')
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/pyplot.py", line 1023, in savefig
+    res = fig.savefig(*args, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/figure.py", line 3343, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2366, in print_figure
+    result = print_method(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2232, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 509, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 458, in _print_pil
+    mpl.image.imsave(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/image.py", line 1689, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/Image.py", line 2429, in save
+    fp = builtins.open(filename, "w+b")
+FileNotFoundError: [Errno 2] No such file or directory: '/verification/Statistics/img/monthly/continuous/230812/small_SFCTC_KF_weekly_60hr.png'
+Traceback (most recent call last):
+  File "leaderboards-plots.py", line 525, in <module>
+    main(sys.argv)
+  File "leaderboards-plots.py", line 514, in main
+    make_leaderboard_sorted(var, variable_names[var_i], variable_units[var_i], time_domain,time_label, MAE,RMSE,corr,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+  File "leaderboards-plots.py", line 349, in make_leaderboard_sorted
+    plt.savefig(save_folder + 'continuous/' + start_date[:-2] + '/' + input_domain + '_' + var + '_' + savetype + '_' + time_domain + '.png',bbox_inches='tight')
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/pyplot.py", line 1023, in savefig
+    res = fig.savefig(*args, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/figure.py", line 3343, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2366, in print_figure
+    result = print_method(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2232, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 509, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 458, in _print_pil
+    mpl.image.imsave(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/image.py", line 1689, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/Image.py", line 2429, in save
+    fp = builtins.open(filename, "w+b")
+FileNotFoundError: [Errno 2] No such file or directory: '/verification/Statistics/img/monthly/continuous/230812/large_SFCTC_KF_weekly_60hr.png'
+Traceback (most recent call last):
+  File "leaderboard-avg-ranking.py", line 404, in <module>
+    main(sys.argv)
+  File "leaderboard-avg-ranking.py", line 393, in main
+    make_leaderboard_sorted(var, variable_names[var_i], variable_units[var_i], time_domain,time_label, MAE_avg,RMSE_avg,corr_avg,num_weeks_avg,missing_weeks_avg,edited_modelnames_avg, modelnames,"average")
+  File "leaderboard-avg-ranking.py", line 367, in make_leaderboard_sorted
+    plt.savefig(save_folder + '/rankings/' + input_domain + '_' + var + '_' + savetype + '_' + time_domain + '_' + stat_type + '.png',bbox_inches='tight')
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/pyplot.py", line 1023, in savefig
+    res = fig.savefig(*args, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/figure.py", line 3343, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2346, in print_figure
+    bbox_inches = self.figure.get_tightbbox(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/figure.py", line 1744, in get_tightbbox
+    bbox = a.get_tightbbox(renderer)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/axes/_base.py", line 4385, in get_tightbbox
+    ba = martist._get_tightbbox_for_layout_only(axis, renderer)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/artist.py", line 1415, in _get_tightbbox_for_layout_only
+    return obj.get_tightbbox(*args, **{**kwargs, "for_layout_only": True})
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/axis.py", line 1353, in get_tightbbox
+    bboxes = [b for b in bboxes
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/axis.py", line 1354, in <listcomp>
+    if 0 < b.width < np.inf and 0 < b.height < np.inf]
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/transforms.py", line 361, in width
+    @property
+KeyboardInterrupt

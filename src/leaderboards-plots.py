@@ -27,8 +27,8 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 #logfilepath = "/home/egnegy/python_plotting/log/plot_leaderboards.log"
 
 #location to save the images
-#save_folder = '/www/results/verification/images/leaderboards/'
-save_folder = '/verification/Statistics/img/monthly/'
+save_folder = '/www/results/verification/images/leaderboards/'
+#save_folder = '/verification/Statistics/img/monthly/'
 
 #description file for stations
 #station_file = '/home/egnegy/ensemble-verification/testing_stations/input/station_list_leaderboards.txt'
@@ -86,9 +86,9 @@ time_labels = ['outlook hours 1-60','outlook hours 1-84','outlook hours 1-120','
 
 #stations = np.loadtxt(station_file,usecols=0,delimiter=',',dtype='str')
 
-variables = ['SFCTC_KF','PCPTOT', 'SFCWSPD_KF',  'PCPT6']
-variable_names = ['Temperature-KF','Hourly Precipitation', 'Wind Speed-KF ', '6-Hour Accumulated Precipitation']
-variable_units = ['[C]', '[mm/hr]','[km/hr]', '[mm/6hr]']
+variables = ['SFCTC_KF','SFCTC', 'PCPTOT', 'SFCWSPD_KF',  'PCPT6']
+variable_names = ['Temperature-KF','Temperature-Raw', 'Hourly Precipitation', 'Wind Speed-KF ','Wind Speed-Raw', '6-Hour Accumulated Precipitation']
+variable_units = ['[C]','[C]', '[mm/hr]','[km/hr]', '[km/hr]', '[mm/6hr]']
 
 
 
@@ -346,7 +346,7 @@ def make_leaderboard_sorted(var, var_name, var_unit, time_domain, time_label,MAE
             plt.text(0, -5 -x, "            " + skipped_modelnames[x], fontsize=18)
     
 
-    plt.savefig(save_folder + 'continuous/' + start_date[:-2] + '/' + input_domain + '_' + var + '_' + savetype + '_' + time_domain + '.png',bbox_inches='tight')
+    plt.savefig(save_folder + 'best_to_worst/' + input_domain + '_' + var + '_' + savetype + '_' + time_domain + '.png',bbox_inches='tight')
     
 
 def make_leaderboard_unsorted(var, var_name, var_unit, time_domain):     

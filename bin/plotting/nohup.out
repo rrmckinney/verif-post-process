@@ -3190,3 +3190,176 @@ Traceback (most recent call last):
   File "leaderboards-plots.py", line 277, in make_leaderboard_sorted
     MAE_sorted, modelnames_sortedMAE,modelcolors_sortedMAE = zip(*sorted(zip(MAE, modelnames,modelcolors),reverse=True))
 ValueError: not enough values to unpack (expected 3, got 0)
+Traceback (most recent call last):
+  File "leaderboard-avg-ranking.py", line 404, in <module>
+    main(sys.argv)
+  File "leaderboard-avg-ranking.py", line 388, in main
+    MAE,RMSE,corr,modelnames,modelcolors = get_rankings(var,time_domain)
+  File "leaderboard-avg-ranking.py", line 157, in get_rankings
+    corr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else corr_list[x] for x in range(len(corr_list))] 
+  File "leaderboard-avg-ranking.py", line 157, in <listcomp>
+    corr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else corr_list[x] for x in range(len(corr_list))] 
+IndexError: list index out of range
+Traceback (most recent call last):
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/ImageFile.py", line 515, in _save
+    fh = fp.fileno()
+AttributeError: '_idat' object has no attribute 'fileno'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "leaderboard-avg-ranking.py", line 404, in <module>
+    main(sys.argv)
+  File "leaderboard-avg-ranking.py", line 394, in main
+    make_leaderboard_sorted(var, variable_names[var_i], variable_units[var_i], time_domain,time_label, MAE_med,RMSE_med,corr_med,num_weeks_med,missing_weeks_med,edited_modelnames_med, modelnames,"median")
+  File "leaderboard-avg-ranking.py", line 367, in make_leaderboard_sorted
+    plt.savefig(save_folder + '/rankings/' + input_domain + '_' + var + '_' + savetype + '_' + time_domain + '_' + stat_type + '.png',bbox_inches='tight')
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/pyplot.py", line 1023, in savefig
+    res = fig.savefig(*args, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/figure.py", line 3343, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2366, in print_figure
+    result = print_method(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2232, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 509, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 458, in _print_pil
+    mpl.image.imsave(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/image.py", line 1689, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/Image.py", line 2432, in save
+    save_handler(self, fp, filename)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/PngImagePlugin.py", line 1407, in _save
+    ImageFile._save(im, _idat(fp, chunk), [("zip", (0, 0) + im.size, 0, rawmode)])
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/ImageFile.py", line 519, in _save
+    _encode_tile(im, fp, tile, bufsize, None, exc)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/ImageFile.py", line 538, in _encode_tile
+    errcode, data = encoder.encode(bufsize)[1:]
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "leaderboards-plots.py", line 525, in <module>
+    main(sys.argv)
+  File "leaderboards-plots.py", line 514, in main
+    make_leaderboard_sorted(var, variable_names[var_i], variable_units[var_i], time_domain,time_label, MAE,RMSE,corr,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+  File "leaderboards-plots.py", line 349, in make_leaderboard_sorted
+    plt.savefig(save_folder + 'continuous/' + start_date[:-2] + '/' + input_domain + '_' + var + '_' + savetype + '_' + time_domain + '.png',bbox_inches='tight')
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/pyplot.py", line 1023, in savefig
+    res = fig.savefig(*args, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/figure.py", line 3343, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2366, in print_figure
+    result = print_method(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2232, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 509, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 458, in _print_pil
+    mpl.image.imsave(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/image.py", line 1689, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/Image.py", line 2429, in save
+    fp = builtins.open(filename, "w+b")
+FileNotFoundError: [Errno 2] No such file or directory: '/www/results/verification/images/leaderboards/continuous/230701/small_SFCTC_KF_monthly_60hr.png'
+Traceback (most recent call last):
+  File "leaderboards-plots.py", line 525, in <module>
+    main(sys.argv)
+  File "leaderboards-plots.py", line 514, in main
+    make_leaderboard_sorted(var, variable_names[var_i], variable_units[var_i], time_domain,time_label, MAE,RMSE,corr,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+  File "leaderboards-plots.py", line 349, in make_leaderboard_sorted
+    plt.savefig(save_folder + 'continuous/' + start_date[:-2] + '/' + input_domain + '_' + var + '_' + savetype + '_' + time_domain + '.png',bbox_inches='tight')
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/pyplot.py", line 1023, in savefig
+    res = fig.savefig(*args, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/figure.py", line 3343, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2366, in print_figure
+    result = print_method(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2232, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 509, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 458, in _print_pil
+    mpl.image.imsave(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/image.py", line 1689, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/Image.py", line 2429, in save
+    fp = builtins.open(filename, "w+b")
+FileNotFoundError: [Errno 2] No such file or directory: '/www/results/verification/images/leaderboards/continuous/230701/large_SFCTC_KF_monthly_60hr.png'
+Traceback (most recent call last):
+  File "leaderboard-avg-ranking.py", line 404, in <module>
+    main(sys.argv)
+  File "leaderboard-avg-ranking.py", line 388, in main
+    MAE,RMSE,corr,modelnames,modelcolors = get_rankings(var,time_domain)
+  File "leaderboard-avg-ranking.py", line 157, in get_rankings
+    corr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else corr_list[x] for x in range(len(corr_list))] 
+  File "leaderboard-avg-ranking.py", line 157, in <listcomp>
+    corr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else corr_list[x] for x in range(len(corr_list))] 
+IndexError: list index out of range
+Traceback (most recent call last):
+  File "leaderboards-plots.py", line 525, in <module>
+    main(sys.argv)
+  File "leaderboards-plots.py", line 514, in main
+    make_leaderboard_sorted(var, variable_names[var_i], variable_units[var_i], time_domain,time_label, MAE,RMSE,corr,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+  File "leaderboards-plots.py", line 349, in make_leaderboard_sorted
+    plt.savefig(save_folder + start_date[:-2] + '/' + input_domain + '_' + var + '_' + savetype + '_' + time_domain + '.png',bbox_inches='tight')
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/pyplot.py", line 1023, in savefig
+    res = fig.savefig(*args, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/figure.py", line 3343, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2366, in print_figure
+    result = print_method(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2232, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 509, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 458, in _print_pil
+    mpl.image.imsave(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/image.py", line 1689, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/Image.py", line 2429, in save
+    fp = builtins.open(filename, "w+b")
+FileNotFoundError: [Errno 2] No such file or directory: '/www/results/verification/images/leaderboards/230701/small_SFCTC_KF_monthly_60hr.png'
+Traceback (most recent call last):
+  File "leaderboards-plots.py", line 525, in <module>
+    main(sys.argv)
+  File "leaderboards-plots.py", line 514, in main
+    make_leaderboard_sorted(var, variable_names[var_i], variable_units[var_i], time_domain,time_label, MAE,RMSE,corr,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+  File "leaderboards-plots.py", line 349, in make_leaderboard_sorted
+    plt.savefig(save_folder + start_date[:-2] + '/' + input_domain + '_' + var + '_' + savetype + '_' + time_domain + '.png',bbox_inches='tight')
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/pyplot.py", line 1023, in savefig
+    res = fig.savefig(*args, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/figure.py", line 3343, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2366, in print_figure
+    result = print_method(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backend_bases.py", line 2232, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 509, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/backends/backend_agg.py", line 458, in _print_pil
+    mpl.image.imsave(
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/matplotlib/image.py", line 1689, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/PIL/Image.py", line 2429, in save
+    fp = builtins.open(filename, "w+b")
+FileNotFoundError: [Errno 2] No such file or directory: '/www/results/verification/images/leaderboards/230701/large_SFCTC_KF_monthly_60hr.png'
+Traceback (most recent call last):
+  File "leaderboard-avg-ranking.py", line 404, in <module>
+    main(sys.argv)
+  File "leaderboard-avg-ranking.py", line 388, in main
+    MAE,RMSE,corr,modelnames,modelcolors = get_rankings(var,time_domain)
+  File "leaderboard-avg-ranking.py", line 157, in get_rankings
+    corr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else corr_list[x] for x in range(len(corr_list))] 
+  File "leaderboard-avg-ranking.py", line 157, in <listcomp>
+    corr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else corr_list[x] for x in range(len(corr_list))] 
+IndexError: list index out of range
+Traceback (most recent call last):
+  File "leaderboard-avg-ranking.py", line 404, in <module>
+    main(sys.argv)
+  File "leaderboard-avg-ranking.py", line 388, in main
+    MAE,RMSE,corr,modelnames,modelcolors = get_rankings(var,time_domain)
+  File "leaderboard-avg-ranking.py", line 157, in get_rankings
+    corr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else corr_list[x] for x in range(len(corr_list))] 
+  File "leaderboard-avg-ranking.py", line 157, in <listcomp>
+    corr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else corr_list[x] for x in range(len(corr_list))] 
+IndexError: list index out of range

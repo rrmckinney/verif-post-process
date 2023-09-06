@@ -98,11 +98,11 @@ if len(sys.argv) == 8:
         raise Exception("Invalid stat tyoe input entries. Options: CAT_, MAE_, RMSE_, spcorr_. Case sensitive and tailing '_' required")
 
     k = sys.argv[7]
-    if k not in [40,80,100,150,200,500,1000]:
+    if k not in ['40','80','100','150','200','500','1000']:
         raise Exception("Invalid k value. Options: 40, 80, 100, 150, 200, 500, 1000.")
 
 else:
-    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size and weight type")
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
 models = np.loadtxt(models_file,usecols=0,dtype='str')

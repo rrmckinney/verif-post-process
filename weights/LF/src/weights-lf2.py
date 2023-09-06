@@ -257,16 +257,15 @@ def get_rankings(variable,time_domain):
 
                 if int(dataratio.split("/")[0]) < int(dataratio.split("/")[1])-removed_hours*(delta+1):
                     if int(numstations.split("/")[0]) != int(numstations.split("/")[1]): 
-                        modelnames.append(legend_labels[leg_count] + "*^")
+                        modelnames.append(model + gridname)
                     else:
-                        modelnames.append(legend_labels[leg_count] + "*")
-                    edited_modelnames.append(legend_labels[leg_count] + ":  (" + dataratio + ")")
+                        modelnames.append(model + gridname)
               
                 else:
                     if int(numstations.split("/")[0]) != int(numstations.split("/")[1]): 
-                        modelnames.append(legend_labels[leg_count] + "^")
+                        modelnames.append(model+gridname)
                     else:
-                        modelnames.append(legend_labels[leg_count])
+                        modelnames.append(model+gridname)
                    
 
             leg_count = leg_count+1

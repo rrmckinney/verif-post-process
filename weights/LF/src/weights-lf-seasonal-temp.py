@@ -116,7 +116,7 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 
 # The stat you want to base your weights off of:
 #choose "MAE_", "RMSE_" or "SPCORR_"
-stat_type = "MAE_"
+stat_type = "spcorr_"
 
 # weighting curve steepness, now user input, testing several values
 k = int(sys.argv[4])
@@ -128,7 +128,7 @@ print(k)
 
 def get_rankings(variable,time_domain,season):
     
-     MAE_list, RMSE_list, SPCORR_list, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations = [],[],[],[],[],[],[],[], [], [], [],[],[],[]
+     MAE_list, RMSE_list, SPCORR_list, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations = [],[],[],[],[],[],[],[]
      
      leg_count = 0
      color_count = 0

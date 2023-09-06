@@ -111,7 +111,7 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 
 # The stat you want to base your weights off of:
 #choose "MAE_", "RMSE_" or "SPCORR_"
-stat_type = "RMSE_"
+stat_type = "spcorr_"
 
 # weighting curve steepness, now user input, testing several values
 k = int(sys.argv[4])
@@ -123,7 +123,7 @@ print(k)
 
 def get_rankings(variable,time_domain):
     
-     MAE_list, RMSE_list, SPCORR_list, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations = [],[],[],[],[],[],[],[], [], [], [],[],[],[]
+     MAE_list, RMSE_list, SPCORR_list, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations = [],[],[],[],[],[],[],[]
      
      leg_count = 0
      color_count = 0
@@ -327,17 +327,17 @@ def main(args):
             if stat_type == "MAE_":
                 MAE_weight, modelnames_sortedMAE = make_weights(MAE, RMSE, SPCORR, modelnames)
                 weights_all = pd.DataFrame([MAE_weight], columns = modelnames_sortedMAE)
-                weights_all.to_csv('weights-lf-ks/'+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
+                weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
 
             elif stat_type == "RMSE_":
                 RMSE_weight, modelnames_sortedRMSE = make_weights(MAE, RMSE, SPCORR, modelnames)
                 weights_all = pd.DataFrame([RMSE_weight], columns = modelnames_sortedRMSE)
-                weights_all.to_csv('weights-lf-ks/'+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
+                weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
             
             elif stat_type == "spcorr_":
                 SPCORR_weight, modelnames_sortedSPCORR = make_weights(MAE, RMSE, SPCORR, modelnames)
                 weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
-                weights_all.to_csv('weights-lf-ks/'+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
+                weights_all.to_csv(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
             
             time_count = time_count+1
             

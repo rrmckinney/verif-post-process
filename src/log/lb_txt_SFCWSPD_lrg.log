@@ -1,4 +1,4 @@
-Performing WEEKLY calculation for 230407 to 230413
+Performing WEEKLY calculation for 230616 to 230622
 Reading observational dataframe for SFCWSPD.. 
     Now on station 2162
     Now on station 1972
@@ -268,51 +268,52 @@ Reading observational dataframe for SFCWSPD..
     Now on station 694
 Now on.. MM5_g2 for SFCWSPD
    Skipping station 3004 (No obs data)
-   Skipping station 2630 (No obs data)
    Skipping station 3566 (No obs data)
-   Skipping station 0684 (No obs data)
-   Skipping station 2358 (No obs data)
+   Skipping station 2069 (No obs data)
    Skipping station 3003 (No obs data)
    Skipping station 0699 (No obs data)
 Now on.. MM5_g3 for SFCWSPD
    Skipping station 3004 (No obs data)
-   Skipping station 2630 (No obs data)
    Skipping station 3566 (No obs data)
-   Skipping station 0684 (No obs data)
+   Skipping station 2069 (No obs data)
 Now on.. MM5_g4 for SFCWSPD
    Skipping station 3004 (No obs data)
-   Skipping station 2630 (No obs data)
    Skipping station 3566 (No obs data)
-   Skipping station 0684 (No obs data)
 Now on.. MM5G_g2 for SFCWSPD
    Skipping station 3004 (No obs data)
-   Skipping station 2630 (No obs data)
    Skipping station 3566 (No obs data)
-   Skipping station 0684 (No obs data)
 Now on.. MM5G_g3 for SFCWSPD
-   Skipping station 2630 (No obs data)
    Skipping station 3566 (No obs data)
-   Skipping station 0684 (No obs data)
 Now on.. MM5G_g4 for SFCWSPD
-   Skipping station 0684 (No obs data)
 Now on.. MM5G_g5 for SFCWSPD
 Now on.. WRF3GEM_g2 for SFCWSPD
    Skipping station 3004 (No obs data)
-   Skipping station 2630 (No obs data)
    Skipping station 3566 (No obs data)
-   Skipping station 0684 (No obs data)
 Now on.. WRF3GEM_g3 for SFCWSPD
    Skipping station 3004 (No obs data)
-   Skipping station 2630 (No obs data)
    Skipping station 3566 (No obs data)
-   Skipping station 0684 (No obs data)
 Now on.. WRF3GEM_g4 for SFCWSPD
    Skipping station 3004 (No obs data)
    Skipping station 3566 (No obs data)
-   Skipping station 0684 (No obs data)
 Now on.. WRF3NAM_g2 for SFCWSPD
    Skipping station 3004 (No obs data)
-   Skipping station 2630 (No obs data)
    Skipping station 3566 (No obs data)
-   Skipping station 0684 (No obs data)
-   Skipping station 2358 (No obs data)
+Now on.. WRF3NAM_g3 for SFCWSPD
+   Skipping station 3004 (No obs data)
+   Skipping station 3566 (No obs data)
+Now on.. WRF3NAM_g4 for SFCWSPD
+   Skipping station 3004 (No obs data)
+   Skipping station 3566 (No obs data)
+Now on.. WRF3GFS_g2 for SFCWSPD
+   Skipping station 3004 (No obs data)
+   Skipping station 3566 (No obs data)
+Now on.. WRF3GFS_g3 for SFCWSPD
+   Skipping station 3004 (No obs data)
+   Skipping station 3566 (No obs data)
+Now on.. WRF3GFS_g4 for SFCWSPD
+   Skipping station 3004 (No obs data)
+   Skipping station 3566 (No obs data)
+Now on.. WRF3GFS_g5 for SFCWSPD
+Now on.. WRF3NAVGEM_g2 for SFCWSPD
+   Skipping station 3004 (No obs data)
+   Skipping station 3566 (No obs data)

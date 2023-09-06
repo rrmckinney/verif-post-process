@@ -388,7 +388,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
         if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
             for s in range(len(stats_cat)):
                
-                f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
+                f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_' \
                     + stats_cat[s] + '_' + weight_outlook + '_' + variable
                 weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
     
@@ -396,7 +396,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                 df3['result'] = df3*weight_file.iloc[:,0]
 
         else:
-                    f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
+                    f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
                         + '_' + weight_outlook + '_' + variable 
                     
                     weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])

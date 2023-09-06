@@ -1,0 +1,7 @@
+Performing Yearly calculation for 211001 to 221001
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 191, in <module>
+    main(sys.argv)
+  File "mk_weighted_ensemble.py", line 129, in main
+    obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,  all_stations, input_variable, start_date, end_date, date_list_obs)
+TypeError: get_all_obs() missing 1 required positional argument: 'date_list_obs'

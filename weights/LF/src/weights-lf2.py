@@ -5,16 +5,14 @@ Created in summer 2023
 
 @author: Reagan McKinney
 
-This script is based on section 4 of https://journals.ametsoc.org/view/journals/wefo/23/6/2008waf2007078_1.xml 
+This script is based on a logistic curve weighting scheme.
 """
 
-import matplotlib.pyplot as plt
 import os
 import numpy as np
 import pandas as pd
 import datetime #import datetime, timedelta
 import sys
-from sklearn import preprocessing
 from math import exp
 import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)
@@ -22,15 +20,8 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 ### -------------------- FILEPATHS ------------------------
 ###########################################################
 
-
-#path to save the log/output
-#logfilepath = "/home/egnegy/python_plotting/log/plot_leaderboards.log"
-
-#location to save the images for the website
-#save_folder = '/www/results/verification/images/leaderboards/'
-
 #location to save the images internally
-save_folder = "/home/verif/verif-post-process/src/img/"
+save_folder = "/home/verif/verif-post-process/weights/LF/output/weights-lf-ks/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list.txt'
@@ -122,7 +113,7 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 #choose "CAT_" for categorical scores (PCPT6, PCPTOT, SFCWSPD, SFCWSPD_KF) only, "MAE_", "RMSE_" or "SPCORR_"
 stat_type = "RMSE_"
 
-# weighting curve steepness, Stull chose 100, so will test with that
+# weighting curve steepness, now user input, testing several values
 k = int(sys.argv[4])
 
 print(k)
@@ -171,7 +162,6 @@ def get_rankings(variable,time_domain):
                             GSS = line.split("   ")[10]
                             dataratio = line.split("   ")[11]
                             numstations = line.split("   ")[12].strip()
-                            data_check = True
 
                             POD_mean.append(float(POD))
                             POFD_mean.append(float(POFD))
@@ -194,7 +184,6 @@ def get_rankings(variable,time_domain):
                             MAE = line.split("   ")[1]
                             dataratio = line.split("   ")[2]
                             numstations = line.split("   ")[3].strip()
-                            data_check = True
 
                             MAE_mean.append(float(MAE))
                     MAE = np.nanmean(MAE_mean)
@@ -206,7 +195,6 @@ def get_rankings(variable,time_domain):
                             RMSE = line.split("   ")[1]
                             dataratio = line.split("   ")[2]
                             numstations = line.split("   ")[3].strip()
-                            data_check = True
 
                             RMSE_mean.append(float(RMSE))
                     RMSE = np.nanmean(RMSE_mean)
@@ -218,7 +206,6 @@ def get_rankings(variable,time_domain):
                             SPCORR = line.split("   ")[1]
                             dataratio = line.split("   ")[2]
                             numstations = line.split("   ")[3].strip()
-                            data_check = True
 
                             SPCORR_mean.append(float(SPCORR))
                     SPCORR = np.nanmean(SPCORR_mean)
@@ -281,15 +268,12 @@ def get_rankings(variable,time_domain):
                     else:
                         modelnames.append(legend_labels[leg_count])
                    
-            #else:
-            #    print("   Skipping  " + model + gridname + "   " + time_domain + " (doesn't exist)")
-                
 
             leg_count = leg_count+1
          
         color_count = color_count+1
              
-     return(POD_list,POFD_list,PSS_list, HSS_list, CSI_list, GSS_list,MAE_list, RMSE_list, SPCORR_list, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+     return(POD_list,POFD_list,PSS_list, HSS_list, CSI_list, GSS_list,MAE_list, RMSE_list, SPCORR_list, modelnames)
  
 def get_obs_dates(time_domain):
     
@@ -326,17 +310,17 @@ def get_obs_dates(time_domain):
     
     return(obs_dates)
 
-def make_weights(var, time_domain, time_label,POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations):
+def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
     if stat_type == "CAT_":
         POD_weights, POFD_weights, PSS_weights, HSS_weights, CSI_weights, GSS_weights = [],[],[],[],[],[]
 
         #sorts them greatest to least/least to greatest
-        POD_sorted, modelnames_sortedPOD,modelcolors_sortedPOD = zip(*sorted(zip(POD, modelnames,modelcolors)))
-        POFD_sorted, modelnames_sortedPOFD,modelcolors_sortedPOFD = zip(*sorted(zip(POFD, modelnames,modelcolors)))
-        PSS_sorted, modelnames_sortedPSS,modelcolors_sortedPSS = zip(*sorted(zip(PSS, modelnames,modelcolors)))
-        HSS_sorted, modelnames_sortedHSS,modelcolors_sortedHSS = zip(*sorted(zip(HSS, modelnames,modelcolors)))
-        CSI_sorted, modelnames_sortedCSI,modelcolors_sortedCSI = zip(*sorted(zip(CSI, modelnames,modelcolors)))
-        GSS_sorted, modelnames_sortedGSS,modelcolors_sortedGSS = zip(*sorted(zip(GSS, modelnames,modelcolors)))
+        POD_sorted, modelnames_sortedPOD = zip(*sorted(zip(POD, modelnames)))
+        POFD_sorted, modelnames_sortedPOFD = zip(*sorted(zip(POFD, modelnames)))
+        PSS_sorted, modelnames_sortedPSS = zip(*sorted(zip(PSS, modelnames)))
+        HSS_sorted, modelnames_sortedHSS = zip(*sorted(zip(HSS, modelnames)))
+        CSI_sorted, modelnames_sortedCSI = zip(*sorted(zip(CSI, modelnames)))
+        GSS_sorted, modelnames_sortedGSS = zip(*sorted(zip(GSS, modelnames)))
     
         POD_xo = np.median(POD_sorted)
         for i in range(len(POD_sorted)):
@@ -417,8 +401,7 @@ def make_weights(var, time_domain, time_label,POD,POFD,PSS, HSS, CSI, GSS,MAE, R
         return(SPCORR_weights, modelnames_sortedSPCORR)
         
 def main(args):
-   # sys.stdout = open(logfilepath, "w") #opens log file
-        
+  
     var_i = 0
     for var in variables: #loop through variables
         
@@ -432,10 +415,10 @@ def main(args):
                 continue
             
             #these returned variables are lists that contain one stat for each model (so length=#num of models)
-            POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations = get_rankings(var,time_domain)
+            POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames = get_rankings(var,time_domain)
            
             if stat_type == "CAT_":
-                POD_weights, modelnames_sortedPOD, POFD_weights, modelnames_sortedPOFD, PSS_weights, modelnames_sortedPSS, HSS_weights, modelnames_sortedHSS, CSI_weights, modelnames_sortedCSI, GSS_weights, modelnames_sortedGSS = make_weights(var, time_domain, time_label,POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+                POD_weights, modelnames_sortedPOD, POFD_weights, modelnames_sortedPOFD, PSS_weights, modelnames_sortedPSS, HSS_weights, modelnames_sortedHSS, CSI_weights, modelnames_sortedCSI, GSS_weights, modelnames_sortedGSS = make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames)
         
                 weights_POD = pd.DataFrame([POD_weights], columns = modelnames_sortedPOD)
                 weights_POD.to_csv('weights-lf-ks/'+str(k) + '/' + stat_type + '/weights_POD_'+time_domain+'_'+var)
@@ -456,17 +439,17 @@ def main(args):
                 weights_GSS.to_csv('weights-lf-ks/'+str(k) + '/' + stat_type + '/weights_GSS_'+time_domain+'_'+var)
             
             elif stat_type == "MAE_":
-                MAE_weight, modelnames_sortedMAE = make_weights(var, time_domain, time_label,POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+                MAE_weight, modelnames_sortedMAE = make_weights(POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames)
                 weights_all = pd.DataFrame([MAE_weight], columns = modelnames_sortedMAE)
                 weights_all.to_csv('weights-lf-ks/'+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
 
             elif stat_type == "RMSE_":
-                RMSE_weight, modelnames_sortedRMSE = make_weights(var, time_domain, time_label,POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+                RMSE_weight, modelnames_sortedRMSE = make_weights(POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames)
                 weights_all = pd.DataFrame([RMSE_weight], columns = modelnames_sortedRMSE)
                 weights_all.to_csv('weights-lf-ks/'+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
             
             elif stat_type == "spcorr_":
-                SPCORR_weight, modelnames_sortedSPCORR = make_weights(var, time_domain, time_label,POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
+                SPCORR_weight, modelnames_sortedSPCORR = make_weights(POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames)
                 weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
                 weights_all.to_csv('weights-lf-ks/'+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
             
@@ -476,8 +459,6 @@ def main(args):
 
         var_i=var_i+1
             
-    #sys.stdout.close() #close log file
-
 if __name__ == "__main__":
     main(sys.argv)
 

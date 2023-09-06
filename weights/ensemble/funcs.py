@@ -73,8 +73,12 @@ seasons = [winter, spring, summer, fall]
 # logistic curve steepness (stated in file names)
 k = '100'
 
+# weight outlook: the forecast outlook the weights are based upon, 60hr is the only outlook that has all 51 members
+weight_outlook = '60hr'
+
 #editting mode for textfile
 wm = 'a'
+
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------
 ###########################################################
@@ -345,7 +349,7 @@ def get_fcst(maxhour, station, filepath, variable, date_list, filehours, start_d
                 for w in range(len(seasons)):
                     
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
-                        + stats_cat[s] + '_' + maxhour + '_' + variable + '_' + seasons[w]
+                        + stats_cat[s] + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                     weight_file = pd.read_csv(f, sep = "\s+|,", use_cols=[model_df_name])
                     
                     if len(seasons[w]) == 2:
@@ -369,7 +373,7 @@ def get_fcst(maxhour, station, filepath, variable, date_list, filehours, start_d
         else:
             for w in range(len(seasons)):
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
-                        + '_' + maxhour + '_' + variable + '_' + seasons[w]
+                        + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                     
                     weight_file = pd.read_csv(f, sep = "\s+|,", use_cols=[model_df_name])
                     
@@ -397,7 +401,7 @@ def get_fcst(maxhour, station, filepath, variable, date_list, filehours, start_d
             for s in range(len(stats_cat)):
                
                 f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
-                    + stats_cat[s] + '_' + maxhour + '_' + variable
+                    + stats_cat[s] + '_' + weight_outlook + '_' + variable
                 weight_file = pd.read_csv(f, sep = "\s+|,", use_cols=[model_df_name])
     
                 df3 = df_all[(df_all['Date'] >= start_date) & (df_all['Date'] < end_date)]
@@ -405,7 +409,7 @@ def get_fcst(maxhour, station, filepath, variable, date_list, filehours, start_d
 
         else:
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
-                        + '_' + maxhour + '_' + variable 
+                        + '_' + weight_outlook + '_' + variable 
                     
                     weight_file = pd.read_csv(f, sep = "\s+|,", use_cols=[model_df_name])
                     

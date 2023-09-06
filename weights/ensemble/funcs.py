@@ -338,7 +338,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                     
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
                         + stats_cat[s] + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
-                    weight_file = pd.read_csv(f, sep = "\s+|,", use_cols=[model_df_name])
+                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
                     
                     if len(seasons[w]) == 2:
                         date1 = seasons[w][0]
@@ -363,7 +363,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
                         + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                     
-                    weight_file = pd.read_csv(f, sep = "\s+|,", use_cols=[model_df_name])
+                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
                     
                     if len(seasons[w]) == 2:
                         date1 = seasons[w][0]
@@ -390,7 +390,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                
                 f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
                     + stats_cat[s] + '_' + weight_outlook + '_' + variable
-                weight_file = pd.read_csv(f, sep = "\s+|,", use_cols=[model_df_name])
+                weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
     
                 df3 = df_all[(df_all['Date'] >= start_date) & (df_all['Date'] < end_date)]
                 df3['result'] = df3*weight_file.iloc[:,0]
@@ -399,7 +399,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
                         + '_' + weight_outlook + '_' + variable 
                     
-                    weight_file = pd.read_csv(f, sep = "\s+|,", use_cols=[model_df_name])
+                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
                     
                     df3 = df_all[(df_all['Date'] >= start_date) & (df_all['Date'] < end_date)]
                     df3['result'] = df3*weight_file.iloc[:,0]

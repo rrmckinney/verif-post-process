@@ -57,7 +57,7 @@ weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
 ###########################################################
 
 # takes an input date for the first and last day you want calculations for, must be a range of 7 or 30 days apart
-if len(sys.argv) == 6:
+if len(sys.argv) == 8:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
     input_startdate = datetime.datetime.strptime(start_date, "%y%m%d").date()
@@ -92,7 +92,15 @@ if len(sys.argv) == 6:
     weight_type = sys.argv[5]
     if weight_type not in ['yearly', 'seasonal']:
         raise Exception("Invalid weight tyoe input entries. Options: yearly, seasonal. Case sensitive")
-            
+    
+    stat_type = sys.argv[6]
+    if stat_type not in ['CAT_', 'MAE_', 'RMSE_','spcorr_']:# statistic type used to get model: CAT_ includes 6 categorical scores within it, all these need tailing '_'
+        raise Exception("Invalid stat tyoe input entries. Options: CAT_, MAE_, RMSE_, spcorr_. Case sensitive and tailing '_' required")
+
+    k = sys.argv[7]
+    if k not in [40,80,100,150,200,500,1000]:
+        raise Exception("Invalid k value. Options: 40, 80, 100, 150, 200, 500, 1000.")
+
 else:
     raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size and weight type")
 
@@ -185,7 +193,7 @@ def main(args):
            print("Now on.. " + model + gridname + " for " + input_variable)
 
            
-           get_rankings(weight_type, filepath, delta, input_domain, date_entry1, date_entry2, all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
+           get_rankings(stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
 
 if __name__ == "__main__":
     main(sys.argv)

@@ -55,9 +55,6 @@ wind_threshold = 400 #recorded Edmonton, AB 1987 http://wayback.archive-it.org/7
 temp_min = -63 #recorded in Snag, YT 1947 http://wayback.archive-it.org/7084/20170925152846/https://www.ec.gc.ca/meteo-weather/default.asp?lang=En&n=6A4A3AC5-1#tab5
 temp_max = 49.6 #recorded in Lytton, BC 2021 https://www.canada.ca/en/environment-climate-change/services/top-ten-weather-stories/2021.html#toc2
 
-# statistic type used to get model: CAT_ includes 6 categorical scores within it, all these need tailing '_'
-stat_type = ['CAT_', 'MAE_', 'RMSE_','spcorr_']
-
 #the 6 categorical scores; do not need tailing '_'
 stats_cat = ['POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS']
 
@@ -316,7 +313,7 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
     return(obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7)
 
 # returns the fcst data for the given model/grid
-def get_fcst(maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
+def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
     
     df_new = make_df(date_list, start_date, end_date)
 
@@ -600,7 +597,7 @@ def model_not_available(model, grid, delta, input_domain, date_entry1, date_entr
             
             f3.close()  
 
-def get_rankings(weight_type, filepath, delta, input_domain, date_entry1, date_entry2, all_stations, station_df, variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6):
+def get_rankings(stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, all_stations, station_df, variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6):
     
   
     if os.path.isdir(textfile_folder +  filepath) == False:
@@ -665,7 +662,7 @@ def get_rankings(weight_type, filepath, delta, input_domain, date_entry1, date_e
         
         all_fcst_KF = False
             
-        all_fcst = get_fcst(maxhour, station, filepath, variable, date_list,filehours, date_entry1, date_entry2, weight_type, model_df_name)    #goes to maxhour       
+        all_fcst = get_fcst(stat_type,k,maxhour, station, filepath, variable, date_list,filehours, date_entry1, date_entry2, weight_type, model_df_name)    #goes to maxhour       
        
         fcst_final_all = np.array(all_fcst).T
         fcst_flat_all = fcst_final_all.flatten()

@@ -392,7 +392,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                     + stats_cat[s] + '_' + weight_outlook + '_' + variable
                 weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
     
-                df3 = df_all[(df_all['Date'] >= start_date) & (df_all['Date'] < end_date)]
+                df3 = df_all[(df_all['Date'] >= int(start_date)) & (df_all['Date'] < int(end_date))]
                 df3['result'] = df3*weight_file.iloc[:,0]
 
         else:
@@ -401,7 +401,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                     
                     weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
                     
-                    df3 = df_all[(df_all['Date'] >= start_date) & (df_all['Date'] < end_date)]
+                    df3 = df_all[(df_all['Date'] >= int(start_date)) & (df_all['Date'] < int(end_date))]
                     df3['result'] = df3*weight_file.iloc[:,0]
 
     return(df3['result'])

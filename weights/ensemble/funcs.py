@@ -345,7 +345,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                         date2 = seasons[w][1]
 
                         df3 = df_all[(df_all['Date'] >= date1) & (df_all['Date'] < date2)]
-                        df3['result'] = df3*weight_file.iloc[:,0]
+                        df3['result'] = df3['Val']*weight_file.iloc[:,0]
 
                     elif len(seasons[w]) > 2:
                         date1 = seasons[w][0]
@@ -356,7 +356,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                         df = df_all[(df_all['Date'] >= date1) & (df_all['Date'] < date2)]
                         df2 = df_all[(df_all['Date'] >= date3) & (df_all['Date'] < date4)]
                         df3 = pd.merge(df, df2)
-                        df3['result'] = df3*weight_file.iloc[:,0]
+                        df3['result'] = df3['Val']*weight_file.iloc[:,0]
 
         else:
             for w in range(len(seasons)):
@@ -370,7 +370,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                         date2 = seasons[w][1]
 
                         df3 = df_all[(df_all['Date'] >= date1) & (df_all['Date'] < date2)]
-                        df3['result'] = df3*weight_file.iloc[:,0]
+                        df3['result'] = df3['Val']*weight_file.iloc[:,0]
 
                     #fall has four dates as september is a year later than oct/nov as stats started in oct
                     elif len(seasons[w]) > 2:
@@ -382,7 +382,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                         df = df_all[(df_all['Date'] >= date1) & (df_all['Date'] < date2)]
                         df2 = df_all[(df_all['Date'] >= date3) & (df_all['Date'] < date4)]
                         df3 = pd.merge(df, df2)
-                        df3['result'] = df3*weight_file.iloc[:,0]
+                        df3['result'] = df3['Val']*weight_file.iloc[:,0]
 
     elif weight_type == 'yearly':
         if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
@@ -393,7 +393,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                 weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
     
                 df3 = df_all[(df_all['Date'] >= start_date) & (df_all['Date'] < end_date)]
-                df3['result'] = df3*weight_file.iloc[:,0]
+                df3['result'] = df3['Val']*weight_file.iloc[:,0]
 
         else:
                     f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
@@ -402,7 +402,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                     weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
                     
                     df3 = df_all[(df_all['Date'] >= start_date) & (df_all['Date'] < end_date)]
-                    df3['result'] = df3*weight_file.iloc[:,0]
+                    df3['result'] = df3['Val']*weight_file.iloc[:,0]
 
     return(df3['result'])
 

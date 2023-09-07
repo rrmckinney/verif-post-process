@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 ###########################################################
 
 #location to save the images internally
-save_folder = "/home/verif/verif-post-process/weights/LF/output/weights-lf-ks/"
+save_folder = "/home/verif/verif-post-process/weights/LF/output/weights-yearly/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list.txt'
@@ -111,7 +111,7 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 
 # The stat you want to base your weights off of:
 #choose "MAE_", "RMSE_" or "SPCORR_"
-stat_type = "spcorr_"
+stat_type = "MAE_"
 
 # weighting curve steepness, now user input, testing several values
 k = int(sys.argv[4])

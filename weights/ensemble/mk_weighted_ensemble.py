@@ -76,6 +76,7 @@ if len(sys.argv) == 8:
 
     if delta == 365: # 6 is weekly bc it includes the start and end date (making 7)
         print("Performing Yearly calculation for " + start_date + " to " + end_date)
+        savetype = 'weekly'
 
     else:
         raise Exception("Invalid date input entries. Start and end date must be 7 or 28-31 days apart (for weekly and monthly stats) Entered range was: " + str(delta+1) + " days")
@@ -193,7 +194,7 @@ def main(args):
            print("Now on.. " + model + gridname + " for " + input_variable)
 
            
-           get_rankings(stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
+           get_rankings(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
 
 if __name__ == "__main__":
     main(sys.argv)

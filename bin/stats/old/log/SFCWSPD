@@ -18,3 +18,11 @@ A value is trying to be set on a copy of a slice from a DataFrame
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
   obs_all[i] = np.nan
+Traceback (most recent call last):
+  File "leaderboards-txt-sqlite2.py", line 71, in <module>
+    raise Exception("Date too recent. Need start date to be at least 8 days ago.")
+Exception: Date too recent. Need start date to be at least 8 days ago.
+Traceback (most recent call last):
+  File "leaderboards-txt-sqlite2.py", line 71, in <module>
+    raise Exception("Date too recent. Need start date to be at least 8 days ago.")
+Exception: Date too recent. Need start date to be at least 8 days ago.

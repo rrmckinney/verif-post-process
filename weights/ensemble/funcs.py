@@ -330,7 +330,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
     
     fcst = fcst.set_index('datetime')
     df_all = df_new.join(fcst, on='datetime')
-    
+    print(df_all) 
     if weight_type == 'seasonal':
         if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
             for s in range(len(stats_cat)):
@@ -345,22 +345,17 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                         date1 = seasons[w][0]
                         date2 = seasons[w][1]
                         
-                        print(date1)
-                        print(date2)
-
-                        df3 = df_all[(df_all['Date'] >= date1) & (df_all['Date'] < date2)]
+                        df3 = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
                         df3['result'] = df3['Val']*weight
 
-                        print(df3)
-                        
                     elif len(seasons[w]) > 2:
                         date1 = seasons[w][0]
                         date2 = seasons[w][1]
                         date3 = seasons[w][2]
                         date4 = seasons[w][3]
 
-                        df = df_all[(df_all['Date'] >= date1) & (df_all['Date'] < date2)]
-                        df2 = df_all[(df_all['Date'] >= date3) & (df_all['Date'] < date4)]
+                        df = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
+                        df2 = df_all[(df_all['date'] >= int(date3)) & (df_all['date'] < int(date4))]
                         df3 = pd.merge(df, df2)
                         df3['result'] = df3['Val']*weight
 
@@ -370,13 +365,13 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                         + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                     
                     weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                    weight = weight_file.iloc[:,0]
+                    weight = int(weight_file.iloc[:,0])
                     
                     if len(seasons[w]) == 2:
                         date1 = seasons[w][0]
                         date2 = seasons[w][1]
 
-                        df3 = df_all[(df_all['Date'] >= date1) & (df_all['Date'] < date2)]
+                        df3 = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
                         df3['result'] = df3['Val']*weight
 
                     #fall has four dates as september is a year later than oct/nov as stats started in oct
@@ -386,30 +381,35 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
                         date3 = seasons[w][2]
                         date4 = seasons[w][3]
 
-                        df = df_all[(df_all['Date'] >= date1) & (df_all['Date'] < date2)]
-                        df2 = df_all[(df_all['Date'] >= date3) & (df_all['Date'] < date4)]
+                        df = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
+                        df2 = df_all[(df_all['date'] >= int(date3)) & (df_all['date'] < int(date4))]
                         df3 = pd.merge(df, df2)
                         df3['result'] = df3['Val']*weight
 
     elif weight_type == 'yearly':
         if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
             for s in range(len(stats_cat)):
-               
+                print(model_df_name) 
                 f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_' \
                     + stats_cat[s] + '_' + weight_outlook + '_' + variable
                 weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                weight = weight_file.iloc[:,0]
+                weight = int(weight_file.iloc[:,0])
+                
+                print(start_date)
+                print(end_date)
 
-                df3 = df_all[(df_all['Date'] >= start_date) & (df_all['Date'] < end_date)]
-                df3['result'] = df3['Val']*weight
-
+                df3 = df_all[(df_all['date'].astype(int) >= int(start_date)) & (df_all['date'].astype(int) < int(end_date))]
+                df3['result'] = df3.Val*weight
+                
+                print(df3)
         else:
                     f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
                         + '_' + weight_outlook + '_' + variable 
                     
                     weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                    
-                    df3 = df_all[(df_all['Date'] >= start_date) & (df_all['Date'] < end_date)]
+                    weight = int(weight_file.iloc[:,0])
+
+                    df3 = df_all[(df_all['date'].astpye(int) >= int(start_date)) & (df_all['date'].astype(int) < int(end_date))]
                     df3['result'] = df3['Val']*weight
 
     return(df3['result'])
@@ -605,7 +605,7 @@ def model_not_available(model, grid, delta, input_domain, date_entry1, date_entr
             
             f3.close()  
 
-def get_rankings(stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, all_stations, station_df, variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6):
+def get_rankings(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, all_stations, station_df, variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6):
     
   
     if os.path.isdir(textfile_folder +  filepath) == False:

@@ -15,11 +15,7 @@ end_date=('211130' '211231' '220131' '220228' '220331' '220430' '220531' '220630
 for i in {0..20}
 do
 
-        python3 leaderboard-txt-sqlite2-monthly.py ${start_date[$i]} ${end_date[$i]} SFCWSPD small > log/lb_txt_SFCWSPD_sm.log
-	python3 leaderboard-txt-sqlite2-monthly.py ${start_date[$i]} ${end_date[$i]} SFCTC small > log/lb_txt_SFCTC_sm.log
-	python3 leaderboard-txt-sqlite2-monthly.py ${start_date[$i]} ${end_date[$i]} PCPT6 small > log/lb_txt_PCPT6_sm.log
+        python3 leaderboards-txt-sqlite2.py ${start_date[$i]} ${end_date[$i]} SFCWSPD small > log/lb_txt_SFCWSPD_sm.log
 
-        python3 leaderboard-txt-sqlite2-monthly.py ${start_date[$i]} ${end_date[$i]} SFCWSPD large > log/lb_txt_SFCWSPD_lrg.log
-        python3 leaderboard-txt-sqlite2-monthly.py ${start_date[$i]} ${end_date[$i]} SFCTC large > log/lb_txt_SFCTC_lrg.log
-        python3 leaderboard-txt-sqlite2-monthly.py ${start_date[$i]} ${end_date[$i]} PCPT6 large > log/lb_txt_PCPT6_lrg.log
+        python3 leaderboards-txt-sqlite2.py ${start_date[$i]} ${end_date[$i]} SFCWSPD large > log/lb_txt_SFCWSPD_lrg.log
 done

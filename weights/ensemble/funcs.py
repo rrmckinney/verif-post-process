@@ -514,7 +514,15 @@ def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,file
 
     return(fcst_NaNs, obs_NaNs)
 
-def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,fcst_allstations,obs_allstations,num_stations,totalstations,time_domain,variable,filepath):
+def mk_ensemble(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,fcst_all, \
+        obs_all,num_stations,totalstations,time_domain,variable,filepath):
+    
+    print(fcst_all)
+    
+    return()
+
+def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,\
+        fcst_allstations,obs_allstations,num_stations,totalstations,time_domain,variable,filepath):
     
     if int(maxhour) >= hour:
         fcst_avg = np.nanmean(fcst_allstations,axis=0) 
@@ -531,7 +539,8 @@ def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_
         fcst_rounded = np.round(fcst_noNaNs,1)
         
         if len(fcst_rounded) == 0:
-            model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,hour,length,totalstations,time_domain,variable,filepath)
+            model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,hour,\
+            length,totalstations,time_domain,variable,filepath)
         
         else:
             MAE = mean_absolute_error(obs_rounded,fcst_rounded)
@@ -548,9 +557,12 @@ def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_
             len_fcst = str(len(fcst_noNaNs)) + "/" + str(length)   
             numstations = str(num_stations) + "/" + str(totalstations)
                 
-            make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2, time_domain, variable, filepath, MAE, RMSE, corr, len_fcst, numstations)
+            make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2, time_domain, variable, \
+                          filepath, MAE, RMSE, corr, len_fcst, numstations)
 
-def model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,hour,length,totalstations,time_domain,variable,filepath):
+def model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype,\
+            maxhour,hour,length,totalstations,time_domain,variable,filepath):
+    
     if "ENS" in model:
         modelpath = model + '/'
     else:
@@ -568,7 +580,6 @@ def model_not_available(model, grid, delta, input_domain, date_entry1, date_entr
                 
         len_fcst = "0/" + str(total_length)
         numstations = "0/" + str(totalstations)
-        
         
         f1 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
         read_f1 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
@@ -592,7 +603,6 @@ def model_not_available(model, grid, delta, input_domain, date_entry1, date_entr
             f2.write(numstations + "\n")
             
             f2.close()  
-            
         
         f3 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+") 
         read_f3 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
@@ -605,29 +615,19 @@ def model_not_available(model, grid, delta, input_domain, date_entry1, date_entr
             
             f3.close()  
 
-def get_rankings(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, all_stations, station_df, variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6):
+def fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, \
+              all_stations, station_df, variable, date_list, model, grid, maxhour, gridname, filehours, \
+                obs_df, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6):
     
-  
     if os.path.isdir(textfile_folder +  filepath) == False:
         os.makedirs(textfile_folder +  filepath)
             
     # open the file for the current model and get all the stations from it
     model_df_name = model+gridname
     stations_in_domain = np.array(station_df.query(model_df_name+"==1")["Station ID"],dtype='str')
-
-    #these variables will contain all the fcst and obs for the stations that exist for each model
-    obs_allstations_180hr, fcst_allstations_180hr = [],[]
-    obs_allstations_120hr, fcst_allstations_120hr = [],[]
-    obs_allstations_84hr, fcst_allstations_84hr = [],[]
-    obs_allstations_60hr, fcst_allstations_60hr = [],[]
-    obs_allstations_day1, fcst_allstations_day1 = [],[]
-    obs_allstations_day2, fcst_allstations_day2 = [],[]
-    obs_allstations_day3, fcst_allstations_day3 = [],[]
-    obs_allstations_day4, fcst_allstations_day4 = [],[]
-    obs_allstations_day5, fcst_allstations_day5 = [],[]
-    obs_allstations_day6, fcst_allstations_day6 = [],[]
-    obs_allstations_day7, fcst_allstations_day7 = [],[]
     
+    fcst_allstations, obs_allstations = [], []
+
     totalstations = 0
     num_stations = 0
     
@@ -642,7 +642,7 @@ def get_rankings(savetype, stat_type, k, weight_type, filepath, delta, input_dom
             continue
         
         if len(station) < 4:
-            station = "0" +str(station)
+            station = "0" + str(station)
         
         if check_dates(date_entry1, delta, filepath, variable, station) == False:
             print("   Skipping station " + station + " (not enough dates yet)")
@@ -651,22 +651,6 @@ def get_rankings(savetype, stat_type, k, weight_type, filepath, delta, input_dom
         
         # total stations that should be included in each model/grid
         totalstations = totalstations+1
-        '''
-        #when using the "small" domain, only include raw data if KF data also exists at that hour
-        if input_domain == "small" and variable in ["SFCTC","SFCWSPD"]:
-            all_fcst_KF = get_fcst(station, filepath, variable + '_KF', date_list,filehours, date_entry1, date_entry2)
-            fcst_final_all_KF = np.array(all_fcst_KF).T
-            fcst_flat_all_KF = fcst_final_all_KF.flatten()
-            
-            if pd.isna(fcst_flat_all_KF).all() == True:    
-                print("   Skipping station " + station + " (No KF data)")
-                continue
-            if pd.isna(fcst_flat_all_KF).any() == False:  
-                all_fcst_KF = False
-                print(station + " " + model + grid + " fcst KF missing")
-
-        else:
-        '''
         
         all_fcst_KF = False
             
@@ -674,10 +658,8 @@ def get_rankings(savetype, stat_type, k, weight_type, filepath, delta, input_dom
        
         fcst_final_all = np.array(all_fcst).T
         fcst_flat_all = fcst_final_all.flatten()
-        
-       
 
-        obs_flat_all = np.array(obs_df_180hr[station])
+        obs_flat_all = np.array(obs_df[station])
         
         #checks 180 hour only
         if pd.isna(fcst_flat_all).all() == True:    
@@ -691,92 +673,16 @@ def get_rankings(savetype, stat_type, k, weight_type, filepath, delta, input_dom
         # total stations that ended up being included (doesn't count ones with no data)
         num_stations = num_stations+1
       
-        if int(maxhour) >= 180:
-            fcst_NaNs_180hr, obs_flat_180hr = trim_fcst(all_fcst,obs_df_180hr,station,0,180,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)                            
-            fcst_allstations_180hr.append(fcst_NaNs_180hr)
-            obs_allstations_180hr.append(obs_flat_180hr)
-            
-         
-        if int(maxhour) >= 168:        
-            fcst_NaNs_day7,  obs_flat_day7  = trim_fcst(all_fcst,obs_df_day7,station,144,168,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-            fcst_allstations_day7.append(fcst_NaNs_day7)
-            obs_allstations_day7.append(obs_flat_day7)
-            
-        if int(maxhour) >= 144:
-            fcst_NaNs_day6,  obs_flat_day6  = trim_fcst(all_fcst,obs_df_day6,station,120,144,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-            fcst_allstations_day6.append(fcst_NaNs_day6)
-            obs_allstations_day6.append(obs_flat_day6)
-            
-        if int(maxhour) >= 120:
-
-            fcst_NaNs_120hr, obs_flat_120hr = trim_fcst(all_fcst,obs_df_120hr,station,0,120,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-            fcst_allstations_120hr.append(fcst_NaNs_120hr)
-            obs_allstations_120hr.append(obs_flat_120hr)
-        
-            fcst_NaNs_day5,  obs_flat_day5  = trim_fcst(all_fcst,obs_df_day5,station,96,120,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-            fcst_allstations_day5.append(fcst_NaNs_day5)
-            obs_allstations_day5.append(obs_flat_day5)
-
-        if int(maxhour) >= 96:
-            fcst_NaNs_day4,  obs_flat_day4  = trim_fcst(all_fcst,obs_df_day4,station,72,96,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-            fcst_allstations_day4.append(fcst_NaNs_day4)
-            obs_allstations_day4.append(obs_flat_day4)
-            
-        if int(maxhour) >= 84:            
-            fcst_NaNs_84hr,  obs_flat_84hr  = trim_fcst(all_fcst,obs_df_84hr,station,0,84,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-            fcst_allstations_84hr.append(fcst_NaNs_84hr)
-            obs_allstations_84hr.append(obs_flat_84hr)
-            
-        if int(maxhour) >= 72:
-            fcst_NaNs_day3,  obs_flat_day3  = trim_fcst(all_fcst,obs_df_day3,station,48,72,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-            fcst_allstations_day3.append(fcst_NaNs_day3)
-            obs_allstations_day3.append(obs_flat_day3)
-            
-    
-        fcst_NaNs_60hr,  obs_flat_60hr  = trim_fcst(all_fcst,obs_df_60hr,station,0,60,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-        fcst_allstations_60hr.append(fcst_NaNs_60hr)
-        obs_allstations_60hr.append(obs_flat_60hr)
-                
-        fcst_NaNs_day1,  obs_flat_day1  = trim_fcst(all_fcst,obs_df_day1,station,0,24,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-        fcst_allstations_day1.append(fcst_NaNs_day1)
-        obs_allstations_day1.append(obs_flat_day1)
-        
-        fcst_NaNs_day2,  obs_flat_day2  = trim_fcst(all_fcst,obs_df_day2,station,24,48,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-        fcst_allstations_day2.append(fcst_NaNs_day2)
-        obs_allstations_day2.append(obs_flat_day2)
+        fcst_NaNs, obs_flat = trim_fcst(all_fcst,obs_df,station,0,180,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)                            
+        fcst_allstations.append(fcst_NaNs)
+        obs_allstations.append(obs_flat)
 
     #sometimes theres no forecast data for a model
     if num_stations == 0:
         print("   NO FORECAST DATA FOR " + model + grid) 
-       
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,180,180,totalstations,'180hr',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,120,120,totalstations,'120hr',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,84,84,totalstations,'84hr',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,60,60,totalstations,'60hr',variable,filepath)
-    
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,168,24,totalstations,'day7',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,144,24,totalstations,'day6',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,120,24,totalstations,'day5',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,96,24,totalstations,'day4',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,72,24,totalstations,'day3',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,48,24,totalstations,'day2',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,24,24,totalstations,'day1',variable,filepath)
-        
-    else:
-    
-        get_statistics(delta, model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,180,180,fcst_allstations_180hr,obs_allstations_180hr,num_stations,totalstations,'180hr',variable,filepath)
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,120,120,fcst_allstations_120hr,obs_allstations_120hr,num_stations,totalstations,'120hr',variable,filepath)
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,84,84,fcst_allstations_84hr,obs_allstations_84hr,num_stations,totalstations,'84hr',variable,filepath)
-        get_statistics(delta,model,grid, input_domain, savetype, date_entry1, date_entry2,maxhour,60,60,fcst_allstations_60hr,obs_allstations_60hr,num_stations,totalstations,'60hr',variable,filepath)
 
-                
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,168,24,fcst_allstations_day7,obs_allstations_day7,num_stations,totalstations,'day7',variable,filepath)
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,144,24,fcst_allstations_day6,obs_allstations_day6,num_stations,totalstations,'day6',variable,filepath)
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,120,24,fcst_allstations_day5,obs_allstations_day5,num_stations,totalstations,'day5',variable,filepath)
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,96,24,fcst_allstations_day4,obs_allstations_day4,num_stations,totalstations,'day4',variable,filepath)
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,72,24,fcst_allstations_day3,obs_allstations_day3,num_stations,totalstations,'day3',variable,filepath) 
-        get_statistics(delta,model,grid, input_domain, savetype, date_entry1, date_entry2,maxhour,48,24,fcst_allstations_day2,obs_allstations_day2,num_stations,totalstations,'day2',variable,filepath)
-        get_statistics(delta,model,grid, input_domain, savetype, date_entry1, date_entry2,maxhour,24,24,fcst_allstations_day1,obs_allstations_day1,num_stations,totalstations,'day1',variable,filepath)
+    else:
+        return(fcst_allstations)
 
 def PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,\
                     all_stations, start_date, end_date):

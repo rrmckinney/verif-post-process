@@ -57,7 +57,7 @@ weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
 ###########################################################
 
 # takes an input date for the first and last day you want calculations for, must be a range of 7 or 30 days apart
-if len(sys.argv) == 8:
+if len(sys.argv) == 9:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
     input_startdate = datetime.datetime.strptime(start_date, "%y%m%d").date()
@@ -96,11 +96,15 @@ if len(sys.argv) == 8:
     
     stat_type = sys.argv[6]
     if stat_type not in ['CAT_', 'MAE_', 'RMSE_','spcorr_']:# statistic type used to get model: CAT_ includes 6 categorical scores within it, all these need tailing '_'
-        raise Exception("Invalid stat tyoe input entries. Options: CAT_, MAE_, RMSE_, spcorr_. Case sensitive and tailing '_' required")
+        raise Exception("Invalid stat type input entries. Options: CAT_, MAE_, RMSE_, spcorr_. Case sensitive and tailing '_' required")
 
     k = sys.argv[7]
     if k not in ['40','80','100','150','200','500','1000']:
         raise Exception("Invalid k value. Options: 40, 80, 100, 150, 200, 500, 1000.")
+    
+    time_domain = sys.argv[8]
+    if time_domain not in ['60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']:
+        raise Exception("Invalid time domain: Options: '60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7'")
 
 else:
     raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
@@ -130,13 +134,14 @@ def main(args):
     date_list = listofdates(start_date, end_date, obs=False)
     date_list_obs = listofdates(start_date, end_date, obs=True)
     if input_variable == "PCPT6":       
-        obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7 = \
-            PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,\
-                all_stations, start_date, end_date)
+        obs_df = PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, stations_with_SFCWSPD, \
+                stations_with_PCPTOT, stations_with_PCPT6, all_stations, start_date, end_date)
         
     else:
-        obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,  all_stations, input_variable, start_date, end_date, date_list_obs)
+        obs_df = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, \
+            stations_with_PCPT6,  all_stations, input_variable, start_date, end_date, date_list_obs)
    
+    fcst_all = []
     for i in range(len(models)):
        model = models[i] #loops through each model
        
@@ -193,8 +198,13 @@ def main(args):
            
            print("Now on.. " + model + gridname + " for " + input_variable)
 
+           fcst = fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, \
+                all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, \
+                obs_df, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
            
-           get_rankings(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
-
+           fcst_all.append(fcst)
+    
+    ENS_W = mk_ensemble(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,fcst_all,obs_df,time_domain,input_variable,filepath)
+    
 if __name__ == "__main__":
     main(sys.argv)

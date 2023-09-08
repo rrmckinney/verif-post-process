@@ -6,7 +6,7 @@ weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
 
 ar = pd.DataFrame([1,2,3,4,5,6])
 
-val = weight_file.iloc[:,0]
+val = weight_file.loc[1:0]
 
 #r = [i * val for i in ar]
 ar['result'] = ar * val

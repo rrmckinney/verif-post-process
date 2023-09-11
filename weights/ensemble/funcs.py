@@ -210,18 +210,8 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
     if "_KF" in variable:
         variable = variable[:-3]
             
-    obs_df_60hr = pd.DataFrame()  
-    obs_df_84hr = pd.DataFrame()  
-    obs_df_120hr = pd.DataFrame() 
-    obs_df_180hr = pd.DataFrame() 
-    obs_df_day1 = pd.DataFrame()
-    obs_df_day2 = pd.DataFrame()
-    obs_df_day3 = pd.DataFrame()  
-    obs_df_day4 = pd.DataFrame()  
-    obs_df_day5 = pd.DataFrame()  
-    obs_df_day6 = pd.DataFrame()  
-    obs_df_day7 = pd.DataFrame() 
-    
+    obs_df = pd.DataFrame()  
+
     for station in station_list:
         print( "    Now on station " + station) 
          
@@ -239,9 +229,7 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
             if check_dates(start_date, delta, fcst_filepath + 'ENS/' + variable + '/fcst.t/', variable, station) == False:
                 print("   Skipping station " + station + " (not enough dates yet)")
                 continue        
-        # for hour in filehours_obs:
-        #     if float(hour) < 1000:
-        #             hour = str(hour).lstrip('0')
+
         sql_con = sqlite3.connect(obs_filepath + variable + "/" + station + ".sqlite")
         sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(date_list_obs[0]) + " AND 20" + str(date_list_obs[len(date_list_obs)-1])       
         obs = pd.read_sql_query(sql_query, sql_con)
@@ -273,44 +261,11 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
                 if obs_all[i] > precip_threshold:
                     obs_all[i] = np.nan
 
-        hr60_obs = obs_all[:60]     #84 x 7   (30) 
-        hr84_obs = obs_all[:84]     #84 x 7   (30)     
-        hr120_obs = obs_all[:120]   #120 x 7  (30) 
-        day1_obs = obs_all[:24]     #24 x 7   (30)   
-        day2_obs = obs_all[24:48]   #24 x 7   (30)   
-        day3_obs = obs_all[48:72]   #24 x 7   (30)     
-        day4_obs = obs_all[72:96]   #24 x 7   (30)  
-        day5_obs = obs_all[96:120]  #24 x 7   (30)  
-        day6_obs = obs_all[120:144] #24 x 7   (30)  
-        day7_obs = obs_all[144:168] #24 x 7   (30)  
-            
-        final_obs_180hr = np.array(obs_all).T
-        final_obs_60hr = np.array(hr60_obs).T
-        final_obs_84hr = np.array(hr84_obs).T
-        final_obs_120hr = np.array(hr120_obs).T
-        final_obs_day1 = np.array(day1_obs).T
-        final_obs_day2 = np.array(day2_obs).T
-        final_obs_day3 = np.array(day3_obs).T
-        final_obs_day4 = np.array(day4_obs).T
-        final_obs_day5 = np.array(day5_obs).T
-        final_obs_day6 = np.array(day6_obs).T
-        final_obs_day7 = np.array(day7_obs).T
+        final_obs = np.array(obs_all[:60]).T #84 x 7   (30) 
 
-        obs_df_180hr[station] = final_obs_180hr.flatten() # 1260 (180x7) for each station for weekly
-        obs_df_60hr[station] = final_obs_60hr.flatten()
-        obs_df_84hr[station] = final_obs_84hr.flatten()   # 588 (84x7)
-        obs_df_120hr[station] = final_obs_120hr.flatten() # 840 (120x7)
-        obs_df_day1[station] = final_obs_day1.flatten()   # 168 (24x7) 
-        obs_df_day2[station] = final_obs_day2.flatten()   # 168 (24x7) 
-        obs_df_day3[station] = final_obs_day3.flatten()   # 168 (24x7) 
-        obs_df_day4[station] = final_obs_day4.flatten()   # 168 (24x7) 
-        obs_df_day5[station] = final_obs_day5.flatten()   # 168 (24x7) 
-        obs_df_day6[station] = final_obs_day6.flatten()   # 168 (24x7) 
-        obs_df_day7[station] = final_obs_day7.flatten()   # 168 (24x7) 
-        
-        #extra_point_df[station] = np.array([extra_point])
-        # output is a dataframe with the column names as the station, with 420 rows for 60x7 or 60x30
-    return(obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7)
+        obs_df[station] = final_obs.flatten()
+
+    return(obs_df)
 
 # returns the fcst data for the given model/grid
 def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
@@ -330,89 +285,9 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
     
     fcst = fcst.set_index('datetime')
     df_all = df_new.join(fcst, on='datetime')
-    print(df_all) 
-    if weight_type == 'seasonal':
-        if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
-            for s in range(len(stats_cat)):
-                for w in range(len(seasons)):
-                    
-                    f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
-                        + stats_cat[s] + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
-                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                    weight = weight_file.iloc[:,0]
+    
+    return(df_all) 
 
-                    if len(seasons[w]) == 2:
-                        date1 = seasons[w][0]
-                        date2 = seasons[w][1]
-                        
-                        df3 = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
-                        df3['result'] = df3['Val']*weight
-
-                    elif len(seasons[w]) > 2:
-                        date1 = seasons[w][0]
-                        date2 = seasons[w][1]
-                        date3 = seasons[w][2]
-                        date4 = seasons[w][3]
-
-                        df = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
-                        df2 = df_all[(df_all['date'] >= int(date3)) & (df_all['date'] < int(date4))]
-                        df3 = pd.merge(df, df2)
-                        df3['result'] = df3['Val']*weight
-
-        else:
-            for w in range(len(seasons)):
-                    f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
-                        + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
-                    
-                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                    weight = int(weight_file.iloc[:,0])
-                    
-                    if len(seasons[w]) == 2:
-                        date1 = seasons[w][0]
-                        date2 = seasons[w][1]
-
-                        df3 = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
-                        df3['result'] = df3['Val']*weight
-
-                    #fall has four dates as september is a year later than oct/nov as stats started in oct
-                    elif len(seasons[w]) > 2:
-                        date1 = seasons[w][0]
-                        date2 = seasons[w][1]
-                        date3 = seasons[w][2]
-                        date4 = seasons[w][3]
-
-                        df = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
-                        df2 = df_all[(df_all['date'] >= int(date3)) & (df_all['date'] < int(date4))]
-                        df3 = pd.merge(df, df2)
-                        df3['result'] = df3['Val']*weight
-
-    elif weight_type == 'yearly':
-        if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
-            for s in range(len(stats_cat)):
-                print(model_df_name) 
-                f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_' \
-                    + stats_cat[s] + '_' + weight_outlook + '_' + variable
-                weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                weight = int(weight_file.iloc[:,0])
-                
-                print(start_date)
-                print(end_date)
-
-                df3 = df_all[(df_all['date'].astype(int) >= int(start_date)) & (df_all['date'].astype(int) < int(end_date))]
-                df3['result'] = df3.Val*weight
-                
-                print(df3)
-        else:
-                    f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
-                        + '_' + weight_outlook + '_' + variable 
-                    
-                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                    weight = int(weight_file.iloc[:,0])
-
-                    df3 = df_all[(df_all['date'].astpye(int) >= int(start_date)) & (df_all['date'].astype(int) < int(end_date))]
-                    df3['result'] = df3['Val']*weight
-
-    return(df3['result'])
 
 # this removes (NaNs) any fcst data where the obs is not recorded, or fcst is -999
 def remove_missing_data(fcst, obs):
@@ -514,11 +389,94 @@ def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,file
 
     return(fcst_NaNs, obs_NaNs)
 
-def mk_ensemble(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,fcst_all, \
-        obs_all,num_stations,totalstations,time_domain,variable,filepath):
+def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable):
     
-    print(fcst_all)
-    
+    print(df_all)
+
+    '''
+    if weight_type == 'seasonal':
+        if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
+            for s in range(len(stats_cat)):
+                for w in range(len(seasons)):
+                    
+                    f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
+                        + stats_cat[s] + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
+                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
+                    weight = weight_file.iloc[:,0]
+
+                    if len(seasons[w]) == 2:
+                        date1 = seasons[w][0]
+                        date2 = seasons[w][1]
+                        
+                        df3 = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
+                        df3['result'] = df3['Val']*weight
+
+                    elif len(seasons[w]) > 2:
+                        date1 = seasons[w][0]
+                        date2 = seasons[w][1]
+                        date3 = seasons[w][2]
+                        date4 = seasons[w][3]
+
+                        df = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
+                        df2 = df_all[(df_all['date'] >= int(date3)) & (df_all['date'] < int(date4))]
+                        df3 = pd.merge(df, df2)
+                        df3['result'] = df3['Val']*weight
+
+        else:
+            for w in range(len(seasons)):
+                    f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
+                        + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
+                    
+                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
+                    weight = int(weight_file.iloc[:,0])
+                    
+                    if len(seasons[w]) == 2:
+                        date1 = seasons[w][0]
+                        date2 = seasons[w][1]
+
+                        df3 = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
+                        df3['result'] = df3['Val']*weight
+
+                    #fall has four dates as september is a year later than oct/nov as stats started in oct
+                    elif len(seasons[w]) > 2:
+                        date1 = seasons[w][0]
+                        date2 = seasons[w][1]
+                        date3 = seasons[w][2]
+                        date4 = seasons[w][3]
+
+                        df = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
+                        df2 = df_all[(df_all['date'] >= int(date3)) & (df_all['date'] < int(date4))]
+                        df3 = pd.merge(df, df2)
+                        df3['result'] = df3['Val']*weight
+
+    elif weight_type == 'yearly':
+        if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
+            for s in range(len(stats_cat)):
+                print(model_df_name) 
+                f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_' \
+                    + stats_cat[s] + '_' + weight_outlook + '_' + variable
+                weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
+                weight = int(weight_file.iloc[:,0])
+                
+                print(start_date)
+                print(end_date)
+
+                df3 = df_all[(df_all['date'].astype(int) >= int(start_date)) & (df_all['date'].astype(int) < int(end_date))]
+                df3['result'] = df3.Val*weight
+                
+                print(df3)
+        else:
+                    f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
+                        + '_' + weight_outlook + '_' + variable 
+                    
+                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
+                    weight = int(weight_file.iloc[:,0])
+
+                    df3 = df_all[(df_all['date'].astpye(int) >= int(start_date)) & (df_all['date'].astype(int) < int(end_date))]
+                    df3['result'] = df3['Val']*weight
+
+    return(df3['result'])
+    '''
     return()
 
 def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,\
@@ -682,101 +640,37 @@ def fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain
         print("   NO FORECAST DATA FOR " + model + grid) 
 
     else:
-        return(fcst_allstations)
+        return(fcst_allstations, model_df_name)
 
 def PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,\
                     all_stations, start_date, end_date):
 
     # get the hourly precip values
-    obs_df_60hr_1,obs_df_84hr_1,obs_df_120hr_1,obs_df_180hr_1,obs_df_day1_1,obs_df_day2_1,obs_df_day3_1,obs_df_day4_1,obs_df_day5_1,obs_df_day6_1,obs_df_day7_1 = get_all_obs(delta, \
-        stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,  all_stations, "PCPTOT", \
-    start_date, end_date, date_list_obs)
+    obs_df_1 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, \
+        all_stations, "PCPTOT", start_date, end_date, date_list_obs)
     
     # grab the extra hour on the last outlook day
-    obs_df_60hr_1 = obs_df_60hr_1.append(obs_df_180hr_1.iloc[60],ignore_index=True)
-    obs_df_84hr_1 = obs_df_84hr_1.append(obs_df_180hr_1.iloc[84],ignore_index=True)
-    obs_df_120hr_1 = obs_df_120hr_1.append(obs_df_180hr_1.iloc[ 120],ignore_index=True)
-    obs_df_day1_1 = obs_df_day1_1.append(obs_df_180hr_1.iloc[24],ignore_index=True)
-    obs_df_day2_1 = obs_df_day2_1.append(obs_df_180hr_1.iloc[48],ignore_index=True)
-    obs_df_day3_1 = obs_df_day3_1.append(obs_df_180hr_1.iloc[72],ignore_index=True)
-    obs_df_day4_1 = obs_df_day4_1.append(obs_df_180hr_1.iloc[96],ignore_index=True)
-    obs_df_day5_1 = obs_df_day5_1.append(obs_df_180hr_1.iloc[120],ignore_index=True)
-    obs_df_day6_1 = obs_df_day6_1.append(obs_df_180hr_1.iloc[144],ignore_index=True)
-    obs_df_day7_1 = obs_df_day7_1.append(obs_df_180hr_1.iloc[168],ignore_index=True)
+    obs_df_1 = obs_df_1.append(obs_df_1.iloc[60],ignore_index=True)
+ 
     
-      
     # remove the first hour (0 UTC)
-    obs_df_60hr_1 = obs_df_60hr_1.iloc[1:].reset_index(drop=True)
-    obs_df_84hr_1 = obs_df_84hr_1.iloc[1:].reset_index(drop=True)
-    obs_df_120hr_1 = obs_df_120hr_1.iloc[1:].reset_index(drop=True)
-    obs_df_180hr_1 = obs_df_180hr_1.iloc[1:-5].reset_index(drop=True)
-    obs_df_day1_1 = obs_df_day1_1.iloc[1:].reset_index(drop=True)
-    obs_df_day2_1 = obs_df_day2_1.iloc[1:].reset_index(drop=True)
-    obs_df_day3_1 = obs_df_day3_1.iloc[1:].reset_index(drop=True)
-    obs_df_day4_1 = obs_df_day4_1.iloc[1:].reset_index(drop=True)
-    obs_df_day5_1 = obs_df_day5_1.iloc[1:].reset_index(drop=True)
-    obs_df_day6_1 = obs_df_day6_1.iloc[1:].reset_index(drop=True)
-    obs_df_day7_1 = obs_df_day7_1.iloc[1:].reset_index(drop=True)
-    
-    
-    # sum every 6 hours (1-6 UTC, 7-12 UTC etc). report NaN if any of the 6 hours is missing
-    obs_df_60hr_1_trimmed = obs_df_60hr_1.groupby(obs_df_60hr_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_84hr_1_trimmed = obs_df_84hr_1.groupby(obs_df_84hr_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_120hr_1_trimmed = obs_df_120hr_1.groupby(obs_df_120hr_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_180hr_1_trimmed = obs_df_180hr_1.groupby(obs_df_180hr_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day1_1_trimmed = obs_df_day1_1.groupby(obs_df_day1_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day2_1_trimmed = obs_df_day2_1.groupby(obs_df_day2_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day3_1_trimmed = obs_df_day3_1.groupby(obs_df_day3_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day4_1_trimmed = obs_df_day4_1.groupby(obs_df_day4_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day5_1_trimmed = obs_df_day5_1.groupby(obs_df_day5_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day6_1_trimmed = obs_df_day6_1.groupby(obs_df_day6_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day7_1_trimmed = obs_df_day7_1.groupby(obs_df_day7_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
+    obs_df_1 = obs_df_1.iloc[1:].reset_index(drop=True)
 
+    # sum every 6 hours (1-6 UTC, 7-12 UTC etc). report NaN if any of the 6 hours is missing
+    obs_df_1_trimmed = obs_df_1.groupby(obs_df_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
 
     #grab the 6-hr accum precip values
-    obs_df_60hr_6,obs_df_84hr_6,obs_df_120hr_6,obs_df_180hr_6,obs_df_day1_6,obs_df_day2_6,obs_df_day3_6,obs_df_day4_6,obs_df_day5_6,\
-        obs_df_day6_6,obs_df_day7_6 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, \
-                                                   all_stations, "PCPT6", start_date, end_date, date_list_obs)
+    obs_df_6 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, \
+        all_stations, "PCPT6", start_date, end_date, date_list_obs)
         
     # grab the extra hour on the last outlook day
-    obs_df_60hr_6 = obs_df_60hr_6.append(obs_df_180hr_6.iloc[60],ignore_index=True)
-    obs_df_84hr_6 = obs_df_84hr_6.append(obs_df_180hr_6.iloc[84],ignore_index=True)
-    obs_df_120hr_6 = obs_df_120hr_6.append(obs_df_180hr_6.iloc[120],ignore_index=True)
-    obs_df_day1_6 = obs_df_day1_6.append(obs_df_180hr_6.iloc[24],ignore_index=True)
-    obs_df_day2_6 = obs_df_day2_6.append(obs_df_180hr_6.iloc[48],ignore_index=True)
-    obs_df_day3_6 = obs_df_day3_6.append(obs_df_180hr_6.iloc[72],ignore_index=True)
-    obs_df_day4_6 = obs_df_day4_6.append(obs_df_180hr_6.iloc[96],ignore_index=True)
-    obs_df_day5_6 = obs_df_day5_6.append(obs_df_180hr_6.iloc[120],ignore_index=True)
-    obs_df_day6_6 = obs_df_day6_6.append(obs_df_180hr_6.iloc[144],ignore_index=True)
-    obs_df_day7_6 = obs_df_day7_6.append(obs_df_180hr_6.iloc[168],ignore_index=True)
-    
-    
-    # remove all values except the ones every 6 hours (6 UTC, 12 UTC, etc. (skipping the first))
-    obs_df_60hr_6_trimmed = obs_df_60hr_6.iloc[::6, :][1:].reset_index(drop=True) #grabs every 6 hours (skipping hour 0)
-    obs_df_84hr_6_trimmed = obs_df_84hr_6.iloc[::6, :][1:].reset_index(drop=True)
-    obs_df_120hr_6_trimmed = obs_df_120hr_6.iloc[::6, :][1:].reset_index(drop=True)
-    obs_df_180hr_6_trimmed = obs_df_180hr_6.iloc[::6, :][1:].reset_index(drop=True)
-    obs_df_day1_6_trimmed = obs_df_day1_6.iloc[::6, :][1:].reset_index(drop=True)
-    obs_df_day2_6_trimmed = obs_df_day2_6.iloc[::6, :][1:].reset_index(drop=True)
-    obs_df_day3_6_trimmed = obs_df_day3_6.iloc[::6, :][1:].reset_index(drop=True)
-    obs_df_day4_6_trimmed = obs_df_day4_6.iloc[::6, :][1:].reset_index(drop=True)
-    obs_df_day5_6_trimmed = obs_df_day5_6.iloc[::6, :][1:].reset_index(drop=True)
-    obs_df_day6_6_trimmed = obs_df_day6_6.iloc[::6, :][1:].reset_index(drop=True)
-    obs_df_day7_6_trimmed = obs_df_day7_6.iloc[::6, :][1:].reset_index(drop=True)
-    
-    
-    #combine the obs from manually accumulating 6 hours from hourly, and the pre-calculated 6 hours
-    obs_df_60hr_all = pd.concat([obs_df_60hr_1_trimmed, obs_df_60hr_6_trimmed],axis=1)
-    obs_df_84hr_all = pd.concat([obs_df_84hr_1_trimmed, obs_df_84hr_6_trimmed],axis=1)
-    obs_df_120hr_all = pd.concat([obs_df_120hr_1_trimmed, obs_df_120hr_6_trimmed],axis=1)
-    obs_df_180hr_all = pd.concat([obs_df_180hr_1_trimmed, obs_df_180hr_6_trimmed],axis=1)
-    obs_df_day1_all = pd.concat([obs_df_day1_1_trimmed, obs_df_day1_6_trimmed],axis=1)
-    obs_df_day2_all = pd.concat([obs_df_day2_1_trimmed, obs_df_day2_6_trimmed],axis=1)
-    obs_df_day3_all = pd.concat([obs_df_day3_1_trimmed, obs_df_day3_6_trimmed],axis=1)
-    obs_df_day4_all = pd.concat([obs_df_day4_1_trimmed, obs_df_day4_6_trimmed],axis=1)
-    obs_df_day5_all = pd.concat([obs_df_day5_1_trimmed, obs_df_day5_6_trimmed],axis=1)
-    obs_df_day6_all = pd.concat([obs_df_day6_1_trimmed, obs_df_day6_6_trimmed],axis=1)
-    obs_df_day7_all = pd.concat([obs_df_day7_1_trimmed, obs_df_day7_6_trimmed],axis=1)
+    obs_df = obs_df.append(obs_df_6.iloc[60],ignore_index=True)
 
-    return(obs_df_60hr_all,obs_df_84hr_all,obs_df_120hr_all,obs_df_180hr_all,obs_df_day1_all,obs_df_day2_all,obs_df_day3_all,obs_df_day4_all,\
-           obs_df_day5_all,obs_df_day6_all,obs_df_day7_all)
+    # remove all values except the ones every 6 hours (6 UTC, 12 UTC, etc. (skipping the first))
+    obs_df_6_trimmed = obs_df.iloc[::6, :][1:].reset_index(drop=True) #grabs every 6 hours (skipping hour 0)
+
+    #combine the obs from manually accumulating 6 hours from hourly, and the pre-calculated 6 hours
+    obs_df = pd.concat([obs_df_1_trimmed, obs_df_6_trimmed],axis=1)
+
+
+    return(obs_df)

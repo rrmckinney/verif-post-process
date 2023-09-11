@@ -198,13 +198,13 @@ def main(args):
            
            print("Now on.. " + model + gridname + " for " + input_variable)
 
-           fcst = fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, \
+           fcst, model_df_name = fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, \
                 all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, \
                 obs_df, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
            
            fcst_all.append(fcst)
     
-    ENS_W = mk_ensemble(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,fcst_all,obs_df,time_domain,input_variable,filepath)
+    ENS_W = mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
     
 if __name__ == "__main__":
     main(sys.argv)

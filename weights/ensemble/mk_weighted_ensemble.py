@@ -157,72 +157,71 @@ def main(args):
         obs_df = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, \
             stations_with_PCPT6,  all_stations, input_variable, start_date, end_date, date_list_obs)
    
-    fcst_all = []
+    fcst_all = pd.DataFrame
     for i in range(len(models)):
-       model = models[i] #loops through each model
+        model = models[i] #loops through each model
        
-       for grid_i in range(len(grids[i].split(","))): #loops through each grid size for each model
-           
-           grid = grids[i].split(",")[grid_i]
-           maxhour = hours[i].split(",")[grid_i] # the max hours that are in the current model/grid
-           
-           if "_KF" in input_variable:
-              file_var = input_variable[:-3]
-           else:
-               file_var = input_variable
+        for grid_i in range(len(grids[i].split(","))): #loops through each grid size for each model
+            
+            grid = grids[i].split(",")[grid_i]
+            maxhour = hours[i].split(",")[grid_i] # the max hours that are in the current model/grid
+            
+            if "_KF" in input_variable:
+                file_var = input_variable[:-3]
+            else:
+                file_var = input_variable
 
-           filehours = get_filehours(1, int(maxhour))
-           #ENS only has one grid (and its not saved in a g folder)
-           if model == 'ENS' and '_KF' in input_variable:    
-               filepath = fcst_filepath + model + '/' + file_var + '/fcst.KF_MH.t/'
-               gridname = ''
-           elif model == 'ENS':
-               filepath = fcst_filepath + model + '/' + file_var + '/fcst.t/'
-               gridname = ''
-           elif model == "ENS_LR" and "_KF" in input_variable:
-               filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.LR.KF_MH.t/'
-               gridname = ''
-           elif model == "ENS_lr" and "_KF" in input_variable:
-               filepath = fcst_filepath+model[:-3] + '/' + file_var + '/fcst.lr.KF_MH.t/'
-               gridname = ''
-           elif model == "ENS_hr" and "_KF" in input_variable:
-               filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.hr.KF_MH.t/'
-               gridname = ''
-           elif model =="ENS_hr":
-               filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.hr.t/"
-               gridname = ''
-           elif model =="ENS_lr":
-               filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.lr.t/"
-               gridname = ''
-           elif model =="ENS_LR":
-               filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.LR.t/"
-               gridname = ''
-           elif "_KF" in input_variable:
-               filepath = fcst_filepath +model + '/' + grid + '/' + file_var + "/fcst.KF_MH/"          
-               gridname = "_" + grid
-           else:
-               filepath = fcst_filepath + model + '/' + grid + '/' + file_var + '/fcst.t/'
-               gridname = "_" + grid
-           
-           if check_dates(start_date, delta, filepath, input_variable, station='3510') == False:
-               print("   Skipping model " + model + gridname + " (check_dates flag)")
-               continue
-       
-           # if it can't find the folder for the model/grid pair 
-           if not os.path.isdir(filepath):
-               raise Exception("Missing grid/model pair (or wrong base filepath for" + model + gridname)
-           
-           print("Now on.. " + model + gridname + " for " + input_variable)
+            filehours = get_filehours(1, int(maxhour))
+            #ENS only has one grid (and its not saved in a g folder)
+            if model == 'ENS' and '_KF' in input_variable:    
+                filepath = fcst_filepath + model + '/' + file_var + '/fcst.KF_MH.t/'
+                gridname = ''
+            elif model == 'ENS':
+                filepath = fcst_filepath + model + '/' + file_var + '/fcst.t/'
+                gridname = ''
+            elif model == "ENS_LR" and "_KF" in input_variable:
+                filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.LR.KF_MH.t/'
+                gridname = ''
+            elif model == "ENS_lr" and "_KF" in input_variable:
+                filepath = fcst_filepath+model[:-3] + '/' + file_var + '/fcst.lr.KF_MH.t/'
+                gridname = ''
+            elif model == "ENS_hr" and "_KF" in input_variable:
+                filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.hr.KF_MH.t/'
+                gridname = ''
+            elif model =="ENS_hr":
+                filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.hr.t/"
+                gridname = ''
+            elif model =="ENS_lr":
+                filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.lr.t/"
+                gridname = ''
+            elif model =="ENS_LR":
+                filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.LR.t/"
+                gridname = ''
+            elif "_KF" in input_variable:
+                filepath = fcst_filepath +model + '/' + grid + '/' + file_var + "/fcst.KF_MH/"          
+                gridname = "_" + grid
+            else:
+                filepath = fcst_filepath + model + '/' + grid + '/' + file_var + '/fcst.t/'
+                gridname = "_" + grid
+            
+            if check_dates(start_date, delta, filepath, input_variable, station='3510') == False:
+                print("   Skipping model " + model + gridname + " (check_dates flag)")
+                continue
 
-           fcst, model_df_name = fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, \
+            # if it can't find the folder for the model/grid pair 
+            if not os.path.isdir(filepath):
+                raise Exception("Missing grid/model pair (or wrong base filepath for" + model + gridname)
+            
+            print("Now on.. " + model + gridname + " for " + input_variable)
+
+            fcst, model_df_name = fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, \
                 all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, \
                 obs_df, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
-           fcst = np.array(fcst) 
-           fcst_all.append(fcst)
-    
-    fcst_all = np.array(fcst_all) 
-    print(fcst_all[1]*3) 
+            
+            fcst = fcst_all.join(fcst, on='datetime')
+
     ENS_W = mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
+    print(ENS_W)
     
 if __name__ == "__main__":
     main(sys.argv)

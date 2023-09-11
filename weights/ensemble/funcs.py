@@ -285,7 +285,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
     fcst = fcst.set_index('datetime')
     df_all = df_new.join(fcst, on='datetime')
     
-    return(df_all['Val']) 
+    return(df_all) 
 
 
 # this removes (NaNs) any fcst data where the obs is not recorded, or fcst is -999
@@ -342,56 +342,9 @@ def make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2,
         f3.close()  
 
 
-def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain):
-
-#    if variable == "PCPT6":
-#       if int(end)==int(maxhour):
-#            trimmed_fcst = all_fcst[start+1:end-5] 
-#       else:
-#           trimmed_fcst = all_fcst[start+1:end+1]  
-#   else:
-#       trimmed_fcst = all_fcst[start:end]   
-       
-    fcst_final = np.array(all_fcst).T
-    fcst_flat = fcst_final.flatten() 
-    
-    if variable == "PCPT6":
-        fcst_flat = np.reshape(fcst_flat, (-1, 6)).sum(axis=-1) #must be divisible by 6
-
-    obs_flat = np.array(obs_df[station])
-    if len(np.shape(obs_flat)) > 1:
-        obs_flat = obs_flat[:,1]
-    
-    ''' was removing entire days from obs so I got rid of it............. 
-    f "PCPT" in variable:
-        #removes the last point from every day if its at the maxhour, since it doesnt exist for fcst
-        if int(end)==int(maxhour): 
-            
-            if end==180:    
-                oneday_length = int((len(obs_flat)+1)/(delta+1))
-                obs_flat = np.delete(obs_flat, np.arange(0, obs_flat.size, oneday_length)[1:]-1)
-            else:
-                oneday_length = int((len(obs_flat))/(delta+1))
-                obs_flat = np.delete(obs_flat, np.arange(0, obs_flat.size+oneday_length, oneday_length)[1:]-1)
-    '''
-    # removes (NaNs) fcst data where there is no obs
-    fcst_NaNs,obs_NaNs = remove_missing_data(fcst_flat, obs_flat)  
-
-     
-    if input_domain == "small" and variable in ["SFCTC","SFCWSPD"] and all_fcst_KF == True:
-        #trimmed_fcst_KF = all_fcst_KF[start:end]   
-        fcst_final_KF = np.array(all_fcst_KF).T
-        fcst_flat_KF = fcst_final_KF.flatten() 
-        
-        fcst_NaNs,_ = remove_missing_data(fcst_flat, fcst_flat_KF) 
-    
-
-    return(fcst_NaNs, obs_NaNs)
-
 def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable):
     
-    
-    '''
+
     if weight_type == 'seasonal':
         if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
             for s in range(len(stats_cat)):
@@ -406,7 +359,8 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
                         date1 = seasons[w][0]
                         date2 = seasons[w][1]
                         
-                        df3 = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
+                        df = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
+                        df3 = pd.merge(df, df2)
                         df3['result'] = df3['Val']*weight
 
                     elif len(seasons[w]) > 2:
@@ -419,7 +373,6 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
                         df2 = df_all[(df_all['date'] >= int(date3)) & (df_all['date'] < int(date4))]
                         df3 = pd.merge(df, df2)
                         df3['result'] = df3['Val']*weight
-
         else:
             for w in range(len(seasons)):
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
@@ -474,8 +427,7 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
                     df3['result'] = df3['Val']*weight
 
     return(df3['result'])
-    '''
-    return()
+    
 
 def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,\
         fcst_allstations,obs_allstations,num_stations,totalstations,time_domain,variable,filepath):
@@ -581,8 +533,6 @@ def fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain
     # open the file for the current model and get all the stations from it
     model_df_name = model+gridname
     stations_in_domain = np.array(station_df.query(model_df_name+"==1")["Station ID"],dtype='str')
-    
-    fcst_allstations, obs_allstations = [], []
 
     totalstations = 0
     num_stations = 0
@@ -607,38 +557,28 @@ def fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain
         
         # total stations that should be included in each model/grid
         totalstations = totalstations+1
-        
-        all_fcst_KF = False
             
         all_fcst = get_fcst(stat_type,k,maxhour, station, filepath, variable, date_list,filehours, date_entry1, date_entry2, weight_type, model_df_name)    #goes to maxhour       
-       
-        fcst_final_all = np.array(all_fcst).T
-        fcst_flat_all = fcst_final_all.flatten()
 
-        obs_flat_all = np.array(obs_df[station])
         
         #checks 180 hour only
-        if pd.isna(fcst_flat_all).all() == True:    
+        if pd.isna(all_fcst).all() == True:    
             print("   Skipping station " + station + " (No forecast data)")
             continue
         
-        if pd.isna(obs_flat_all).all() == True:    
+        if pd.isna(obs_df).all() == True:    
             print("   Skipping station " + station + " (No obs data)")
             continue
         
         # total stations that ended up being included (doesn't count ones with no data)
         num_stations = num_stations+1
-      
-        fcst_NaNs, obs_flat = trim_fcst(all_fcst,obs_df,station,0,180,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)                            
-        fcst_allstations.append(fcst_NaNs)
-        obs_allstations.append(obs_flat)
 
     #sometimes theres no forecast data for a model
     if num_stations == 0:
         print("   NO FORECAST DATA FOR " + model + grid) 
 
     else:
-        return(fcst_allstations, model_df_name)
+        return(all_fcst, model_df_name)
 
 def PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,\
                     all_stations, start_date, end_date):

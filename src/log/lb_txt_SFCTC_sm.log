@@ -1,4 +1,4 @@
-Performing MONTHLY calculation for 220101 to 220131
+Performing MONTHLY calculation for 220901 to 220930
 Reading observational dataframe for SFCTC.. 
     Now on station 2162
     Now on station 1972
@@ -342,12 +342,9 @@ Now on.. WRF2GFS_g3 for SFCTC
 Now on.. WRF2GFS81_g1 for SFCTC
 Now on.. WRF2GFS81_g2 for SFCTC
 Now on.. WRF2GFS81_g3 for SFCTC
-    Model collection started 20220306, which is after input start_date
-   Skipping model WRF4RDPS_g3 (check_dates flag)
-    Model collection started 20220306, which is after input start_date
-   Skipping model WRF4RDPS_g4 (check_dates flag)
-    Model collection started 20220306, which is after input start_date
-   Skipping model WRF4RDPS_g5 (check_dates flag)
+Now on.. WRF4RDPS_g3 for SFCTC
+Now on.. WRF4RDPS_g4 for SFCTC
+Now on.. WRF4RDPS_g5 for SFCTC
 Now on.. MPAS25_g1 for SFCTC
 Now on.. MPAS25_g2 for SFCTC
 Now on.. ENS for SFCTC

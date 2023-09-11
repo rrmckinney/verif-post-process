@@ -261,15 +261,14 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
                 if obs_all[i] > precip_threshold:
                     obs_all[i] = np.nan
 
-        final_obs = np.array(obs_all[:60]).T #84 x 7   (30) 
+        final_obs = np.array(obs_all).T #84 x 7   (30) 
 
         obs_df[station] = final_obs.flatten()
-
+    
     return(obs_df)
 
 # returns the fcst data for the given model/grid
 def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
-    
     df_new = make_df(date_list, start_date, end_date)
 
     if "PCPT" in variable:
@@ -286,7 +285,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
     fcst = fcst.set_index('datetime')
     df_all = df_new.join(fcst, on='datetime')
     
-    return(df_all) 
+    return(df_all['Val']) 
 
 
 # this removes (NaNs) any fcst data where the obs is not recorded, or fcst is -999
@@ -345,15 +344,15 @@ def make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2,
 
 def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain):
 
-    if variable == "PCPT6":
-        if int(end)==int(maxhour):
-            trimmed_fcst = all_fcst[start+1:end-5] 
-        else:
-            trimmed_fcst = all_fcst[start+1:end+1]  
-    else:
-        trimmed_fcst = all_fcst[start:end]   
+#    if variable == "PCPT6":
+#       if int(end)==int(maxhour):
+#            trimmed_fcst = all_fcst[start+1:end-5] 
+#       else:
+#           trimmed_fcst = all_fcst[start+1:end+1]  
+#   else:
+#       trimmed_fcst = all_fcst[start:end]   
        
-    fcst_final = np.array(trimmed_fcst).T
+    fcst_final = np.array(all_fcst).T
     fcst_flat = fcst_final.flatten() 
     
     if variable == "PCPT6":
@@ -380,8 +379,8 @@ def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,file
 
      
     if input_domain == "small" and variable in ["SFCTC","SFCWSPD"] and all_fcst_KF == True:
-        trimmed_fcst_KF = all_fcst_KF[start:end]   
-        fcst_final_KF = np.array(trimmed_fcst_KF).T
+        #trimmed_fcst_KF = all_fcst_KF[start:end]   
+        fcst_final_KF = np.array(all_fcst_KF).T
         fcst_flat_KF = fcst_final_KF.flatten() 
         
         fcst_NaNs,_ = remove_missing_data(fcst_flat, fcst_flat_KF) 
@@ -391,8 +390,7 @@ def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,file
 
 def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable):
     
-    print(df_all)
-
+    
     '''
     if weight_type == 'seasonal':
         if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:

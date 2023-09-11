@@ -1,4 +1,4 @@
-Performing MONTHLY calculation for 220201 to 220228
+Performing MONTHLY calculation for 221001 to 221031
 Reading observational dataframe for SFCWSPD.. 
     Now on station 2162
     Now on station 1972
@@ -312,12 +312,9 @@ Now on.. WRF2GFS_g3 for SFCWSPD
 Now on.. WRF2GFS81_g1 for SFCWSPD
 Now on.. WRF2GFS81_g2 for SFCWSPD
 Now on.. WRF2GFS81_g3 for SFCWSPD
-    Model collection started 20220306, which is after input start_date
-   Skipping model WRF4RDPS_g3 (check_dates flag)
-    Model collection started 20220306, which is after input start_date
-   Skipping model WRF4RDPS_g4 (check_dates flag)
-    Model collection started 20220306, which is after input start_date
-   Skipping model WRF4RDPS_g5 (check_dates flag)
+Now on.. WRF4RDPS_g3 for SFCWSPD
+Now on.. WRF4RDPS_g4 for SFCWSPD
+Now on.. WRF4RDPS_g5 for SFCWSPD
 Now on.. MPAS25_g1 for SFCWSPD
 Now on.. MPAS25_g2 for SFCWSPD
 Now on.. ENS for SFCWSPD

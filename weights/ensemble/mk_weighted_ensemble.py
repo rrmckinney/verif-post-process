@@ -110,20 +110,36 @@ else:
     raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
-models = np.loadtxt(models_file,usecols=0,dtype='str')
-grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
-gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
-hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
+#models = np.loadtxt(models_file,usecols=0,dtype='str')
+#grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
+#gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
+#hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
 
 station_df = pd.read_csv(station_file)
 
-stations_with_SFCTC = np.array(station_df.query("SFCTC==1")["Station ID"],dtype=str)
-stations_with_SFCWSPD = np.array(station_df.query("SFCWSPD==1")["Station ID"],dtype=str)
-stations_with_PCPTOT = np.array(station_df.query("PCPTOT==1")["Station ID"],dtype=str)
-stations_with_PCPT6 = np.array(station_df.query("PCPT6==1")["Station ID"],dtype=str)
+#stations_with_SFCTC = np.array(station_df.query("SFCTC==1")["Station ID"],dtype=str)
+#stations_with_SFCWSPD = np.array(station_df.query("SFCWSPD==1")["Station ID"],dtype=str)
+#stations_with_PCPTOT = np.array(station_df.query("PCPTOT==1")["Station ID"],dtype=str)
+#stations_with_PCPT6 = np.array(station_df.query("PCPT6==1")["Station ID"],dtype=str)
 
-all_stations = np.array(station_df.query("`Small domain`==1")["Station ID"],dtype=str)
-    
+#all_stations = np.array(station_df.query("`Small domain`==1")["Station ID"],dtype=str)
+
+
+##########################################################
+###-------------------- FOR TESTING ---------------------
+##########################################################
+stations_with_SFCTC = ['3510']
+stations_with_SFCWSPD = ['3510']
+stations_with_PCPTOT = ['3510']
+stations_with_PCPT6 = ['3510']
+
+all_stations = ['3510']
+
+models = ['MM5']
+grids = grids = np.loadtxt(models_file,usecols=1,dtype='str',max_rows = 2) 
+gridres = gridres = np.loadtxt(models_file,usecols=2,dtype='str',max_rows = 2)
+hours = hours = np.loadtxt(models_file,usecols=3,dtype='str', max_rows = 2)
+
 ###########################################################
 ### -------------------- MAIN FUNCTION --------------------
 ###########################################################
@@ -201,9 +217,11 @@ def main(args):
            fcst, model_df_name = fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, \
                 all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, \
                 obs_df, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
-           
+           fcst = np.array(fcst) 
            fcst_all.append(fcst)
     
+    fcst_all = np.array(fcst_all) 
+    print(fcst_all[1]*3) 
     ENS_W = mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
     
 if __name__ == "__main__":

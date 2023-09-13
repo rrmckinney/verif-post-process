@@ -177,8 +177,12 @@ def main(args):
 
     for s in range(len(station_list)):
         
-        print( "    Now on station " + station) 
         station = station_list[s]
+        print( "    Now on station " + station)
+
+        if check_variable(input_variable, station, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6) == False:
+            print("   Skipping station " + station + " (no " + input_variable + " data)")
+            continue
 
         if len(station) < 4:
             station = "0" + str(station)

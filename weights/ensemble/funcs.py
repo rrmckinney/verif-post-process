@@ -349,7 +349,7 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
     end_date = datetime.strptime(end_date, '%y%m%d')
 
     if weight_type == 'seasonal':
-        if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
+        if stat_type == 'CAT_' and 'SFCTC' not in variable:
             for s in range(len(stats_cat)):
                 for w in range(len(seasons_dates)):
                 
@@ -405,7 +405,7 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
                         df3 = df3*weight
 
     elif weight_type == 'yearly':
-        if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
+        if stat_type == 'CAT_' and 'SFCTC' not in variable:
             for s in range(len(stats_cat)):
                 f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_' \
                     + stats_cat[s] + '_' + weight_outlook + '_' + variable

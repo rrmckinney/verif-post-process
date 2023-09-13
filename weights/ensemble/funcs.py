@@ -183,84 +183,69 @@ def make_df(date_list_obs, start_date, end_date):
     df_new.drop(['date','time'], axis='columns',inplace=True)
     return(df_new)
 
-def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, all_stations, variable, start_date, end_date, date_list_obs):
+def get_all_obs(delta, station, variable, start_date, end_date, date_list_obs, all_stations):
     
     print("Reading observational dataframe for " + variable + ".. ")
     
     df_new = make_df(date_list_obs, start_date, end_date)
     
-    if variable == 'SFCTC_KF' or variable == 'SFCTC':
-        station_list = copy.deepcopy(stations_with_SFCTC)              
-    elif variable == 'SFCWSPD_KF' or variable == 'SFCWSPD':  
-        station_list = copy.deepcopy(stations_with_SFCWSPD) 
-    
-    elif variable == "PCPTOT":
-        if variable == "PCPT6":
-            station_list = [st for st in stations_with_PCPTOT if st not in stations_with_PCPT6 ]
-        else:
-            station_list = copy.deepcopy(stations_with_PCPTOT)        
-    
-    elif variable == "PCPT6":
-        station_list = copy.deepcopy(stations_with_PCPT6) 
-
-        
     #KF variables are the same as raw for obs
     if "_KF" in variable:
         variable = variable[:-3]
             
     obs_df = pd.DataFrame()  
-    for station in station_list:
-        print( "    Now on station " + station) 
+        
          
-        if station not in all_stations:
-            #print("   Skipping station " + station)
-            continue
-        if len(station) < 4:
-            station = "0" +station
-        
-        if "PCPT" in variable:
-            if check_dates(start_date, delta, fcst_filepath + 'ENS/' + variable + '/fcst.t/', "PCPTOT", station) == False:
-                print("   Skipping station " + station + " (not enough dates yet)")
-                continue
-        else:
-            if check_dates(start_date, delta, fcst_filepath + 'ENS/' + variable + '/fcst.t/', variable, station) == False:
-                print("   Skipping station " + station + " (not enough dates yet)")
-                continue        
+    if station not in all_stations:
+        #print("   Skipping station " + station)
+        return()
+    
+    if len(station) < 4:
+        station = "0" +station
+    
+    if "PCPT" in variable:
+        if check_dates(start_date, delta, fcst_filepath + 'ENS/' + variable + '/fcst.t/', "PCPTOT", station) == False:
+            print("   Skipping station " + station + " (not enough dates yet)")
+            return()
+    else:
+        if check_dates(start_date, delta, fcst_filepath + 'ENS/' + variable + '/fcst.t/', variable, station) == False:
+            print("   Skipping station " + station + " (not enough dates yet)")
+            return()        
 
-        sql_con = sqlite3.connect(obs_filepath + variable + "/" + station + ".sqlite")
-        sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(date_list_obs[0]) + " AND 20" + str(date_list_obs[len(date_list_obs)-1])       
-        obs = pd.read_sql_query(sql_query, sql_con)
-        obs['datetime'] = None
+    sql_con = sqlite3.connect(obs_filepath + variable + "/" + station + ".sqlite")
+    sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(date_list_obs[0]) + " AND 20" + str(date_list_obs[len(date_list_obs)-1])       
+    obs = pd.read_sql_query(sql_query, sql_con)
+    obs['datetime'] = None
+    
+    for y in range(len(obs['Time'])):
+        hour = int(obs['Time'][y])/100
+        obs.loc[y,'datetime'] = pd.to_datetime(obs.loc[y,'Date'], format='%Y%m%d') + timedelta(hours=hour)
+    
+    obs = obs.set_index('datetime')
+    
+    df_all = df_new.join(obs, on='datetime')
+    
+    obs_all = df_all['Val']
+    # remove data that falls outside the physical bounds (higher than the verified records for Canada
+    for i in range(len(obs_all)):
         
-        for y in range(len(obs['Time'])):
-            hour = int(obs['Time'][y])/100
-            obs.loc[y,'datetime'] = pd.to_datetime(obs.loc[y,'Date'], format='%Y%m%d') + timedelta(hours=hour)
+        if variable == 'SFCTC_KF' or variable == 'SFCTC':
+            if obs_all[i] > temp_max:
+                obs_all[i] = np.nan
+            if obs_all[i] < temp_min:
+                obs_all[i] = np.nan
         
-        obs = obs.set_index('datetime')
+        if variable == 'SFCWSPD_KF' or variable == 'SFCWSPD':
+            if obs_all[i] > wind_threshold:
+                obs_all[i] = np.nan
         
-        df_all = df_new.join(obs, on='datetime')
-        
-        obs_all = df_all['Val']
-        # remove data that falls outside the physical bounds (higher than the verified records for Canada
-        for i in range(len(obs_all)):
-            
-            if variable == 'SFCTC_KF' or variable == 'SFCTC':
-                if obs_all[i] > temp_max:
-                    obs_all[i] = np.nan
-                if obs_all[i] < temp_min:
-                    obs_all[i] = np.nan
-            
-            if variable == 'SFCWSPD_KF' or variable == 'SFCWSPD':
-                if obs_all[i] > wind_threshold:
-                    obs_all[i] = np.nan
-            
-            if variable == 'PCPTOT':
-                if obs_all[i] > precip_threshold:
-                    obs_all[i] = np.nan
+        if variable == 'PCPTOT':
+            if obs_all[i] > precip_threshold:
+                obs_all[i] = np.nan
 
-        final_obs = np.array(obs_all).T #84 x 7   (30) 
+    final_obs = np.array(obs_all).T #84 x 7   (30) 
 
-        obs_df[station] = final_obs.flatten()
+    obs_df[station] = final_obs.flatten()
     
     return(obs_df)
 
@@ -298,47 +283,6 @@ def remove_missing_data(fcst, obs):
             obs[i] = np.nan
                 
     return(fcst,obs) 
-
-def make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2, time_domain, variable, filepath, MAE, RMSE, corr, len_fcst, numstations):
-   
-    if "ENS" in model:
-        modelpath= model + '/'
-    else:
-        modelpath = model + '/' + grid + '/'
-    f1 = open(textfile_folder + modelpath + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-    read_f1 = np.loadtxt(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-    if date_entry1 not in read_f1 and date_entry2 not in read_f1:
-        f1.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-        
-        f1.write("%3.3f   " % (MAE))
-        f1.write(len_fcst + "   ")
-        f1.write(numstations + "\n")
-    
-        f1.close()    
-            
-    
-    f2 = open(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-    read_f2 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-    if date_entry1 not in read_f2 and date_entry2 not in read_f2:
-        f2.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-        
-        f2.write("%3.3f   " % (RMSE))
-        f2.write(len_fcst + "   ")
-        f2.write(numstations + "\n")
-        
-        f2.close()  
-    
-    
-    f3 = open(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+") 
-    read_f3 = np.loadtxt(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-    if date_entry1 not in read_f3 and date_entry2 not in read_f3:
-        f3.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-        
-        f3.write("%3.3f   " % (corr))
-        f3.write(len_fcst + "   ")
-        f3.write(numstations + "\n")
-        
-        f3.close()  
 
 
 def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable):
@@ -379,6 +323,9 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                     df = pd.concat([df1, df2])
                     df = df*weight
                     df3 = pd.concat([df3,df])
+                    
+                    #make the weighted ensemble in the last column     
+                    df3['ENS_W'] = df3.mean(axis=1)
 
         else:
             for w in range(len(seasons_dates)):
@@ -396,6 +343,9 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                         df = df*weight
                         df3 = pd.concat([df3,df])
 
+                        #make the weighted ensemble in the last column     
+                        df3['ENS_W'] = df3.mean(axis=1)
+
                     #fall has four dates as september is a year later than oct/nov as stats started in oct
                     elif len(seasons_dates[w]) > 2:
                         date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
@@ -408,7 +358,9 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                         df = pd.concat([df1, df2])
                         df = df*weight
                         df3 = pd.concat([df3,df])
-                        print(df3)
+
+                        #make the weighted ensemble in the last column     
+                        df3['ENS_W'] = df3.mean(axis=1)
 
     elif weight_type == 'yearly':
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
@@ -416,10 +368,12 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                 + stat_cat + '_' + weight_outlook + '_' + variable
             weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
             weight = float(weight_file.iloc[:,0])
-            print(weight)
 
             df3 = df_all[(df_all.index >= start_date) & (df_all.index < end_date)]
             df3 = df3*weight
+
+            #make the weighted ensemble in the last column     
+            df3['ENS_W'] = df3.mean(axis=1)
                 
         else:
                 f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
@@ -431,152 +385,46 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
 
                 df3 = df_all[(df_all.index >= start_date) & (df_all.index < end_date)]
                 df3 = df3*weight
-    return(df3)
+
+                #make the weighted ensemble in the last column     
+                df3['ENS_W'] = df3.mean(axis=1)
     
+    return(df3.iloc[-1])
 
-def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,\
-        fcst_allstations,obs_allstations,num_stations,totalstations,time_domain,variable,filepath):
-    
-    if int(maxhour) >= hour:
-        fcst_avg = np.nanmean(fcst_allstations,axis=0) 
-        obs_avg = np.nanmean(obs_allstations,axis=0)
-        fcst_noNaNs, obs_noNaNs = [],[]
-        
-        for l in range(len(fcst_avg)):
-            if np.isnan(fcst_avg[l]) == False:
-                fcst_noNaNs.append(fcst_avg[l])
-                obs_noNaNs.append(obs_avg[l])
-              
-        # rounds each forecast and obs to one decimal
-        obs_rounded = np.round(obs_noNaNs,1)
-        fcst_rounded = np.round(fcst_noNaNs,1)
-        
-        if len(fcst_rounded) == 0:
-            model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,hour,\
-            length,totalstations,time_domain,variable,filepath)
-        
-        else:
-            MAE = mean_absolute_error(obs_rounded,fcst_rounded)
-            MSE = mean_squared_error(obs_rounded,fcst_rounded)
-            RMSE = math.sqrt(MSE)
-            corr = stats.spearmanr(obs_rounded,fcst_rounded)[0]
-            
-            if variable == "PCPT6":
-                length = int(length/6)
-
-            else:
-                length = length            
-            
-            len_fcst = str(len(fcst_noNaNs)) + "/" + str(length)   
-            numstations = str(num_stations) + "/" + str(totalstations)
-                
-            make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2, time_domain, variable, \
-                          filepath, MAE, RMSE, corr, len_fcst, numstations)
-
-def model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype,\
-            maxhour,hour,length,totalstations,time_domain,variable,filepath):
-    
-    if "ENS" in model:
-        modelpath = model + '/'
-    else:
-        modelpath = model + '/' + grid + '/'
-
-    if int(maxhour) >= hour:  
-        if variable == "PCPT6":
-            if int(maxhour) == int(hour):
-                total_length = int(((length*(delta+1))/6)-(delta+1))
-            else:
-                total_length = int((length*(delta+1))/6)
-
-        else:
-            total_length = int(length*(delta+1))
-                
-        len_fcst = "0/" + str(total_length)
-        numstations = "0/" + str(totalstations)
-        
-        f1 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-        read_f1 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-        if date_entry1 not in read_f1 and date_entry2 not in read_f1:
-            f1.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-            
-            f1.write("nan   ") #MAE
-            f1.write(len_fcst + "   ")
-            f1.write(numstations + "\n")
-        
-            f1.close()    
-                
-        
-        f2 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-        read_f2 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-        if date_entry1 not in read_f2 and date_entry2 not in read_f2:
-            f2.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-            
-            f2.write("nan   ") #RMSE
-            f2.write(len_fcst + "   ")
-            f2.write(numstations + "\n")
-            
-            f2.close()  
-        
-        f3 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+") 
-        read_f3 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-        if date_entry1 not in read_f3 and date_entry2 not in read_f3:
-            f3.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-            
-            f3.write("nan   ") #corr
-            f3.write(len_fcst + "   ")
-            f3.write(numstations + "\n")
-            
-            f3.close()  
-
-def fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, \
-              all_stations, station_df, variable, date_list, model, grid, maxhour, gridname, filehours, \
-                obs_df, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6):
-    
-    if os.path.isdir(textfile_folder +  filepath) == False:
-        os.makedirs(textfile_folder +  filepath)
+def fcst_grab(station_df, savetype, stat_type, k, weight_type, filepath, delta, input_domain,  \
+                    date_entry1, date_entry2, variable, date_list, model, grid, maxhour, gridname, filehours, \
+                    obs_df, station):
             
     # open the file for the current model and get all the stations from it
     model_df_name = model+gridname
+    #
+    # depreciated, meant for large domain when not all stations are in the model domains, when using small domain though
+    # don't need to worry about this
     stations_in_domain = np.array(station_df.query(model_df_name+"==1")["Station ID"],dtype='str')
 
     totalstations = 0
     num_stations = 0
     
-    for station in stations_in_domain:
+    if station not in stations_in_domain:
+        print("   Skipping station " + station)
+        return()
 
-        if station not in all_stations:
-            #print("   Skipping station " + station + ")
-            continue
+    if check_variable(variable, station) == False:                  
+        print("   Skipping station " + station + " (no " + variable + " data)")
+        return()
+    
+    if check_dates(date_entry1, delta, filepath, variable, station) == False:
+        print("   Skipping station " + station + " (not enough dates yet)")
+        return()
 
-        if check_variable(variable, station, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6) == False:                  
-            #print("   Skipping station " + station + " (no " + variable + " data)")
-            continue
+    # total stations that should be included in each model/grid
+    totalstations = totalstations+1
         
-        if len(station) < 4:
-            station = "0" + str(station)
-        
-        if check_dates(date_entry1, delta, filepath, variable, station) == False:
-            print("   Skipping station " + station + " (not enough dates yet)")
-            continue
+    all_fcst = get_fcst(stat_type,k,maxhour, station, filepath, variable, date_list,filehours, date_entry1, \
+                        date_entry2, weight_type, model_df_name)    #goes to maxhour       
 
-        
-        # total stations that should be included in each model/grid
-        totalstations = totalstations+1
-            
-        all_fcst = get_fcst(stat_type,k,maxhour, station, filepath, variable, date_list,filehours, date_entry1, date_entry2, weight_type, model_df_name)    #goes to maxhour       
-
-        
-        #checks 180 hour only
-        #if pd.isna(all_fcst).all() == True:    
-        #    print("   Skipping station " + station + " (No forecast data)")
-        #    continue
-        
-        #if pd.isna(obs_df).all() == True:    
-        #   print("   Skipping station " + station + " (No obs data)")
-        #    continue
-        
-        # total stations that ended up being included (doesn't count ones with no data)
-        num_stations = num_stations+1
+    
+    num_stations = num_stations+1
 
     #sometimes theres no forecast data for a model
     if num_stations == 0:
@@ -585,12 +433,10 @@ def fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain
     else:
         return(all_fcst, model_df_name)
 
-def PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,\
-                    all_stations, start_date, end_date):
+def PCPT_obs_df_6(date_list_obs, delta, variable, station, start_date, end_date):
 
     # get the hourly precip values
-    obs_df_1 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, \
-        all_stations, "PCPTOT", start_date, end_date, date_list_obs)
+    obs_df_1 = get_all_obs(delta, station,  'PCPTOT', start_date, end_date, date_list_obs)
     
     # grab the extra hour on the last outlook day
     obs_df_1 = obs_df_1.append(obs_df_1.iloc[60],ignore_index=True)
@@ -603,8 +449,7 @@ def PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, sta
     obs_df_1_trimmed = obs_df_1.groupby(obs_df_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
 
     #grab the 6-hr accum precip values
-    obs_df_6 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, \
-        all_stations, "PCPT6", start_date, end_date, date_list_obs)
+    obs_df_6 = get_all_obs(delta, station,  'PCPT6', start_date, end_date, date_list_obs)
         
     # grab the extra hour on the last outlook day
     obs_df_6 = obs_df_6.append(obs_df_6.iloc[60],ignore_index=True)

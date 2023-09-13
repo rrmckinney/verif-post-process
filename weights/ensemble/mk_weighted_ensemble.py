@@ -57,7 +57,7 @@ weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
 ###########################################################
 
 # takes an input date for the first and last day you want calculations for, must be a range of 7 or 30 days apart
-if len(sys.argv) == 9:
+if len(sys.argv) == 10:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
     input_startdate = datetime.strptime(start_date, "%y%m%d").date()
@@ -104,8 +104,13 @@ if len(sys.argv) == 9:
     
     time_domain = sys.argv[8]
     if time_domain not in ['60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']:
-        raise Exception("Invalid time domain: Options: '60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7'")
+        raise Exception("Invalid time domain. Options: '60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7'")
     
+    stat_cat = sys.argv[9]
+    if stat_cat not in ['POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS']:
+        raise Exception("Invalid CAT score type. Options: 'POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS'; do not need tailing '_'")
+
+
     if stat_type == 'CAT_' and 'SFCTC' in input_variable:
         raise Exception("Invalid input options. CAT_ can only be used with precip and wind variables NOT temp.")
 
@@ -223,7 +228,7 @@ def main(args):
              
             fcst_all = fcst_all.merge(fcst, on='datetime',how = 'left')
     print(fcst_all) 
-    ENS_W = mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
+    ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
     print(ENS_W)
     
 if __name__ == "__main__":

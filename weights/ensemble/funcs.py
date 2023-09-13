@@ -55,9 +55,6 @@ wind_threshold = 400 #recorded Edmonton, AB 1987 http://wayback.archive-it.org/7
 temp_min = -63 #recorded in Snag, YT 1947 http://wayback.archive-it.org/7084/20170925152846/https://www.ec.gc.ca/meteo-weather/default.asp?lang=En&n=6A4A3AC5-1#tab5
 temp_max = 49.6 #recorded in Lytton, BC 2021 https://www.canada.ca/en/environment-climate-change/services/top-ten-weather-stories/2021.html#toc2
 
-#the 6 categorical scores; do not need tailing '_'
-stats_cat = ['POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS']
-
 # seasons are set as Meteorological Seasons; fall has two sets as data starts in oct so sept data is a year older
 winter = ['211201','220228']
 spring = ['220301','220531']
@@ -343,42 +340,43 @@ def make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2,
         f3.close()  
 
 
-def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable):
+def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable):
     
     start_date = datetime.strptime(start_date, '%y%m%d')
     end_date = datetime.strptime(end_date, '%y%m%d')
     
     if weight_type == 'seasonal':
+        df3 = pd.Dataframe()
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
-            for s in range(len(stats_cat)):
-                for w in range(len(seasons_dates)):
-                
-                    f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
-                        + stats_cat[s] + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
-                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                    weight = float(weight_file.iloc[:,0])
-                    print(weight)
+            for w in range(len(seasons_dates)):
+            
+                f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
+                    + stat_cat + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
+                weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
+                weight = float(weight_file.iloc[:,0])
+                print(weight)
 
-                    if len(seasons_dates[w]) == 2:
-                        date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
-                        date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
-                        
-                        df3 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
-                        df3 = df3*weight
+                if len(seasons_dates[w]) == 2:
+                    date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
+                    date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
                     
-                    #fall has four dates as september is a year later than oct/nov as stats started in oct
-                    elif len(seasons_dates[w]) > 2:
-                        date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
-                        date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
-                        date3 = datetime.strptime(seasons_dates[w][2], '%y%m%d')
-                        date4 = datetime.strptime(seasons_dates[w][3], '%y%m%d')
-                        
-                        df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
-                        df2 = df_all[(df_all.index >= date3) & (df_all.index < date4)]
-                        df3 = pd.merge(df, df2)
-                        df3 = df3*weight
+                    df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                    df = df*weight
+                    df3 = pd.merge(df3,df)
 
-        
+                #fall has four dates as september is a year later than oct/nov as stats started in oct
+                elif len(seasons_dates[w]) > 2:
+                    date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
+                    date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
+                    date3 = datetime.strptime(seasons_dates[w][2], '%y%m%d')
+                    date4 = datetime.strptime(seasons_dates[w][3], '%y%m%d')
+                    
+                    df1 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                    df2 = df_all[(df_all.index >= date3) & (df_all.index < date4)]
+                    df = pd.merge(df1, df2)
+                    df = df*weight
+                    df3 = pd.merge(df3,df)
+
         else:
             for w in range(len(seasons_dates)):
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
@@ -393,9 +391,10 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
                         date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
                         date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
                         
-                        df3 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
-                        df3 = df3*weight
-                    
+                        df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                        df = df*weight
+                        df3 = pd.merge(df3,df)
+
                     #fall has four dates as september is a year later than oct/nov as stats started in oct
                     elif len(seasons_dates[w]) > 2:
                         date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
@@ -403,22 +402,23 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
                         date3 = datetime.strptime(seasons_dates[w][2], '%y%m%d')
                         date4 = datetime.strptime(seasons_dates[w][3], '%y%m%d')
                         
-                        df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                        df1 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
                         df2 = df_all[(df_all.index >= date3) & (df_all.index < date4)]
-                        df3 = pd.merge(df, df2)
-                        df3 = df3*weight
+                        df = pd.merge(df1, df2)
+                        df = df*weight
+                        df3 = pd.merge(df3,df)
+
 
     elif weight_type == 'yearly':
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
-            for s in range(len(stats_cat)):
-                f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_' \
-                    + stats_cat[s] + '_' + weight_outlook + '_' + variable
-                weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                weight = float(weight_file.iloc[:,0])
-                print(weight)
+            f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_' \
+                + stat_cat + '_' + weight_outlook + '_' + variable
+            weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
+            weight = float(weight_file.iloc[:,0])
+            print(weight)
 
-                df3 = df_all[(df_all.index >= start_date) & (df_all.index < end_date)]
-                df3 = df3*weight
+            df3 = df_all[(df_all.index >= start_date) & (df_all.index < end_date)]
+            df3 = df3*weight
                 
         else:
                 f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \

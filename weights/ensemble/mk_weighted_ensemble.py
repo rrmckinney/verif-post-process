@@ -20,7 +20,7 @@ from datetime import datetime
 from datetime import timedelta
 import sys
 import copy
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from funcs import *
 import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)

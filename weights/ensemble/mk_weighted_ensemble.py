@@ -267,33 +267,6 @@ def main(args):
         else:
             path = save_folder + weight_type + '/' + stat_type + '/' + input_variable + '/'
             
-            print("Now on.. " + model + gridname + " for " + input_variable)
-
-            fcst, model_df_name = fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, \
-                all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, \
-                obs_df, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
-             
-            fcst_all = fcst_all.merge(fcst, on='datetime',how = 'left')
-    
-    ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
-    print(ENS_W)
-    
-    if stat_type == 'CAT_':
-        
-        path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
-        if os.path.isdir(path) == false
-            os.makedirs(path)
-        
-        conn = sqlite3.connect(path + station + '.sqlite')
-        df.to_sql('All', conn, index=True)
-
-    else:
-        path = save_folder + weight_type + '/' + stat_type + '/' + input_variable + '/'
-        if os.path.isdir(path) == false
-            os.makedirs(path)
-        conn = sqlite3.connect(path + station + '.sqlite')
-        df.to_sql('All', conn, index=True)
-
             if os.path.isdir(path) == False:
                 os.makedirs(path)
             conn = sqlite3.connect(path + station + '.sqlite')

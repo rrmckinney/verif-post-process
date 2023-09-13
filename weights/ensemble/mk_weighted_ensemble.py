@@ -233,7 +233,7 @@ def main(args):
     
     ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
     print(ENS_W)
-    
+    '''
     if stat_type == 'CAT_':
         
         path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
@@ -249,6 +249,6 @@ def main(args):
             os.makedirs(path)
         conn = sqlite3.connect(path + station + '.sqlite')
         df.to_sql('All', conn, index=True)
-
+    '''
 if __name__ == "__main__":
     main(sys.argv)

@@ -283,6 +283,7 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
     df_all = df_new.join(fcst, on='datetime')
     df_all.drop(['Date','Offset'], axis='columns',inplace = True)
     df_all.columns = [ model_df_name]
+    
     return(df_all) 
 
 

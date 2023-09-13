@@ -263,9 +263,6 @@ def main(args):
             
             ENS_W.to_csv(path + station +'.csv')
 
-            plt.plot(ENS_W)
-            plt.savefig('ENS_W')
-            
         else:
             path = save_folder + weight_type + '/' + stat_type + '/' + input_variable + '/'
             
@@ -273,6 +270,8 @@ def main(args):
                 os.makedirs(path)
             
             ENS_W.to_csv(path + station +'.csv')
-
+            
+        plt.plot(ENS_W)
+        plt.savefig('ENS_W')
 if __name__ == "__main__":
     main(sys.argv)

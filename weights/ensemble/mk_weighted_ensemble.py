@@ -52,6 +52,9 @@ textfile_folder = '/verification/weighted-Statistics/'
 #folder where the weights are located
 weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
 
+#output folder for sql tables after weighted ensemble is made
+save_folder = '/home/verif/verif-post-process/weights/ensemble/output/'
+
 ###########################################################
 ### -------------------- INPUT ----------------------------
 ###########################################################
@@ -227,9 +230,25 @@ def main(args):
                 obs_df, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
              
             fcst_all = fcst_all.merge(fcst, on='datetime',how = 'left')
-    print(fcst_all) 
+    
     ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
     print(ENS_W)
     
+    if stat_type == 'CAT_':
+        
+        path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
+        if os.path.isdir(path) == false
+            os.makedirs(path)
+        
+        conn = sqlite3.connect(path + station + '.sqlite')
+        df.to_sql('All', conn, index=True)
+
+    else:
+        path = save_folder + weight_type + '/' + stat_type + '/' + input_variable + '/'
+        if os.path.isdir(path) == false
+            os.makedirs(path)
+        conn = sqlite3.connect(path + station + '.sqlite')
+        df.to_sql('All', conn, index=True)
+
 if __name__ == "__main__":
     main(sys.argv)

@@ -283,47 +283,6 @@ def remove_missing_data(fcst, obs):
                 
     return(fcst,obs) 
 
-def make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2, time_domain, variable, filepath, MAE, RMSE, corr, len_fcst, numstations):
-   
-    if "ENS" in model:
-        modelpath= model + '/'
-    else:
-        modelpath = model + '/' + grid + '/'
-    f1 = open(textfile_folder + modelpath + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-    read_f1 = np.loadtxt(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-    if date_entry1 not in read_f1 and date_entry2 not in read_f1:
-        f1.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-        
-        f1.write("%3.3f   " % (MAE))
-        f1.write(len_fcst + "   ")
-        f1.write(numstations + "\n")
-    
-        f1.close()    
-            
-    
-    f2 = open(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-    read_f2 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-    if date_entry1 not in read_f2 and date_entry2 not in read_f2:
-        f2.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-        
-        f2.write("%3.3f   " % (RMSE))
-        f2.write(len_fcst + "   ")
-        f2.write(numstations + "\n")
-        
-        f2.close()  
-    
-    
-    f3 = open(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+") 
-    read_f3 = np.loadtxt(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-    if date_entry1 not in read_f3 and date_entry2 not in read_f3:
-        f3.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-        
-        f3.write("%3.3f   " % (corr))
-        f3.write(len_fcst + "   ")
-        f3.write(numstations + "\n")
-        
-        f3.close()  
-
 
 def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable):
     
@@ -363,6 +322,9 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                     df = pd.concat([df1, df2])
                     df = df*weight
                     df3 = pd.concat([df3,df])
+                    
+                    #make the weighted ensemble in the last column     
+                    df3['ENS_W'] = df3.mean(axis=1)
 
         else:
             for w in range(len(seasons_dates)):
@@ -380,6 +342,9 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                         df = df*weight
                         df3 = pd.concat([df3,df])
 
+                        #make the weighted ensemble in the last column     
+                        df3['ENS_W'] = df3.mean(axis=1)
+
                     #fall has four dates as september is a year later than oct/nov as stats started in oct
                     elif len(seasons_dates[w]) > 2:
                         date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
@@ -392,7 +357,9 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                         df = pd.concat([df1, df2])
                         df = df*weight
                         df3 = pd.concat([df3,df])
-                        print(df3)
+
+                        #make the weighted ensemble in the last column     
+                        df3['ENS_W'] = df3.mean(axis=1)
 
     elif weight_type == 'yearly':
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
@@ -400,10 +367,12 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                 + stat_cat + '_' + weight_outlook + '_' + variable
             weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
             weight = float(weight_file.iloc[:,0])
-            print(weight)
 
             df3 = df_all[(df_all.index >= start_date) & (df_all.index < end_date)]
             df3 = df3*weight
+
+            #make the weighted ensemble in the last column     
+            df3['ENS_W'] = df3.mean(axis=1)
                 
         else:
                 f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
@@ -415,102 +384,11 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
 
                 df3 = df_all[(df_all.index >= start_date) & (df_all.index < end_date)]
                 df3 = df3*weight
-    return(df3)
+
+                #make the weighted ensemble in the last column     
+                df3['ENS_W'] = df3.mean(axis=1)
     
-
-def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,\
-        fcst_allstations,obs_allstations,num_stations,totalstations,time_domain,variable,filepath):
-    
-    if int(maxhour) >= hour:
-        fcst_avg = np.nanmean(fcst_allstations,axis=0) 
-        obs_avg = np.nanmean(obs_allstations,axis=0)
-        fcst_noNaNs, obs_noNaNs = [],[]
-        
-        for l in range(len(fcst_avg)):
-            if np.isnan(fcst_avg[l]) == False:
-                fcst_noNaNs.append(fcst_avg[l])
-                obs_noNaNs.append(obs_avg[l])
-              
-        # rounds each forecast and obs to one decimal
-        obs_rounded = np.round(obs_noNaNs,1)
-        fcst_rounded = np.round(fcst_noNaNs,1)
-        
-        if len(fcst_rounded) == 0:
-            model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,hour,\
-            length,totalstations,time_domain,variable,filepath)
-        
-        else:
-            MAE = mean_absolute_error(obs_rounded,fcst_rounded)
-            MSE = mean_squared_error(obs_rounded,fcst_rounded)
-            RMSE = math.sqrt(MSE)
-            corr = stats.spearmanr(obs_rounded,fcst_rounded)[0]
-            
-            if variable == "PCPT6":
-                length = int(length/6)
-
-            else:
-                length = length            
-            
-            len_fcst = str(len(fcst_noNaNs)) + "/" + str(length)   
-            numstations = str(num_stations) + "/" + str(totalstations)
-                
-            make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2, time_domain, variable, \
-                          filepath, MAE, RMSE, corr, len_fcst, numstations)
-
-def model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype,\
-            maxhour,hour,length,totalstations,time_domain,variable,filepath):
-    
-    if "ENS" in model:
-        modelpath = model + '/'
-    else:
-        modelpath = model + '/' + grid + '/'
-
-    if int(maxhour) >= hour:  
-        if variable == "PCPT6":
-            if int(maxhour) == int(hour):
-                total_length = int(((length*(delta+1))/6)-(delta+1))
-            else:
-                total_length = int((length*(delta+1))/6)
-
-        else:
-            total_length = int(length*(delta+1))
-                
-        len_fcst = "0/" + str(total_length)
-        numstations = "0/" + str(totalstations)
-        
-        f1 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-        read_f1 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-        if date_entry1 not in read_f1 and date_entry2 not in read_f1:
-            f1.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-            
-            f1.write("nan   ") #MAE
-            f1.write(len_fcst + "   ")
-            f1.write(numstations + "\n")
-        
-            f1.close()    
-                
-        
-        f2 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-        read_f2 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-        if date_entry1 not in read_f2 and date_entry2 not in read_f2:
-            f2.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-            
-            f2.write("nan   ") #RMSE
-            f2.write(len_fcst + "   ")
-            f2.write(numstations + "\n")
-            
-            f2.close()  
-        
-        f3 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+") 
-        read_f3 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-        if date_entry1 not in read_f3 and date_entry2 not in read_f3:
-            f3.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-            
-            f3.write("nan   ") #corr
-            f3.write(len_fcst + "   ")
-            f3.write(numstations + "\n")
-            
-            f3.close()  
+    return(df3.iloc[-1])
 
 def fcst_grab(station_df, savetype, stat_type, k, weight_type, filepath, delta, input_domain,  \
                     date_entry1, date_entry2, variable, date_list, model, grid, maxhour, gridname, filehours, \

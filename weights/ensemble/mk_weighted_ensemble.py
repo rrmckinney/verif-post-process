@@ -106,8 +106,9 @@ if len(sys.argv) == 10:
         raise Exception("Invalid time domain. Options: '60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7'")
     
     stat_cat = sys.argv[9]
-    if stat_cat not in ['POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS']:
-        raise Exception("Invalid CAT score type. Options: 'POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS'; do not need tailing '_'")
+    if stat_cat not in ['POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS', 'NA']:
+        raise Exception("Invalid CAT score type. Options: 'POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS' if stat type is \
+                        'CAT'; otherwise 'NA'; do not need tailing '_'")
 
 
     if stat_type == 'CAT_' and 'SFCTC' in input_variable:

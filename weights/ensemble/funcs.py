@@ -8,17 +8,11 @@ These are the functions that feed into the mk_weighted_ensemble.py file. This sc
 that create the weigted ensemble and then estblish stats to compare it to our current ensemble performance. 
 
 """
-import os
 import pandas as pd
 import numpy as np
 from datetime import datetime 
 from datetime import timedelta
-import sys
 import math
-import copy
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_error
-from scipy import stats
 import sqlite3
 import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)

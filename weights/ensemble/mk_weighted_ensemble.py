@@ -19,12 +19,8 @@ import numpy as np
 from datetime import datetime 
 from datetime import timedelta
 import sys
-import math
 import copy
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_error
-from scipy import stats
-import sqlite3
+import matplotlib as plt
 from funcs import *
 import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)
@@ -267,6 +263,9 @@ def main(args):
             
             ENS_W.to_csv(path + station +'.csv')
 
+            plt.plot(ENS_W)
+            plt.savefig('ENS_W')
+            
         else:
             path = save_folder + weight_type + '/' + stat_type + '/' + input_variable + '/'
             

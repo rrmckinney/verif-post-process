@@ -11,7 +11,7 @@ that create the weigted ensemble and then estblish stats to compare it to our cu
 import os
 import pandas as pd
 import numpy as np
-import datetime 
+from datetime import datetime 
 from datetime import timedelta
 import sys
 import math
@@ -63,8 +63,8 @@ winter = ['211201','220228']
 spring = ['220301','220531']
 summer = ['220601','220831']
 fall = ['211001','211130', '220901','220930']
-
-seasons = [winter, spring, summer, fall]
+seasons_dates = [winter,spring,summer,fall]
+seasons = ['winter', 'spring', 'summer', 'fall']
 
 # logistic curve steepness (stated in file names)
 k = '100'
@@ -85,18 +85,18 @@ wm = 'a'
 #   past hours 0-24
 def listofdates(start_date, end_date, obs = False):
     if obs == False:
-        start = datetime.datetime.strptime(start_date, "%y%m%d").date()
-        end = datetime.datetime.strptime(end_date, "%y%m%d").date()
+        start = datetime.strptime(start_date, "%y%m%d").date()
+        end = datetime.strptime(end_date, "%y%m%d").date()
 
     elif obs == True:
         startday = 0 #forhour 1
         endday = 7 #for hour 180
         
-        start = datetime.datetime.strptime(start_date, "%y%m%d").date() + timedelta(days=startday)
-        end = datetime.datetime.strptime(end_date, "%y%m%d").date() + timedelta(days=endday)
+        start = datetime.strptime(start_date, "%y%m%d").date() + timedelta(days=startday)
+        end = datetime.strptime(end_date, "%y%m%d").date() + timedelta(days=endday)
     
     numdays = (end-start).days 
-    date_list = [(start + datetime.timedelta(days=x)).strftime("%y%m%d") for x in range(numdays+1)]
+    date_list = [(start + timedelta(days=x)).strftime("%y%m%d") for x in range(numdays+1)]
 
     return(date_list)
 
@@ -182,7 +182,8 @@ def make_df(date_list_obs, start_date, end_date):
         df['datetime'] = pd.to_datetime(df['date']+' '+df['time'], format = '%y%m%d %H')
         
         df_new = pd.concat([df_new, df])
-    df_new = df_new.set_index('datetime') 
+    df_new = df_new.set_index('datetime')
+    df_new.drop(['date','time'], axis='columns',inplace=True)
     return(df_new)
 
 def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, all_stations, variable, start_date, end_date, date_list_obs):
@@ -211,7 +212,6 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
         variable = variable[:-3]
             
     obs_df = pd.DataFrame()  
-
     for station in station_list:
         print( "    Now on station " + station) 
          
@@ -284,7 +284,8 @@ def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, fileh
     
     fcst = fcst.set_index('datetime')
     df_all = df_new.join(fcst, on='datetime')
-    
+    df_all.drop(['Date','Offset'], axis='columns',inplace = True)
+    df_all.columns = [ model_df_name]
     return(df_all) 
 
 
@@ -344,89 +345,88 @@ def make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2,
 
 def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable):
     
+    start_date = datetime.strptime(start_date, '%y%m%d')
+    end_date = datetime.strptime(end_date, '%y%m%d')
 
     if weight_type == 'seasonal':
         if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
             for s in range(len(stats_cat)):
-                for w in range(len(seasons)):
-                    
+                for w in range(len(seasons_dates)):
+                
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
                         + stats_cat[s] + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                     weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                    weight = weight_file.iloc[:,0]
+                    weight = float(weight_file.iloc[:,0])
+                    print(weight)
 
-                    if len(seasons[w]) == 2:
-                        date1 = seasons[w][0]
-                        date2 = seasons[w][1]
+                    if len(seasons_dates[w]) == 2:
+                        date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
+                        date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
                         
-                        df = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
-                        df3 = pd.merge(df, df2)
-                        df3['result'] = df3['Val']*weight
+                        df3 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                        df3 = df3*weight
 
-                    elif len(seasons[w]) > 2:
-                        date1 = seasons[w][0]
-                        date2 = seasons[w][1]
-                        date3 = seasons[w][2]
-                        date4 = seasons[w][3]
-
-                        df = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
-                        df2 = df_all[(df_all['date'] >= int(date3)) & (df_all['date'] < int(date4))]
+                    elif len(seasons_dates[w]) > 2:
+                        date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
+                        date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
+                        date3 = datetime.strptime(seasons_dates[w][2], '%y%m%d')
+                        date4 = datetime.strptime(seasons_dates[w][3], '%y%m%d')
+                        
+                        df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                        df2 = df_all[(df_all.index >= date3) & (df_all.index < date4)]
                         df3 = pd.merge(df, df2)
-                        df3['result'] = df3['Val']*weight
+                        df3 = df3*weight
         else:
-            for w in range(len(seasons)):
+            for w in range(len(seasons_dates)):
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
                         + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                     
                     weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                    weight = int(weight_file.iloc[:,0])
-                    
-                    if len(seasons[w]) == 2:
-                        date1 = seasons[w][0]
-                        date2 = seasons[w][1]
+                    weight = float(weight_file.iloc[:,0])
+                    print(weight)
 
-                        df3 = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
-                        df3['result'] = df3['Val']*weight
+                    if len(seasons_dates[w]) == 2:
+                        date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
+                        date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
+                        
+                        df3 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                        df3 = df3*weight
 
                     #fall has four dates as september is a year later than oct/nov as stats started in oct
-                    elif len(seasons[w]) > 2:
-                        date1 = seasons[w][0]
-                        date2 = seasons[w][1]
-                        date3 = seasons[w][2]
-                        date4 = seasons[w][3]
-
-                        df = df_all[(df_all['date'] >= int(date1)) & (df_all['date'] < int(date2))]
-                        df2 = df_all[(df_all['date'] >= int(date3)) & (df_all['date'] < int(date4))]
+                    elif len(seasons_dates[w]) > 2:
+                        date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
+                        date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
+                        date3 = datetime.strptime(seasons_dates[w][2], '%y%m%d')
+                        date4 = datetime.strptime(seasons_dates[w][3], '%y%m%d')
+                        
+                        df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                        df2 = df_all[(df_all.index >= date3) & (df_all.index < date4)]
                         df3 = pd.merge(df, df2)
-                        df3['result'] = df3['Val']*weight
+                        df3 = df3*weight
 
     elif weight_type == 'yearly':
         if stat_type == 'CAT_' and variable not in ['SFCTC', 'SFCTC_KF']:
             for s in range(len(stats_cat)):
-                print(model_df_name) 
                 f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_' \
                     + stats_cat[s] + '_' + weight_outlook + '_' + variable
                 weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                weight = int(weight_file.iloc[:,0])
-                
-                print(start_date)
-                print(end_date)
+                weight = float(weight_file.iloc[:,0])
+                print(weight)
 
-                df3 = df_all[(df_all['date'].astype(int) >= int(start_date)) & (df_all['date'].astype(int) < int(end_date))]
-                df3['result'] = df3.Val*weight
+                df3 = df_all[(df_all.index >= start_date) & (df_all.index < end_date)]
+                df3 = df3*weight
                 
-                print(df3)
         else:
-                    f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
-                        + '_' + weight_outlook + '_' + variable 
+                f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
+                    + '_' + weight_outlook + '_' + variable 
                     
-                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                    weight = int(weight_file.iloc[:,0])
+                weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
+                weight = float(weight_file.iloc[:,0])
+                print(weight)
 
-                    df3 = df_all[(df_all['date'].astpye(int) >= int(start_date)) & (df_all['date'].astype(int) < int(end_date))]
-                    df3['result'] = df3['Val']*weight
-
-    return(df3['result'])
+                df3 = df_all[(df_all.index >= start_date) & (df_all.index < end_date)]
+                df3 = df3*weight
+    return(df3)
     
 
 def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,\
@@ -562,13 +562,13 @@ def fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain
 
         
         #checks 180 hour only
-        if pd.isna(all_fcst).all() == True:    
-            print("   Skipping station " + station + " (No forecast data)")
-            continue
+        #if pd.isna(all_fcst).all() == True:    
+        #    print("   Skipping station " + station + " (No forecast data)")
+        #    continue
         
-        if pd.isna(obs_df).all() == True:    
-            print("   Skipping station " + station + " (No obs data)")
-            continue
+        #if pd.isna(obs_df).all() == True:    
+        #   print("   Skipping station " + station + " (No obs data)")
+        #    continue
         
         # total stations that ended up being included (doesn't count ones with no data)
         num_stations = num_stations+1
@@ -602,10 +602,10 @@ def PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, sta
         all_stations, "PCPT6", start_date, end_date, date_list_obs)
         
     # grab the extra hour on the last outlook day
-    obs_df = obs_df.append(obs_df_6.iloc[60],ignore_index=True)
+    obs_df_6 = obs_df_6.append(obs_df_6.iloc[60],ignore_index=True)
 
     # remove all values except the ones every 6 hours (6 UTC, 12 UTC, etc. (skipping the first))
-    obs_df_6_trimmed = obs_df.iloc[::6, :][1:].reset_index(drop=True) #grabs every 6 hours (skipping hour 0)
+    obs_df_6_trimmed = obs_df_6.iloc[::6, :][1:].reset_index(drop=True) #grabs every 6 hours (skipping hour 0)
 
     #combine the obs from manually accumulating 6 hours from hourly, and the pre-calculated 6 hours
     obs_df = pd.concat([obs_df_1_trimmed, obs_df_6_trimmed],axis=1)

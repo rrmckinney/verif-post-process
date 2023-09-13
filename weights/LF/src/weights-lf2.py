@@ -36,7 +36,7 @@ textfile_folder = '/verification/Statistics/'
 ###########################################################
 
 # takes an input date for the last day of the week you want to include
-if len(sys.argv) == 5:
+if len(sys.argv) == 6:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) + '00'  
     input_startdate = datetime.datetime.strptime(start_date, "%y%m%d%H").date()
@@ -111,8 +111,8 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 
 # The stat you want to base your weights off of:
 #choose "CAT_" for categorical scores (PCPT6, PCPTOT, SFCWSPD, SFCWSPD_KF) only, "MAE_", "RMSE_" or "SPCORR_"
-stat_type = "CAT_"
-
+stat_type = sys.argv[5]
+print(stat_type)
 # weighting curve steepness, now user input, testing several values
 k = int(sys.argv[4])
 

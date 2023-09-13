@@ -37,7 +37,7 @@ textfile_folder = '/verification/Statistics/'
 ###########################################################
 
 # takes an input date for the last day of the week you want to include
-if len(sys.argv) == 5:
+if len(sys.argv) == 6:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) + '00'  
     input_startdate = datetime.datetime.strptime(start_date, "%y%m%d%H").date()
@@ -118,12 +118,11 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 
 # The stat you want to base your weights off of:
 #choose "CAT_" for categorical scores (PCPT6, PCPTOT, SFCWSPD, SFCWSPD_KF) only, "MAE_", "RMSE_" or "SPCORR_"
-stat_type = "CAT_"
+stat_type = sys.argv[5]
 
 # weighting curve steepness, now user input, testing several values
 k = int(sys.argv[4])
 
-print(k)
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------
 ###########################################################
@@ -148,7 +147,7 @@ def get_rankings(variable,time_domain,season):
                 modelpath = model + '/' + grid + '/'
                 gridname = "_" + grid
                      
-            print("Now on.. " + model + gridname + "   " + variable + " " + str(k) +" " +season[0] + " "+ season[1])
+            print("Now on.. " + model + gridname + "   " + stat_type + " "+variable + " " + str(k) +" " +season[0] + " "+ season[1])
             
             if os.path.isfile(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + stat_type + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"):
                 
@@ -519,6 +518,7 @@ def main(args):
                 elif stat_type == "spcorr_":
                     SPCORR_weight, modelnames_sortedSPCORR = make_weights(POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames)
                     weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
+                    print(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
                     weights_all.to_csv(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
             
             time_count = time_count+1

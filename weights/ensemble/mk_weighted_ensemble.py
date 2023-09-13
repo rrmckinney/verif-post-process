@@ -16,7 +16,7 @@ To learn more about the LF scheme, go to the parent directory of this folder and
 import os
 import pandas as pd
 import numpy as np
-import datetime 
+from datetime import datetime 
 from datetime import timedelta
 import sys
 import math
@@ -60,15 +60,15 @@ weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
 if len(sys.argv) == 9:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
-    input_startdate = datetime.datetime.strptime(start_date, "%y%m%d").date()
+    input_startdate = datetime.strptime(start_date, "%y%m%d").date()
     
     date_entry2 = sys.argv[2]    #input date YYMMDD
     end_date = str(date_entry2)
-    input_enddate = datetime.datetime.strptime(end_date, "%y%m%d").date()
+    input_enddate = datetime.strptime(end_date, "%y%m%d").date()
     
     #subtract 6 to match boreas time, might need to change in future
-    today = datetime.datetime.now() - datetime.timedelta(hours=6) 
-    needed_date = today - datetime.timedelta(days=8) #might need to change to 7
+    today = datetime.now() - timedelta(hours=6) 
+    needed_date = today - timedelta(days=8) #might need to change to 7
     if input_startdate > needed_date.date():
         raise Exception("Date too recent. Need start date to be at least 8 days ago.")
 
@@ -105,6 +105,9 @@ if len(sys.argv) == 9:
     time_domain = sys.argv[8]
     if time_domain not in ['60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']:
         raise Exception("Invalid time domain: Options: '60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7'")
+    
+    if weight_type == 'CAT_' and input_variable in ['SFCTC','SFCTC_KF']:
+        raise Exception("Invalid input options. CAT_ can only be used with precip and wind variables NOT temp.")
 
 else:
     raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
@@ -157,7 +160,7 @@ def main(args):
         obs_df = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, \
             stations_with_PCPT6,  all_stations, input_variable, start_date, end_date, date_list_obs)
    
-    fcst_all = pd.DataFrame
+    fcst_all = make_df(date_list_obs, start_date, end_date)
     for i in range(len(models)):
         model = models[i] #loops through each model
        
@@ -217,9 +220,9 @@ def main(args):
             fcst, model_df_name = fcst_grab(savetype, stat_type, k, weight_type, filepath, delta, input_domain, date_entry1, date_entry2, \
                 all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, \
                 obs_df, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
-            
-            fcst = fcst_all.join(fcst, on='datetime')
-
+             
+            fcst_all = fcst_all.merge(fcst, on='datetime',how = 'left')
+    print(fcst_all) 
     ENS_W = mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
     print(ENS_W)
     

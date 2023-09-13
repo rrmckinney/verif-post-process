@@ -265,16 +265,15 @@ def main(args):
             if os.path.isdir(path) == False:
                 os.makedirs(path)
             
-            conn = sqlite3.connect(path + station + '.sqlite')
-            ENS_W.to_sql('All', conn, index=True)
+            ENS_W.to_csv(path + station +'.csv')
 
         else:
             path = save_folder + weight_type + '/' + stat_type + '/' + input_variable + '/'
             
             if os.path.isdir(path) == False:
                 os.makedirs(path)
-            conn = sqlite3.connect(path + station + '.sqlite')
-            ENS_W.to_sql('All', conn, index=True)
+            
+            ENS_W.to_csv(path + station +'.csv')
 
 if __name__ == "__main__":
     main(sys.argv)

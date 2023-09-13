@@ -254,7 +254,8 @@ def main(args):
                 fcst_all = fcst_all.merge(fcst, on='datetime',how = 'left')
 
         ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
-        ENS_W.sort_index()
+        ENS_W.sort_index(axis=0)
+        
         print(ENS_W)
 
         if stat_type == 'CAT_':
@@ -274,7 +275,7 @@ def main(args):
             ENS_W.to_csv(path + station +'.csv')
             
         plt.plot(ENS_W)
-        plt.savefig('ENS_W')
+        plt.savefig('ENS_W'+ input_variable)
         
 if __name__ == "__main__":
     main(sys.argv)

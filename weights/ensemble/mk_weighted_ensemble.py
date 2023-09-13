@@ -106,7 +106,7 @@ if len(sys.argv) == 9:
     if time_domain not in ['60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']:
         raise Exception("Invalid time domain: Options: '60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7'")
     
-    if weight_type == 'CAT_' and 'SFCTC' not in input_variable:
+    if stat_type == 'CAT_' and 'SFCTC' in input_variable:
         raise Exception("Invalid input options. CAT_ can only be used with precip and wind variables NOT temp.")
 
 else:

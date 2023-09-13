@@ -347,7 +347,7 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
     
     start_date = datetime.strptime(start_date, '%y%m%d')
     end_date = datetime.strptime(end_date, '%y%m%d')
-
+    
     if weight_type == 'seasonal':
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
             for s in range(len(stats_cat)):
@@ -365,7 +365,8 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
                         
                         df3 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
                         df3 = df3*weight
-
+                    
+                    #fall has four dates as september is a year later than oct/nov as stats started in oct
                     elif len(seasons_dates[w]) > 2:
                         date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
                         date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
@@ -376,6 +377,8 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
                         df2 = df_all[(df_all.index >= date3) & (df_all.index < date4)]
                         df3 = pd.merge(df, df2)
                         df3 = df3*weight
+
+        
         else:
             for w in range(len(seasons_dates)):
                     f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
@@ -383,6 +386,7 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
                     
                     weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
                     weight = float(weight_file.iloc[:,0])
+                    print(model_df_name)
                     print(weight)
 
                     if len(seasons_dates[w]) == 2:
@@ -391,7 +395,7 @@ def mk_ensemble(weight_type, stat_type, model_df_name, start_date, end_date, df_
                         
                         df3 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
                         df3 = df3*weight
-
+                    
                     #fall has four dates as september is a year later than oct/nov as stats started in oct
                     elif len(seasons_dates[w]) > 2:
                         date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')

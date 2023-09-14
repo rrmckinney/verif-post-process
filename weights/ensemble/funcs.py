@@ -155,6 +155,10 @@ def check_dates(start_date, delta, filepath, variable, station):
         print( "  Not enough dates available for this model/station/variable")
         flag = False
     
+    elif int("20" + start_date) < int(sql_result[0]):
+        print("    Model collection started " + str(sql_result[0]) + ", which is after input start_date")
+        flag = False
+    
     cursor.close()
     
     return(flag)
@@ -298,6 +302,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                     df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
                     df = df.astype(float)*weight
                     df3 = pd.concat([df3,df])
+                    df3 = df3.sort_index()
                     
                     #make the weighted ensemble in the last column     
                     df3['ENS_W'] = df3.sum(axis=1)
@@ -314,7 +319,8 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                     df = pd.concat([df1, df2])
                     df = df*weight
                     df3 = pd.concat([df3,df])
-                    
+                    df3 = df3.sort_index()
+
                     #make the weighted ensemble in the last column     
                     df3['ENS_W'] = df3.sum(axis=1)
 
@@ -333,7 +339,8 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                         df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
                         df = df*weight
                         df3 = pd.concat([df3,df])
-
+                        df3 = df3.sort_index()
+                        
                         #make the weighted ensemble in the last column     
                         df3['ENS_W'] = df3.sum(axis=1)
 
@@ -349,7 +356,8 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                         df = pd.concat([df1, df2])
                         df = df*weight
                         df3 = pd.concat([df3,df])
-
+                        df3 = df3.sort_index()
+                        
                         #make the weighted ensemble in the last column     
                         df3['ENS_W'] = df3.sum(axis=1)
 
@@ -376,7 +384,8 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
 
                 df3 = df_all[(df_all.index >= start_date) & (df_all.index < end_date)]
                 df3 = df3*weight
-
+                df3 = df3.sort_index()
+                
                 #make the weighted ensemble in the last column     
                 df3['ENS_W'] = df3.mean(axis=1)
     

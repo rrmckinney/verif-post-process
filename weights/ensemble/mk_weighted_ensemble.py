@@ -256,7 +256,7 @@ def main(args):
         print(fcst_all)
         
         ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
-        ENS_W.sort_index(axis=0)
+        ENS_W.sort_index(axis=1)
         
         if stat_type == 'CAT_':
             

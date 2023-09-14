@@ -252,12 +252,12 @@ def main(args):
                     obs_df, station)
                     
                 fcst_all = fcst_all.merge(fcst, on='datetime',how = 'left')
-
+        
+        print(fcst_all)
+        
         ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
         ENS_W.sort_index(axis=0)
         
-        print(ENS_W)
-
         if stat_type == 'CAT_':
             
             path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'

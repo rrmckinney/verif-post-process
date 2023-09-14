@@ -1,13 +1,13 @@
 #!/bin/bash -l
 start_date='211001'
 end_date='221001'
-var='SFCTC'
+var='SFCWSPD'
 domain='small'
 weight_type='seasonal'
-stat_type='MAE_'
+stat_type='CAT_'
 k=100
 time_domain='60hr'
-stat_cat='NA'
+stat_cat='PSS'
 
 source /home/verif/.bash_profile
 conda activate verification

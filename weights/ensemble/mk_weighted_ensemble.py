@@ -21,6 +21,7 @@ from datetime import timedelta
 import sys
 import copy
 import matplotlib.pyplot as plt
+import time
 from funcs import *
 import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)
@@ -153,6 +154,9 @@ all_stations = ['3510']
 ###########################################################
 
 def main(args):
+
+    t = time.time() #get how long it takes to run
+
     #sys.stdout = open(logfilepath, "w") #opens log file
 
     date_list = listofdates(start_date, end_date, obs=False)
@@ -276,5 +280,11 @@ def main(args):
         plt.plot(ENS_W)
         plt.savefig('ENS_W'+ input_variable)
         
+        elapsed = time.time() - t #closes log file
+    
+    
+        print(elapsed)
+        print("It took " + str(round(elapsed/60)) + " minutes to run")
+
 if __name__ == "__main__":
     main(sys.argv)

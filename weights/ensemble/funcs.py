@@ -155,10 +155,6 @@ def check_dates(start_date, delta, filepath, variable, station):
         print( "  Not enough dates available for this model/station/variable")
         flag = False
     
-    elif int("20" + start_date) < int(sql_result[0]):
-        print("    Model collection started " + str(sql_result[0]) + ", which is after input start_date")
-        flag = False
-    
     cursor.close()
     
     return(flag)

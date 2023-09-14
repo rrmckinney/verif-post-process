@@ -386,7 +386,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                 
                 #make the weighted ensemble in the last column     
                 df3['ENS_W'] = df3.sum(axis=1)
-    plt.boxplot(df3)
+    #plt.boxplot(df3)
     plt.savefig('ENS_W_'+ variable + '_all')
     return(df3.ENS_W)
 

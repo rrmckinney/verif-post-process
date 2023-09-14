@@ -1,7 +1,7 @@
 #!/bin/bash -l
 start_date='211001'
 end_date='221001'
-var='SFCWSPD'
+var='PCPTOT'
 domain='small'
 weight_type='seasonal'
 stat_type='CAT_'

@@ -163,3 +163,83 @@ Traceback (most recent call last):
   File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/pandas/core/generic.py", line 407, in _get_axis_number
     raise ValueError(f"No axis named {axis} for object type {cls}")
 ValueError: No axis named 1 for object type <class 'pandas.core.series.Series'>
+/nfs/neltharion/oper_users/verif/verif-post-process/weights/ensemble/funcs.py:332: ParserWarning: Falling back to the 'python' engine because the 'c' engine does not support regex separators (separators > 1 char and different from '\s+' are interpreted as regex); you can avoid this warning by specifying engine='python'.
+  weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
+Performing Yearly calculation for 211001 to 221001
+    Now on station 3510
+Reading observational dataframe for SFCTC.. 
+Now on.. MM5_g2 for SFCTC
+Now on.. MM5_g3 for SFCTC
+Now on.. MM5_g4 for SFCTC
+Now on.. MM5G_g2 for SFCTC
+Now on.. MM5G_g3 for SFCTC
+Now on.. MM5G_g4 for SFCTC
+Now on.. MM5G_g5 for SFCTC
+Now on.. WRF3GEM_g2 for SFCTC
+Now on.. WRF3GEM_g3 for SFCTC
+Now on.. WRF3GEM_g4 for SFCTC
+Now on.. WRF3NAM_g2 for SFCTC
+Now on.. WRF3NAM_g3 for SFCTC
+Now on.. WRF3NAM_g4 for SFCTC
+Now on.. WRF3GFS_g2 for SFCTC
+Now on.. WRF3GFS_g3 for SFCTC
+Now on.. WRF3GFS_g4 for SFCTC
+Now on.. WRF3GFS_g5 for SFCTC
+    Model collection started 20211002, which is after input start_date
+   Skipping model WRF3NAVGEM_g2 (check_dates flag)
+    Model collection started 20211002, which is after input start_date
+   Skipping model WRF3NAVGEM_g3 (check_dates flag)
+    Model collection started 20211002, which is after input start_date
+   Skipping model WRF3NAVGEM_g4 (check_dates flag)
+Now on.. WRF3GFSgc01_g2 for SFCTC
+Now on.. WRF3GFSgc01_g3 for SFCTC
+Now on.. WRF3ARPEGE_g2 for SFCTC
+Now on.. WRF3ARPEGE_g3 for SFCTC
+Now on.. WRF4ICON_g2 for SFCTC
+Now on.. WRF4ICON_g3 for SFCTC
+    Model collection started 20211108, which is after input start_date
+   Skipping model WRF4NAM_g2 (check_dates flag)
+    Model collection started 20211108, which is after input start_date
+   Skipping model WRF4NAM_g3 (check_dates flag)
+    Model collection started 20211108, which is after input start_date
+   Skipping model WRF4NAM_g4 (check_dates flag)
+Now on.. NMM3NAM_g2 for SFCTC
+Now on.. NMM3NAM_g3 for SFCTC
+Now on.. NMM3NAM_g4 for SFCTC
+Now on.. NMM3GFS_g2 for SFCTC
+Now on.. NMM3GFS_g3 for SFCTC
+Now on.. WRF2NAM_g1 for SFCTC
+Now on.. WRF2NAM_g2 for SFCTC
+Now on.. WRF2NAM_g3 for SFCTC
+Now on.. WRF2NAM81_g1 for SFCTC
+Now on.. WRF2NAM81_g2 for SFCTC
+Now on.. WRF2NAM81_g3 for SFCTC
+Now on.. WRF2GFS_g1 for SFCTC
+Now on.. WRF2GFS_g2 for SFCTC
+Now on.. WRF2GFS_g3 for SFCTC
+Now on.. WRF2GFS81_g1 for SFCTC
+Now on.. WRF2GFS81_g2 for SFCTC
+Now on.. WRF2GFS81_g3 for SFCTC
+    Model collection started 20220306, which is after input start_date
+   Skipping model WRF4RDPS_g3 (check_dates flag)
+    Model collection started 20220306, which is after input start_date
+   Skipping model WRF4RDPS_g4 (check_dates flag)
+    Model collection started 20220306, which is after input start_date
+   Skipping model WRF4RDPS_g5 (check_dates flag)
+Now on.. MPAS25_g1 for SFCTC
+Now on.. MPAS25_g2 for SFCTC
+                     MM5_g2  MM5_g3  MM5_g4  ...  WRF2GFS81_g3  MPAS25_g1  MPAS25_g2
+datetime                                     ...                                    
+2021-10-01 00:00:00    12.6    13.7    13.9  ...          12.6       11.4       12.8
+2021-10-01 01:00:00    12.8    13.9    14.0  ...          11.9       11.0       12.5
+2021-10-01 02:00:00    12.5    13.9    14.2  ...          11.9       11.0       12.3
+2021-10-01 03:00:00    12.3    13.4    13.4  ...          11.7       11.0       12.2
+2021-10-01 04:00:00    12.2    12.9    12.7  ...          11.4       10.9       12.1
+...                     ...     ...     ...  ...           ...        ...        ...
+2022-10-08 19:00:00     7.3     6.8     6.1  ...           7.8        0.5        3.0
+2022-10-08 20:00:00     7.3     6.6     5.9  ...           7.5        0.0        2.6
+2022-10-08 21:00:00     7.1     6.5     5.7  ...           7.3       -0.6        2.4
+2022-10-08 22:00:00     7.1     6.4     5.8  ...           7.4       -1.6        2.0
+2022-10-08 23:00:00     7.2     6.4     5.6  ...           7.4       -2.0        1.9
+
+[8952 rows x 42 columns]

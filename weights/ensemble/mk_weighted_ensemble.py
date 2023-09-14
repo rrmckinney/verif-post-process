@@ -40,7 +40,7 @@ fcst_filepath = "/verification/Forecasts/"
 station_file = '/home/verif/verif-post-process/input/station_list_master.txt'
 
 #description file for models
-models_file = '/home/verif/verif-post-process/input/model_list.txt'
+models_file = '/home/verif/verif-post-process/input/model_list_weights.txt'
 
 #folder where stats save
 textfile_folder = '/verification/weighted-Statistics/'
@@ -118,10 +118,10 @@ else:
     raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
-#models = np.loadtxt(models_file,usecols=0,dtype='str')
-#grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
-#gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
-#hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
+models = np.loadtxt(models_file,usecols=0,dtype='str')
+grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
+gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
+hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
 
 station_df = pd.read_csv(station_file)
 
@@ -143,10 +143,10 @@ stations_with_PCPT6 = ['3510']
 
 all_stations = ['3510']
 
-models = ['MM5']
-grids = grids = np.loadtxt(models_file,usecols=1,dtype='str',max_rows = 2) 
-gridres = gridres = np.loadtxt(models_file,usecols=2,dtype='str',max_rows = 2)
-hours = hours = np.loadtxt(models_file,usecols=3,dtype='str', max_rows = 2)
+#models = ['MM5']
+#grids = grids = np.loadtxt(models_file,usecols=1,dtype='str',max_rows = 2) 
+#gridres = gridres = np.loadtxt(models_file,usecols=2,dtype='str',max_rows = 2)
+#hours = hours = np.loadtxt(models_file,usecols=3,dtype='str', max_rows = 2)
 
 ###########################################################
 ### -------------------- MAIN FUNCTION --------------------

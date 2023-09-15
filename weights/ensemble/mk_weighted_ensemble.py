@@ -259,25 +259,27 @@ def main(args):
         
         print(fcst_all)
         
-        #ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
+        ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
         
-        #if stat_type == 'CAT_':
+        if stat_type == 'CAT_':
             
-        #   path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
-        #    if os.path.isdir(path) == False:
-        #       os.makedirs(path)
+           path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
+           if os.path.isdir(path) == False:
+              os.makedirs(path)
             
-        #   ENS_W.to_csv(path + station +'.csv')
+           ENS_W.to_csv(path + station +'.csv')
 
-        #else:
-        #   path = save_folder + weight_type + '/' + stat_type + '/' + input_variable + '/'
+        else:
+          path = save_folder + weight_type + '/' + stat_type + '/' + input_variable + '/'
             
-        #   if os.path.isdir(path) == False:
-        #       os.makedirs(path)
+          if os.path.isdir(path) == False:
+              os.makedirs(path)
             
-        #   ENS_W.to_csv(path + station +'.csv')
+          ENS_W.to_csv(path + station +'.csv')
         
+        plt.figsize(10, 30)
         plt.plot(fcst_all)
+        plt.plot(ENS_W)
         plt.savefig('all_fcst_raw_'+input_variable)
         
         elapsed = time.time() - t #closes log file

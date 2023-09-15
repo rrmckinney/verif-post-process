@@ -280,7 +280,7 @@ def main(args):
         plt.figsize(10, 30)
         plt.plot(fcst_all)
         plt.plot(ENS_W)
-        plt.savefig('all_fcst_raw_'+input_variable)
+        plt.savefig('all_fcst_'+input_variable)
         
         elapsed = time.time() - t #closes log file
     

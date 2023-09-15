@@ -1,10 +1,10 @@
 #!/bin/bash -l
 start_date='211001'
 end_date='221001'
-var='PCPT6'
+var='SFCTC_KF'
 domain='small'
-weight_type='seasonal'
-stat_type='CAT_'
+weight_type='yearly'
+stat_type='MAE_'
 k=100
 time_domain='60hr'
 stat_cat='PSS'

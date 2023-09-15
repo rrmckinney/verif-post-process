@@ -277,7 +277,8 @@ def make_leaderboard_sorted(var, var_name, var_unit, time_domain, time_label,MAE
     MAE_sorted, modelnames_sortedMAE,modelcolors_sortedMAE = zip(*sorted(zip(MAE, modelnames,modelcolors),reverse=True))
     RMSE_sorted, modelnames_sortedRMSE,modelcolors_sortedRMSE = zip(*sorted(zip(RMSE, modelnames,modelcolors),reverse=True))
     corr_sorted, modelnames_sortedcorr,modelcolors_sortedcorr = zip(*sorted(zip(corr, modelnames,modelcolors)))
-    
+   
+    print(MAE_sorted)
     #plotting
     x = np.arange(len(modelnames))
     width = 0.6

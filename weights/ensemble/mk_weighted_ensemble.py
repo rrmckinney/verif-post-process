@@ -189,7 +189,7 @@ def main(args):
             station = "0" + str(station)
 
         if input_variable == "PCPT6":       
-            obs_df = PCPT_obs_df_6(date_list_obs, delta, input_variable, station, start_date, end_date)
+            obs_df = PCPT_obs_df_6(date_list_obs, delta, input_variable, station, start_date, end_date, all_stations)
             
         else:
             obs_df = get_all_obs(delta, station,  input_variable, start_date, end_date, date_list_obs, all_stations)

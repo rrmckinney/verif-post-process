@@ -428,10 +428,10 @@ def fcst_grab(station_df, savetype, stat_type, k, weight_type, filepath, delta, 
     else:
         return(all_fcst, model_df_name)
 
-def PCPT_obs_df_6(date_list_obs, delta, variable, station, start_date, end_date):
+def PCPT_obs_df_6(date_list_obs, delta, variable, station, start_date, end_date,all_stations):
 
     # get the hourly precip values
-    obs_df_1 = get_all_obs(delta, station,  'PCPTOT', start_date, end_date, date_list_obs)
+    obs_df_1 = get_all_obs(delta, station,  'PCPTOT', start_date, end_date, date_list_obs, all_stations)
     
     # grab the extra hour on the last outlook day
     obs_df_1 = obs_df_1.append(obs_df_1.iloc[60],ignore_index=True)
@@ -444,7 +444,7 @@ def PCPT_obs_df_6(date_list_obs, delta, variable, station, start_date, end_date)
     obs_df_1_trimmed = obs_df_1.groupby(obs_df_1.index // 6).apply(pd.DataFrame.sum,skipna=False)
 
     #grab the 6-hr accum precip values
-    obs_df_6 = get_all_obs(delta, station,  'PCPT6', start_date, end_date, date_list_obs)
+    obs_df_6 = get_all_obs(delta, station,  'PCPT6', start_date, end_date, date_list_obs, all_stations)
         
     # grab the extra hour on the last outlook day
     obs_df_6 = obs_df_6.append(obs_df_6.iloc[60],ignore_index=True)

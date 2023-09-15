@@ -223,18 +223,18 @@ def get_all_obs(delta, station, variable, start_date, end_date, date_list_obs, a
     for i in range(len(obs_all)):
         
         if variable == 'SFCTC_KF' or variable == 'SFCTC':
-            if obs_all[i] > temp_max:
-                obs_all[i] = np.nan
-            if obs_all[i] < temp_min:
-                obs_all[i] = np.nan
+            if obs_all.Val[i] > temp_max:
+                obs_all.Val[i] = np.nan
+            if obs_all.Val[i] < temp_min:
+                obs_all.Val[i] = np.nan
         
         if variable == 'SFCWSPD_KF' or variable == 'SFCWSPD':
-            if obs_all[i] > wind_threshold:
-                obs_all[i] = np.nan
+            if obs_all.Val[i] > wind_threshold:
+                obs_all.Val[i] = np.nan
         
         if variable == 'PCPTOT':
-            if obs_all[i] > precip_threshold:
-                obs_all[i] = np.nan
+            if obs_all.Val[i] > precip_threshold:
+                obs_all.Val[i] = np.nan
 
     final_obs = np.array(obs_all).T #84 x 7   (30) 
 

@@ -216,9 +216,9 @@ def get_all_obs(delta, station, variable, start_date, end_date, date_list_obs, a
     
     obs = obs.set_index('datetime')
     
-    df_all = df_new.join(obs, on='datetime')
+    obs_all = df_new.join(obs, on='datetime')
     
-    obs_all = df_all['Val']
+    #obs_all = df_all['Val']
     # remove data that falls outside the physical bounds (higher than the verified records for Canada
     for i in range(len(obs_all)):
         

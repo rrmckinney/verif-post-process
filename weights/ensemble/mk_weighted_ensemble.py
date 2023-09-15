@@ -276,8 +276,10 @@ def main(args):
                 os.makedirs(path)
             
             ENS_W.to_csv(path + station +'.csv')
-            
+        
         plt.plot(ENS_W)
+        plt.plot(fcst_all)
+        plt.plot(obs_df)
         plt.savefig('ENS_W'+ input_variable)
         
         elapsed = time.time() - t #closes log file

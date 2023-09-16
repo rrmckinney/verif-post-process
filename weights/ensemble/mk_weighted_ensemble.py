@@ -278,7 +278,7 @@ def main(args):
           ENS_W.to_csv(path + station +'.csv')
         
         plt.figure(figsize=(30,10))
-        plt.plot(fcst_all)
+        plt.plot(ENS_W.index, obs_df)
         plt.plot(ENS_W, 'ko')
         plt.savefig('all_fcst_'+input_variable)
         

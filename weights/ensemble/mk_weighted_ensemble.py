@@ -277,10 +277,15 @@ def main(args):
             
           ENS_W.to_csv(path + station +'.csv')
         
-        plt.figure(figsize=(30,10))
-        plt.plot(obs_df.index, obs_df)
-        plt.plot(ENS_W, 'ko')
-        plt.savefig('obs_ens_'+input_variable)
+        fig, axs = plt.subplots(2, figsize=(50,10))
+        
+        axs[0].plot(obs_df)
+        axs[0].plot(ENS_W, 'ko')
+        
+        axs[1].plot(fcst_all)
+        axs[1].plot(ENS_W, 'ko')
+
+        plt.savefig('obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+stat_type+'_'+stat_cat)
         
         elapsed = time.time() - t #closes log file
     

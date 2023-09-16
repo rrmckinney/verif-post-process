@@ -236,9 +236,9 @@ def get_all_obs(delta, station, variable, start_date, end_date, date_list_obs, a
             if obs_all.Val[i] > precip_threshold:
                 obs_all.Val[i] = np.nan
 
-    final_obs = np.array(obs_all).T #84 x 7   (30) 
+    # final_obs = np.array(obs_all).T #84 x 7   (30) 
 
-    obs_df[station] = final_obs.flatten()
+    # obs_df[station] = final_obs.flatten()
     
     return(obs_df)
 

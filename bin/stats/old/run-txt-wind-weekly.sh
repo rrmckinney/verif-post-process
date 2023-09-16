@@ -8,8 +8,8 @@ conda activate verification
 
 cd /home/verif/verif-post-process/src/
 
-start_date='230826'
-end_date='230901'
+start_date='230804'
+end_date='230810'
 
 
 #python3 leaderboards-txt-sqlite2.py $start_date $end_date SFCTC small > log/lb_txt_SFCTC_sm.log

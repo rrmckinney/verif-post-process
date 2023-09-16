@@ -67,6 +67,7 @@ if len(sys.argv) == 5:
     #subtract 6 to match boreas time, might need to change in future
     today = datetime.datetime.now() - datetime.timedelta(hours=6) 
     needed_date = today - datetime.timedelta(days=8) #might need to change to 7
+    print(today)
     if input_startdate > needed_date.date():
         raise Exception("Date too recent. Need start date to be at least 8 days ago.")
 

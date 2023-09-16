@@ -279,7 +279,7 @@ def main(args):
         
         plt.figure(figsize=(30,10))
         plt.plot(fcst_all)
-        plt.plot(ENS_W)
+        plt.plot(ENS_W, 'ko')
         plt.savefig('all_fcst_'+input_variable)
         
         elapsed = time.time() - t #closes log file

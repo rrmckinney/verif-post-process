@@ -1,4 +1,5 @@
-Performing WEEKLY calculation for 230825 to 230831
+2023-09-16 22:20:50.302748
+Performing WEEKLY calculation for 230901 to 230907
 Reading observational dataframe for SFCWSPD_KF.. 
     Now on station 2162
     Now on station 1972
@@ -873,8 +874,8 @@ Now on.. NMM3NAM_g4 for SFCWSPD_KF
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
    Skipping station 0398 (No forecast data)
-   Skipping station 0411 (No forecast data)
-Now on.
+   Skipping 
+   Skipping station 0397 (No obs data)
    Skipping station 0400 (No obs data)
    Skipping station 0413 (No obs data)
    Skipping station 0395 (No obs data)
@@ -1155,7 +1156,8 @@ Now on.. ENS_LR for PCPTOT
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
-pping station 0402 (No forecast data)
+DONE!
+station 0402 (No forecast data)
    Skipping station 0397 (No forecast data)
    Skipping station 0404 (No forecast data)
    Skipping station 0400 (No forecast data)
@@ -1344,3 +1346,4 @@ Now on.. ENS_LR for SFCWSPD_KF
    Skipping station 0399 (No forecast data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
+DONE!

@@ -1,4 +1,5 @@
-Performing WEEKLY calculation for 230825 to 230831
+2023-09-16 23:15:34.221039
+Performing WEEKLY calculation for 230901 to 230907
 Reading observational dataframe for SFCTC_KF.. 
     Now on station 2162
     Now on station 1972
@@ -1341,3 +1342,4 @@ Now on.. ENS_LR for SFCTC_KF
    Skipping station 0399 (No forecast data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
+DONE!

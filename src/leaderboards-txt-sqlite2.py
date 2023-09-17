@@ -195,6 +195,6 @@ def main(args):
 
            
            get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savetype, all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, stations_with_PCPT24)
-
+    print('DONE!')
 if __name__ == "__main__":
     main(sys.argv)

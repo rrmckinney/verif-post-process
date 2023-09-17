@@ -342,38 +342,38 @@ def make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2,
         modelpath = model + '/' + grid + '/'
     f1 = open(textfile_folder + modelpath + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
     read_f1 = np.loadtxt(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-    if date_entry1 not in read_f1 and date_entry2 not in read_f1:
-        f1.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-        
-        f1.write("%3.3f   " % (MAE))
-        f1.write(len_fcst + "   ")
-        f1.write(numstations + "\n")
+    #if date_entry1 not in read_f1 and date_entry2 not in read_f1:
     
-        f1.close()    
-            
+    f1.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+        
+    f1.write("%3.3f   " % (MAE))
+    f1.write(len_fcst + "   ")
+    f1.write(numstations + "\n")
+    
+    f1.close()    
     
     f2 = open(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
     read_f2 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-    if date_entry1 not in read_f2 and date_entry2 not in read_f2:
-        f2.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+    #if date_entry1 not in read_f2 and date_entry2 not in read_f2:
+    f2.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         
-        f2.write("%3.3f   " % (RMSE))
-        f2.write(len_fcst + "   ")
-        f2.write(numstations + "\n")
+    f2.write("%3.3f   " % (RMSE))
+    f2.write(len_fcst + "   ")
+    f2.write(numstations + "\n")
         
-        f2.close()  
+    f2.close()  
     
     
     f3 = open(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+") 
     read_f3 = np.loadtxt(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
-    if date_entry1 not in read_f3 and date_entry2 not in read_f3:
-        f3.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+    #if date_entry1 not in read_f3 and date_entry2 not in read_f3:
+    f3.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         
-        f3.write("%3.3f   " % (corr))
-        f3.write(len_fcst + "   ")
-        f3.write(numstations + "\n")
+    f3.write("%3.3f   " % (corr))
+    f3.write(len_fcst + "   ")
+    f3.write(numstations + "\n")
         
-        f3.close()  
+    f3.close()  
 
 
 def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain):
@@ -465,7 +465,7 @@ def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_
             
             len_fcst = str(len(fcst_noNaNs)) + "/" + str(length)   
             numstations = str(num_stations) + "/" + str(totalstations)
-                
+            
             make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2, time_domain, variable, filepath, MAE, RMSE, corr, len_fcst, numstations)
 
 def model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,hour,length,totalstations,time_domain,variable,filepath):

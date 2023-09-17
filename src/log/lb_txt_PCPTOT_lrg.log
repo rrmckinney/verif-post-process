@@ -1,4 +1,4 @@
-2023-09-16 09:05:13.595270
+2023-09-16 16:09:07.831526
 Performing WEEKLY calculation for 230804 to 230810
 Reading observational dataframe for PCPTOT.. 
     Now on station 3320
@@ -1193,3 +1193,4 @@ Now on.. ENS_LR for PCPTOT
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+DONE!

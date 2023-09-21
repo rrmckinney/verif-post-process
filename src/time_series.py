@@ -130,35 +130,34 @@ def get_statistics(variable,time_domain):
                 
                 data_check = False 
                 
-                MAE_start = MAE_txt['start']
-                MAE_end = MAE_txt['end']
+                MAE_start = MAE_txt['start'].to_numpy()
+                MAE_end = MAE_txt['end'].to_numpy()
                 
-                if date_entry1 in MAE_start and date_entry2 in MAE_end:
+                if int(date_entry1) in MAE_start and int(date_entry2) in MAE_end:
                     data_check = True
                 else:
                     print("   **Skipping " + model + grid + ", no data yet**")
                     skipped_modelnames.append(legend_labels[leg_count] + ":  (none)")
                     leg_count = leg_count+1
                     continue
-
-                start_ind = np.where(MAE_start == date_entry1)[0]
-                end_ind = np.where(MAE_end == date_entry2)[0]
+                start_ind = np.where(MAE_start == int(date_entry1))
+                end_ind = np.where(MAE_end == int(date_entry2))
                 
                 if np.size(start_ind)==0:
                     start_ind=[0]
-    
-                MAE_list = np.loadtxt(MAE_file,usecols=2,dtype=float)[start_ind[0]:end_ind[0]+1]
-                startdate_list = np.loadtxt(MAE_file,usecols=0,dtype=str)[start_ind[0]:end_ind[0]+1]
+                
+                MAE_list = np.loadtxt(MAE_file,usecols=2,dtype=float)[start_ind[0][0]:end_ind[0][0]]
+                startdate_list = np.loadtxt(MAE_file,usecols=0,dtype=str)[start_ind[0][0]:end_ind[0][0]]
     
                 RMSE_file = textfile_folder +  modelpath + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"
-                RMSE_list = np.loadtxt(RMSE_file,usecols=2,dtype=float)[start_ind[0]:end_ind[0]+1]
+                RMSE_list = np.loadtxt(RMSE_file,usecols=2,dtype=float)[start_ind[0][0]:end_ind[0][0]]
                 
                 spcorr_file = textfile_folder +  modelpath + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"               
-                spcorr_list = np.loadtxt(spcorr_file,usecols=2,dtype=float)[start_ind[0]:end_ind[0]+1]
+                spcorr_list = np.loadtxt(spcorr_file,usecols=2,dtype=float)[start_ind[0][0]:end_ind[0][0]]
                   
                 
                 # the ratios are the same for each statistic, so only checked once
-                dataratio = np.loadtxt(MAE_file,usecols=3,dtype=str)[start_ind[0]:end_ind[0]+1]
+                dataratio = np.loadtxt(MAE_file,usecols=3,dtype=str)[start_ind[0][0]:end_ind[0][0]]
                 expected = [i.split('/')[1] for i in dataratio]
                 actual = [i.split('/')[0] for i in dataratio]
                 

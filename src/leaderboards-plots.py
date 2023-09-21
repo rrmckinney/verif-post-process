@@ -86,7 +86,7 @@ time_labels = ['outlook hours 1-60','outlook hours 1-84','outlook hours 1-120','
 
 #stations = np.loadtxt(station_file,usecols=0,delimiter=',',dtype='str')
 
-variables = ['SFCTC_KF','SFCTC', 'PCPTOT', 'SFCWSPD_KF',  'PCPT6']
+variables = ['SFCTC_KF','SFCTC', 'PCPTOT', 'SFCWSPD_KF','SFCWSPD',  'PCPT6']
 variable_names = ['Temperature-KF','Temperature-Raw', 'Hourly Precipitation', 'Wind Speed-KF ','Wind Speed-Raw', '6-Hour Accumulated Precipitation']
 variable_units = ['[C]','[C]', '[mm/hr]','[km/hr]', '[km/hr]', '[mm/6hr]']
 
@@ -500,7 +500,7 @@ def main(args):
         for time_domain in time_domains:
             
             time_label = time_labels[time_count]
-            
+                                        
             if var == "APCP24" and time_domain in ['60hr','84hr','120hr','180hr']:
                 time_count = time_count+1
                 continue

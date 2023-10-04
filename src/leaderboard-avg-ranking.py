@@ -56,16 +56,18 @@ else:
     raise Exception("Invalid input entries. Needs time and input domain.")
 
 
-time_domains = ['60hr','84hr','120hr','180hr','day1','day2','day3','day4','day5','day6','day7']
+#time_domains = ['60hr','84hr','120hr','180hr','day1','day2','day3','day4','day5','day6','day7']
+time_domains = ['60hr']
 
-time_labels = ['outlook hours 1-60','outlook hours 1-84','outlook hours 1-120','outlook hours 1-180',
-               'day 1 outlook (hours 1-24)','day 2 outlook (hours 25-48)','day 3 outlook (hours 49-72)',
-               'day 4 outlook (hours 73-96)','day 5 outlook (hours 97-120)','day 6 outlook (hours 121-144)',
-               'day 7 outlook (hours 145-168)']
+#time_labels = ['outlook hours 1-60','outlook hours 1-84','outlook hours 1-120','outlook hours 1-180',
+               #'day 1 outlook (hours 1-24)','day 2 outlook (hours 25-48)','day 3 outlook (hours 49-72)',
+               #'day 4 outlook (hours 73-96)','day 5 outlook (hours 97-120)','day 6 outlook (hours 121-144)',
+               #'day 7 outlook (hours 145-168)']
+time_labels = ['outlook hours 1-60']
 
-variables = ['SFCTC_KF','PCPTOT', 'SFCWSPD_KF',  'PCPT6']
-variable_names = ['Temperature-KF','Hourly Precipitation', 'Wind Speed-KF ', '6-Hour Accumulated Precipitation']
-variable_units = ['[C]', '[mm/hr]','[km/hr]', '[mm/6hr]']
+variables = ['SFCTC_KF','SFCTC']#,'PCPTOT', 'SFCWSPD_KF','SFCWSPD',  'PCPT6']
+variable_names = ['Temperature-KF','Temperature-Raw']#,'Hourly Precipitation', 'Wind Speed-KF ','Wind Speed-Raw', '6-Hour Accumulated Precipitation']
+variable_units = ['[C]','[C]']#, '[mm/hr]','[km/hr]','[km/hr]', '[mm/6hr]']
 
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
@@ -92,15 +94,18 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 
 date_test_file = textfile_folder + 'ENS/'+ input_domain+ '/SFCTC_KF/MAE_' + str(savetype) + '_SFCTC_KF_60hr_' + input_domain + '.txt'
 
-startdate = np.loadtxt(date_test_file,usecols=0,dtype='str',max_rows=1)
-#enddate = np.loadtxt(date_test_file,usecols=1,dtype='str',max_rows=1)
-enddate = '230728'
+test_list = pd.read_csv(date_test_file, sep = '\s+', names = ['start_date', 'end_date', 'val', '#_times', '#_points'])
+test_list = test_list.sort_values('start_date', ignore_index=True)
+
+startdate = test_list.start_date[0]
+enddate = test_list.end_date[len(test_list.end_date)-1]
 
 input_startdate = datetime.datetime.strptime(str(startdate), "%y%m%d").date()
 print_startdate = datetime.datetime.strftime(input_startdate,"%m/%d/%y")
 
 input_enddate = datetime.datetime.strptime(str(enddate), "%y%m%d").date()
 print_enddate = datetime.datetime.strftime(input_enddate,"%m/%d/%y")
+print(enddate, startdate)
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------
 ###########################################################
@@ -126,12 +131,14 @@ def get_rankings(variable,time_domain):
                 modelpath = model + '/' + grid + '/'+ input_domain +  '/' + variable + '/'
                 
             MAE_file = textfile_folder +  modelpath + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"
-            print(MAE_file)           
             #skips time_domains that dont exist for this model
             if os.path.isfile(MAE_file):
+                
+                MAE_list = pd.read_csv(MAE_file, sep = '\s+', names = ['start_date', 'end_date', 'val', '#_times', '#_points'])
+                MAE_list = MAE_list.sort_values('start_date', ignore_index=True) 
+                print(MAE_list)
+                MAE_list = np.array(MAE_list.val)
 
-                MAE_list = np.loadtxt(MAE_file,usecols=2,dtype=float)
-    
                 #counts lines in file
                 with open(MAE_file, 'r') as fp:
                     for count, line in enumerate(fp):
@@ -140,11 +147,17 @@ def get_rankings(variable,time_domain):
                 if count+1 > 1:
 
                     RMSE_file = textfile_folder +  modelpath  + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"
-                    RMSE_list = np.loadtxt(RMSE_file,usecols=2,dtype=float)
-                    
+                    RMSE_list = pd.read_csv(RMSE_file, sep = '\s+', names = ['start_date', 'end_date', 'val', '#_times', '#_points'])
+                    RMSE_list = RMSE_list.sort_values('start_date', ignore_index=True)
+                    RMSE_list = np.array(RMSE_list.val)
+                   
+
                     corr_file = textfile_folder +  modelpath + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"
-                    corr_list = np.loadtxt(corr_file,usecols=2,dtype=float)
-                      
+                    corr_list = pd.read_csv(corr_file, sep = '\s+', names = ['start_date', 'end_date', 'val', '#_times', '#_points'])
+                    corr_list = corr_list.sort_values('start_date', ignore_index=True)
+                    corr_list = np.array(corr_list.val)
+
+
                     # the ratios are the same for each statistic, so only checked once
                     dataratio = np.loadtxt(MAE_file,usecols=3,dtype=str)
     
@@ -152,9 +165,9 @@ def get_rankings(variable,time_domain):
                     actual = [i.split('/')[0] for i in dataratio]
                 
                     #nans any value where less than half datapoints were there
-                    MAE_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else MAE_list[x] for x in range(len(MAE_list))] 
-                    RMSE_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else RMSE_list[x] for x in range(len(RMSE_list))] 
-                    corr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else corr_list[x] for x in range(len(corr_list))] 
+                    #MAE_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else MAE_list[x] for x in range(len(MAE_list))] 
+                    #RMSE_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else RMSE_list[x] for x in range(len(RMSE_list))] 
+                    #corr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else corr_list[x] for x in range(len(corr_list))] 
                          
                     all_MAE_lists.append(MAE_list)
                     all_RMSE_lists.append(RMSE_list)
@@ -171,7 +184,6 @@ def get_rankings(variable,time_domain):
             leg_count=leg_count+1
                 
         color_count=color_count+1
-        
      return(all_MAE_lists,all_RMSE_lists,all_corr_lists,modelnames,modelcolors)
  
 def get_ranking_mean(MAE,RMSE,corr,modelnames,modelcolors):
@@ -299,7 +311,6 @@ def get_obs_dates(time_domain):
     return(obs_dates)     
 
 def make_leaderboard_sorted(var, var_name, var_unit, time_domain, time_label,MAE,RMSE,corr,num_weeks,missing_weeks,edited_modelnames,modelnames,stat_type):     
-    print(MAE)
     MAE_sorted, modelnames_MAE, colors_MAE = zip(*sorted(zip(MAE[0], MAE['edited_names'],MAE['colors']),reverse=True))
     RMSE_sorted, modelnames_RMSE, colors_RMSE = zip(*sorted(zip(RMSE[0], RMSE['edited_names'], RMSE['colors']),reverse=True))
     corr_sorted, modelnames_corr, colors_corr = zip(*sorted(zip(corr[0], corr['edited_names'], corr['colors']),reverse=True))
@@ -316,7 +327,6 @@ def make_leaderboard_sorted(var, var_name, var_unit, time_domain, time_label,MAE
     obs_dates = get_obs_dates(time_domain)
 
     fig.suptitle(var_name + ' ' + savetype + ' ' + stat_type + ' rankings from ' + str(obs_dates) + " for " + time_label + "  [model init dates: " + str(print_startdate) + '-' + str(print_enddate) + " (" + str(num_weeks) + " " + savetype[:-2] + "s)]" ,fontsize=25)
-    
     ax1.barh(x, MAE_sorted, width,color=colors_MAE,edgecolor='k',linewidth=2.5)
     ax1.set_yticks(x)
     ax1.set_yticklabels(modelnames_MAE,fontsize=18)
@@ -395,7 +405,9 @@ def main(args):
 
     
             time_count = time_count+1
-
+        print(num_weeks_med)
+        print(var)
+        print(var_i)
         var_i=var_i+1
             
     #sys.stdout.close() #close log file

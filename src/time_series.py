@@ -125,7 +125,7 @@ def get_statistics(variable,time_domain):
            #skips time_domains that dont exist for this model
             if os.path.isfile(MAE_file):
                 MAE_txt = pd.read_csv(MAE_file, sep="   | ", names=['start', 'end','stat', 'num hours', 'num stations'])
-                MAE_txt = MAE_txt.sort_values(by=['start'])
+                MAE_txt = MAE_txt.sort_values(by=['start'], ignore_index=True)
                 MAE_txt = MAE_txt.drop_duplicates()
                 
                 data_check = False 
@@ -146,30 +146,35 @@ def get_statistics(variable,time_domain):
                 if np.size(start_ind)==0:
                     start_ind=[0]
                 
-                MAE_list = np.loadtxt(MAE_file,usecols=2,dtype=float)[start_ind[0][0]:end_ind[0][0]]
-                startdate_list = np.loadtxt(MAE_file,usecols=0,dtype=str)[start_ind[0][0]:end_ind[0][0]]
-    
+                MAE_list = MAE_txt.stat.to_numpy()
+                startdate_list = MAE_start
+                
                 RMSE_file = textfile_folder +  modelpath + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"
-                RMSE_list = np.loadtxt(RMSE_file,usecols=2,dtype=float)[start_ind[0][0]:end_ind[0][0]]
-                
+                RMSE_txt = pd.read_csv(RMSE_file, sep="   | ", names=['start', 'end','stat', 'num hours', 'num stations'])
+                RMSE_txt = RMSE_txt.sort_values(by=['start'], ignore_index=True)
+                RMSE_txt = RMSE_txt.drop_duplicates()
+                RMSE_list = RMSE_txt.stat.to_numpy()
+
                 spcorr_file = textfile_folder +  modelpath + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"               
-                spcorr_list = np.loadtxt(spcorr_file,usecols=2,dtype=float)[start_ind[0][0]:end_ind[0][0]]
-                  
-                
+                spcorr_txt = pd.read_csv(spcorr_file, sep="   | ", names=['start', 'end','stat', 'num hours', 'num stations'])
+                spcorr_txt = spcorr_txt.sort_values(by=['start'], ignore_index=True)
+                spcorr_txt = spcorr_txt.drop_duplicates() 
+                spcorr_list = spcorr_txt.stat.to_numpy()
+
                 # the ratios are the same for each statistic, so only checked once
                 dataratio = np.loadtxt(MAE_file,usecols=3,dtype=str)[start_ind[0][0]:end_ind[0][0]]
                 expected = [i.split('/')[1] for i in dataratio]
                 actual = [i.split('/')[0] for i in dataratio]
                 
                 #nans any value where less than half datapoints were there
-                MAE_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else MAE_list[x] for x in range(len(MAE_list))] 
-                RMSE_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else RMSE_list[x] for x in range(len(RMSE_list))] 
-                spcorr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else spcorr_list[x] for x in range(len(spcorr_list))] 
+                #MAE_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else MAE_list[x] for x in range(len(MAE_list))] 
+                #RMSE_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else RMSE_list[x] for x in range(len(RMSE_list))] 
+                #spcorr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else spcorr_list[x] for x in range(len(spcorr_list))] 
                 
                 all_MAE_lists.append(MAE_list)
                 all_RMSE_lists.append(RMSE_list)
                 all_spcorr_lists.append(spcorr_list)
-                print(all_MAE_lists)
+                
                 all_startdate_lists.append(startdate_list)
                 modelnames.append(legend_labels[leg_count])
                 modelcolors.append(model_colors[color_count])
@@ -180,7 +185,6 @@ def get_statistics(variable,time_domain):
             leg_count=leg_count+1
                 
         color_count=color_count+1
-        
      return(all_MAE_lists,all_RMSE_lists,all_spcorr_lists,all_startdate_lists,modelnames,modelcolors)
             
                    
@@ -215,18 +219,18 @@ def plot_timeseries(var, var_name, var_unit, time_domain, MAE,RMSE,spcorr,startd
     elif savetype=="weekly":
         plt.xlabel('verification ' + savetype[:-2] + ' (first initialization date of week)',fontsize=18)
         
-    plt.xticks(fontsize=18,rotation=45)
+    plt.xticks(fontsize=12,rotation=45)
     
     ax1.set_title('Mean absolute error',fontsize=18)
-    ax1.tick_params(axis = 'both', labelsize = 18)
+    ax1.tick_params(axis = 'both', labelsize = 12)
     ax1.set_ylabel(var_name + " MAE " + var_unit,fontsize=16)
     
     ax2.set_title('Root-mean-squared error',fontsize=18)
-    ax2.tick_params(axis = 'both', labelsize = 18)
+    ax2.tick_params(axis = 'both', labelsize = 12)
     ax2.set_ylabel(var_name + " RMSE " + var_unit,fontsize=16)
     
     ax3.set_title('Spearmans Correlation',fontsize=18)
-    ax3.tick_params(axis = 'both', labelsize = 18)
+    ax3.tick_params(axis = 'both', labelsize = 12)
     ax3.set_ylabel(var_name + " Spearmans Correlation",fontsize=16)
 
 

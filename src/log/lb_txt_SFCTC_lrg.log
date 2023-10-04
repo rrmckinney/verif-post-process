@@ -1,5 +1,5 @@
-2023-09-17 13:44:53.482796
-Performing MONTHLY calculation for 230801 to 230831
+2023-10-03 12:53:11.343912
+Performing WEEKLY calculation for 230908 to 230914
 Reading observational dataframe for SFCTC.. 
     Now on station 2162
     Now on station 1972
@@ -298,7 +298,7 @@ Reading observational dataframe for SFCTC..
     Now on station 691
     Now on station 694
 Now on.. MM5_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -319,9 +319,11 @@ Now on.. MM5_g2 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. MM5_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -343,8 +345,9 @@ Now on.. MM5_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. MM5_g4 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -366,7 +369,7 @@ Now on.. MM5_g4 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. MM5G_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -449,7 +452,7 @@ Now on.. MM5G_g5 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3GEM_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -471,7 +474,7 @@ Now on.. WRF3GEM_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3GEM_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -493,7 +496,6 @@ Now on.. WRF3GEM_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3GEM_g4 for SFCTC
-   Skipping station 3004 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -514,7 +516,7 @@ Now on.. WRF3GEM_g4 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3NAM_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -535,8 +537,9 @@ Now on.. WRF3NAM_g2 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
 Now on.. WRF3NAM_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -558,7 +561,7 @@ Now on.. WRF3NAM_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3NAM_g4 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -580,7 +583,7 @@ Now on.. WRF3NAM_g4 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3GFS_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -602,7 +605,7 @@ Now on.. WRF3GFS_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3GFS_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -624,7 +627,6 @@ Now on.. WRF3GFS_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3GFS_g4 for SFCTC
-   Skipping station 3004 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -664,7 +666,7 @@ Now on.. WRF3GFS_g5 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3NAVGEM_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -686,7 +688,7 @@ Now on.. WRF3NAVGEM_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3NAVGEM_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -708,7 +710,6 @@ Now on.. WRF3NAVGEM_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3NAVGEM_g4 for SFCTC
-   Skipping station 3004 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -729,7 +730,7 @@ Now on.. WRF3NAVGEM_g4 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3GFSgc01_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -751,7 +752,7 @@ Now on.. WRF3GFSgc01_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3GFSgc01_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -773,7 +774,7 @@ Now on.. WRF3GFSgc01_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3ARPEGE_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -795,7 +796,7 @@ Now on.. WRF3ARPEGE_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF3ARPEGE_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -817,7 +818,7 @@ Now on.. WRF3ARPEGE_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF4ICON_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -839,7 +840,7 @@ Now on.. WRF4ICON_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF4ICON_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -861,7 +862,7 @@ Now on.. WRF4ICON_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF4NAM_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -882,9 +883,11 @@ Now on.. WRF4NAM_g2 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. WRF4NAM_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -905,9 +908,11 @@ Now on.. WRF4NAM_g3 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. WRF4NAM_g4 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -928,9 +933,11 @@ Now on.. WRF4NAM_g4 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. NMM3NAM_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -952,7 +959,7 @@ Now on.. NMM3NAM_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. NMM3NAM_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -974,7 +981,6 @@ Now on.. NMM3NAM_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. NMM3NAM_g4 for SFCTC
-   Skipping station 3004 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -995,7 +1001,7 @@ Now on.. NMM3NAM_g4 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. NMM3GFS_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1017,7 +1023,7 @@ Now on.. NMM3GFS_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. NMM3GFS_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1039,7 +1045,7 @@ Now on.. NMM3GFS_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF2NAM_g1 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1060,9 +1066,11 @@ Now on.. WRF2NAM_g1 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. WRF2NAM_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1084,7 +1092,6 @@ Now on.. WRF2NAM_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF2NAM_g3 for SFCTC
-   Skipping station 3004 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1106,7 +1113,7 @@ Now on.. WRF2NAM_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF2NAM81_g1 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1127,9 +1134,11 @@ Now on.. WRF2NAM81_g1 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. WRF2NAM81_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1151,7 +1160,6 @@ Now on.. WRF2NAM81_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF2NAM81_g3 for SFCTC
-   Skipping station 3004 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1173,7 +1181,7 @@ Now on.. WRF2NAM81_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF2GFS_g1 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1194,9 +1202,11 @@ Now on.. WRF2GFS_g1 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. WRF2GFS_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1218,7 +1228,6 @@ Now on.. WRF2GFS_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF2GFS_g3 for SFCTC
-   Skipping station 3004 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1240,7 +1249,7 @@ Now on.. WRF2GFS_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF2GFS81_g1 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1261,9 +1270,11 @@ Now on.. WRF2GFS81_g1 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. WRF2GFS81_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1285,7 +1296,6 @@ Now on.. WRF2GFS81_g2 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF2GFS81_g3 for SFCTC
-   Skipping station 3004 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1307,7 +1317,7 @@ Now on.. WRF2GFS81_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF4RDPS_g3 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1329,7 +1339,6 @@ Now on.. WRF4RDPS_g3 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. WRF4RDPS_g4 for SFCTC
-   Skipping station 3004 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1371,7 +1380,7 @@ Now on.. WRF4RDPS_g5 for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. MPAS25_g1 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1392,9 +1401,11 @@ Now on.. MPAS25_g1 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. MPAS25_g2 for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1415,9 +1426,11 @@ Now on.. MPAS25_g2 for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. ENS for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1438,9 +1451,11 @@ Now on.. ENS for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. ENS_lr for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1461,9 +1476,11 @@ Now on.. ENS_lr for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 Now on.. ENS_hr for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1485,7 +1502,7 @@ Now on.. ENS_hr for SFCTC
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
 Now on.. ENS_LR for SFCTC
-   Skipping station 3004 (No obs data)
+   Skipping station 2979 (No obs data)
    Skipping station 0402 (No obs data)
    Skipping station 0397 (No obs data)
    Skipping station 0404 (No obs data)
@@ -1506,5 +1523,7 @@ Now on.. ENS_LR for SFCTC
    Skipping station 0399 (No obs data)
    Skipping station 0398 (No obs data)
    Skipping station 0411 (No obs data)
+   Skipping station 2358 (No obs data)
    Skipping station 2069 (No obs data)
+   Skipping station 0692 (No obs data)
 DONE!

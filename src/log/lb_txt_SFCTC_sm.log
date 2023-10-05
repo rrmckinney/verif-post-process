@@ -1,5 +1,5 @@
-2023-10-03 10:09:07.543955
-Performing MONTHLY calculation for 230901 to 230930
+2023-10-05 10:05:42.670371
+Performing WEEKLY calculation for 230922 to 230928
 Reading observational dataframe for SFCTC.. 
     Now on station 2162
     Now on station 1972
@@ -326,8 +326,7 @@ Now on.. MM5_g3 for SFCTC
    Skipping station 0395 (No obs data)
    Skipping station 0412 (No obs data)
    Skipping station 0410 (No obs data)
-   Skipping station 3341 (No obs data
-
+   Skipping station 3341 (No obs data)
    Skipping station 0392 (No obs data)
    Skipping station 0407 (No obs data)
    Skipping station 0406 (No obs data)

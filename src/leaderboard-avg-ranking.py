@@ -56,18 +56,16 @@ else:
     raise Exception("Invalid input entries. Needs time and input domain.")
 
 
-#time_domains = ['60hr','84hr','120hr','180hr','day1','day2','day3','day4','day5','day6','day7']
-time_domains = ['60hr']
+time_domains = ['60hr','84hr','120hr','180hr','day1','day2','day3','day4','day5','day6','day7']
 
-#time_labels = ['outlook hours 1-60','outlook hours 1-84','outlook hours 1-120','outlook hours 1-180',
-               #'day 1 outlook (hours 1-24)','day 2 outlook (hours 25-48)','day 3 outlook (hours 49-72)',
-               #'day 4 outlook (hours 73-96)','day 5 outlook (hours 97-120)','day 6 outlook (hours 121-144)',
-               #'day 7 outlook (hours 145-168)']
-time_labels = ['outlook hours 1-60']
+time_labels = ['outlook hours 1-60','outlook hours 1-84','outlook hours 1-120','outlook hours 1-180',
+               'day 1 outlook (hours 1-24)','day 2 outlook (hours 25-48)','day 3 outlook (hours 49-72)',
+               'day 4 outlook (hours 73-96)','day 5 outlook (hours 97-120)','day 6 outlook (hours 121-144)',
+               'day 7 outlook (hours 145-168)']
 
-variables = ['SFCTC_KF','SFCTC']#,'PCPTOT', 'SFCWSPD_KF','SFCWSPD',  'PCPT6']
-variable_names = ['Temperature-KF','Temperature-Raw']#,'Hourly Precipitation', 'Wind Speed-KF ','Wind Speed-Raw', '6-Hour Accumulated Precipitation']
-variable_units = ['[C]','[C]']#, '[mm/hr]','[km/hr]','[km/hr]', '[mm/6hr]']
+variables = ['SFCTC_KF','SFCTC','PCPTOT', 'SFCWSPD_KF','SFCWSPD',  'PCPT6']
+variable_names = ['Temperature-KF','Temperature-Raw','Hourly Precipitation', 'Wind Speed-KF ','Wind Speed-Raw', '6-Hour Accumulated Precipitation']
+variable_units = ['[C]','[C]', '[mm/hr]','[km/hr]','[km/hr]', '[mm/6hr]']
 
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
@@ -92,7 +90,7 @@ for i in range(len(model_names)):
 #colors to plot, must be same length (or longer) than models list
 model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CDB7F6','#65fe08','#fc3232','#754200','#00FFFF','#fc23ba','#a1a1a1','#000000','#000000','#000000','#000000']
 
-date_test_file = textfile_folder + 'ENS/'+ input_domain+ '/SFCTC_KF/MAE_' + str(savetype) + '_SFCTC_KF_60hr_' + input_domain + '.txt'
+date_test_file = textfile_folder + 'ENS/'+ input_domain+ '/SFCWSPD_KF/MAE_' + str(savetype) + '_SFCWSPD_KF_60hr_' + input_domain + '.txt'
 
 test_list = pd.read_csv(date_test_file, sep = '\s+', names = ['start_date', 'end_date', 'val', '#_times', '#_points'])
 test_list = test_list.sort_values('start_date', ignore_index=True)
@@ -105,7 +103,6 @@ print_startdate = datetime.datetime.strftime(input_startdate,"%m/%d/%y")
 
 input_enddate = datetime.datetime.strptime(str(enddate), "%y%m%d").date()
 print_enddate = datetime.datetime.strftime(input_enddate,"%m/%d/%y")
-print(enddate, startdate)
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------
 ###########################################################
@@ -136,7 +133,6 @@ def get_rankings(variable,time_domain):
                 
                 MAE_list = pd.read_csv(MAE_file, sep = '\s+', names = ['start_date', 'end_date', 'val', '#_times', '#_points'])
                 MAE_list = MAE_list.sort_values('start_date', ignore_index=True) 
-                print(MAE_list)
                 MAE_list = np.array(MAE_list.val)
 
                 #counts lines in file
@@ -405,9 +401,6 @@ def main(args):
 
     
             time_count = time_count+1
-        print(num_weeks_med)
-        print(var)
-        print(var_i)
         var_i=var_i+1
             
     #sys.stdout.close() #close log file

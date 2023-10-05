@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #plot_date=`date --date="-7 days" +%y%m%d`
-plot_date='230701'
+plot_date='230908'
 
 
 conda activate verification

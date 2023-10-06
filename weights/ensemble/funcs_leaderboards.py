@@ -19,7 +19,6 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
 from scipy import stats
 import sqlite3
-from utl.funcs import *
 import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)
 
@@ -31,7 +30,7 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 obs_filepath = "/verification/Observations/"
 
 #location where forecast files are 
-fcst_filepath = "/verif-post-process/weights/ensemble/output/"
+fcst_filepath = "/home/verif/verif-post-process/weights/ensemble/output/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list_master.txt'
@@ -133,15 +132,15 @@ def check_dates(start_date, delta, filepath, station):
     flag = True
             
     check_dates = np.loadtxt(filepath + station + ".csv",usecols=0,dtype=str)
-
-    start_date = pd.to_datetime(start_date, format='%y%m%d')
-
+    
+    start_date = pd.to_datetime(start_date, format='%y%m%d').strftime('%Y-%m-%d')
+    print(start_date)
     if np.size(check_dates) < delta+1:
          print("    Not enough dates available for this model/station/variable")
          flag = False
             
     elif start_date not in check_dates:
-        print("    Model collection started " + check_dates[0] + ", which is after input start_date")
+        print("    Model collection started " + check_dates[1] + ", which is after input start_date")
         flag = False
         
     return(flag)
@@ -161,7 +160,7 @@ def make_df(date_list_obs, start_date, end_date):
     df_new = df_new.set_index('datetime') 
     return(df_new)
 
-def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, stations_with_PCPT24, all_stations, variable, start_date, end_date, date_list_obs):
+def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,  all_stations, variable, start_date, end_date, date_list_obs):
     
     print("Reading observational dataframe for " + variable + ".. ")
     
@@ -213,14 +212,6 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
         if len(station) < 4:
             station = "0" +station
         
-        if "PCPT" in variable:
-            if check_dates(start_date, delta, fcst_filepath + 'ENS/' + variable + '/fcst.t/', "PCPTOT", station) == False:
-                print("   Skipping station " + station + " (not enough dates yet)")
-                continue
-        else:
-            if check_dates(start_date, delta, fcst_filepath + 'ENS/' + variable + '/fcst.t/', variable, station) == False:
-                print("   Skipping station " + station + " (not enough dates yet)")
-                continue        
         # for hour in filehours_obs:
         #     if float(hour) < 1000:
         #             hour = str(hour).lstrip('0')

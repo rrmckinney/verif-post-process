@@ -39,7 +39,7 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 obs_filepath = "/verification/Observations/"
 
 #location where forecast files are 
-fcst_filepath = "/verif-post-process/weights/ensemble/output/"
+fcst_filepath = "/home/verif/verif-post-process/weights/ensemble/output/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list_master.txt'
@@ -91,7 +91,7 @@ if len(sys.argv) == 6:
         raise Exception("Invalid domain input entries. Current options: large, small. Case sensitive.")
 
     weight_type = sys.argv[5]
-    if input_domain not in ['yearly','seasonal']:
+    if weight_type not in ['yearly','seasonal']:
         raise Exception("Invalid domain input entries. Current options: yearly, seasonal. Case sensitive.")
             
 else:
@@ -144,7 +144,7 @@ def main(args):
         filehours = get_filehours(1, int(maxhour))
 
         if check_dates(start_date, delta, filepath, station='3510') == False:
-            print("   Skipping model " +  + " (check_dates flag)")
+            print("   Skipping model " + stat_type + " (check_dates flag)")
             continue
     
         # if it can't find the folder for the model/grid pair 
@@ -154,7 +154,7 @@ def main(args):
         print("Now on.. ENS " + stat_type + " for " + input_variable)
 
         
-        get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savetype, all_stations, station_df, input_variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
+        get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savetype, all_stations, station_df, input_variable, date_list, stat_type, weight_type,  maxhour, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
 
 print('DONE!')
 if __name__ == "__main__":

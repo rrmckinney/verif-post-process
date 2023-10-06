@@ -4432,3 +4432,41 @@ datetime                                     ...
 [8952 rows x 51 columns]
 2653.7004928588867
 It took 44 minutes to run
+Traceback (most recent call last):
+  File "ensemble_leaderboards.py", line 29, in <module>
+    from funcs_leaderboards import *
+  File "/nfs/neltharion/oper_users/verif/verif-post-process/weights/ensemble/funcs_leaderboards.py", line 22, in <module>
+    from utl.funcs import *
+ModuleNotFoundError: No module named 'utl'
+Traceback (most recent call last):
+  File "ensemble_leaderboards.py", line 98, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size and weight type")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size and weight type
+2023-10-05 16:32:00.050172
+Performing MONTHLY calculation for 211001 to 211031
+Traceback (most recent call last):
+  File "ensemble_leaderboards.py", line 95, in <module>
+    raise Exception("Invalid domain input entries. Current options: yearly, seasonal. Case sensitive.")
+Exception: Invalid domain input entries. Current options: yearly, seasonal. Case sensitive.
+2023-10-05 16:32:59.381313
+Performing MONTHLY calculation for 211001 to 211031
+DONE!
+Traceback (most recent call last):
+  File "ensemble_leaderboards.py", line 161, in <module>
+    main(sys.argv)
+  File "ensemble_leaderboards.py", line 138, in main
+    obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, all_stations, input_variable, start_date, end_date, date_list_obs)
+TypeError: get_all_obs() missing 1 required positional argument: 'date_list_obs'
+2023-10-05 16:35:23.362310
+Performing MONTHLY calculation for 211001 to 211031
+DONE!
+Reading observational dataframe for PCPTOT.. 
+    Now on station 3510
+Traceback (most recent call last):
+  File "ensemble_leaderboards.py", line 161, in <module>
+    main(sys.argv)
+  File "ensemble_leaderboards.py", line 138, in main
+    obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, all_stations, input_variable, start_date, end_date, date_list_obs)
+  File "/nfs/neltharion/oper_users/verif/verif-post-process/weights/ensemble/funcs_leaderboards.py", line 216, in get_all_obs
+    if check_dates(start_date, delta, fcst_filepath + 'ENS/' + variable + '/fcst.t/', "PCPTOT", station) == False:
+TypeError: check_dates() takes 4 positional arguments but 5 were given

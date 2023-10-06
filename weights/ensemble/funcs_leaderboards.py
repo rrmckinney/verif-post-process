@@ -375,17 +375,13 @@ def make_textfile(stat_type, weight_type,  input_domain, savetype, date_entry1, 
 
 def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain):
 
+    print(start)
+    print(end)
     if variable == "PCPT6":
         if int(end)==int(maxhour):
             trimmed_fcst = all_fcst[start+1:end-5] 
         else:
             trimmed_fcst = all_fcst[start+1:end+1]  
-    elif variable == "PCPT24":
-        if int(end)==int(maxhour):
-            trimmed_fcst = all_fcst[start+1:end-23] 
-        else:
-            trimmed_fcst = all_fcst[start+1:end+1] 
-   
     else:
         trimmed_fcst = all_fcst[start:end]   
        
@@ -394,25 +390,11 @@ def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,file
     
     if variable == "PCPT6":
         fcst_flat = np.reshape(fcst_flat, (-1, 6)).sum(axis=-1) #must be divisible by 6
-    if variable == "PCPT24":
-        fcst_flat = np.reshape(fcst_flat, (-1, 24)).sum(axis=-1) #must be divisible by 6
-        
+
     obs_flat = np.array(obs_df[station])
     if len(np.shape(obs_flat)) > 1:
         obs_flat = obs_flat[:,1]
     
-    ''' was removing entire days from obs so I got rid of it............. 
-    f "PCPT" in variable:
-        #removes the last point from every day if its at the maxhour, since it doesnt exist for fcst
-        if int(end)==int(maxhour): 
-            
-            if end==180:    
-                oneday_length = int((len(obs_flat)+1)/(delta+1))
-                obs_flat = np.delete(obs_flat, np.arange(0, obs_flat.size, oneday_length)[1:]-1)
-            else:
-                oneday_length = int((len(obs_flat))/(delta+1))
-                obs_flat = np.delete(obs_flat, np.arange(0, obs_flat.size+oneday_length, oneday_length)[1:]-1)
-    '''
     # removes (NaNs) fcst data where there is no obs
     fcst_NaNs,obs_NaNs = remove_missing_data(fcst_flat, obs_flat)  
 
@@ -527,9 +509,6 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
   
     if os.path.isdir(filepath) == False:
         os.makedirs(filepath)
-            
-    # open the file for the current model and get all the stations from it
-    df_name = stat_type + '-' + weight_type
 
     #these variables will contain all the fcst and obs for the stations that exist for each model
     obs_allstations_180hr, fcst_allstations_180hr = [],[]
@@ -576,23 +555,7 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
         
         # total stations that should be included in each model/grid
         totalstations = totalstations+1
-        '''
-        #when using the "small" domain, only include raw data if KF data also exists at that hour
-        if input_domain == "small" and variable in ["SFCTC","SFCWSPD"]:
-            all_fcst_KF = get_fcst(station, filepath, variable + '_KF', date_list,filehours, date_entry1, date_entry2)
-            fcst_final_all_KF = np.array(all_fcst_KF).T
-            fcst_flat_all_KF = fcst_final_all_KF.flatten()
-            
-            if pd.isna(fcst_flat_all_KF).all() == True:    
-                print("   Skipping station " + station + " (No KF data)")
-                continue
-            if pd.isna(fcst_flat_all_KF).any() == False:  
-                all_fcst_KF = False
-                print(station + " " + model + grid + " fcst KF missing")
 
-        else:
-        '''
-        
         all_fcst_KF = False
             
         all_fcst = get_fcst(station, filepath, variable, date_list,filehours)    #goes to maxhour       
@@ -600,23 +563,21 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
         fcst_final_all = np.array(all_fcst).T
         fcst_flat_all = fcst_final_all.flatten()
         
-       
-        if variable != "PCPT24":
-            obs_flat_all = np.array(obs_df_180hr[station])
+        obs_flat_all = np.array(obs_df_180hr[station])
             
-            #checks 180 hour only
-            if pd.isna(fcst_flat_all).all() == True:    
-                print("   Skipping station " + station + " (No forecast data)")
-                continue
-            
-            if pd.isna(obs_flat_all).all() == True:    
-                print("   Skipping station " + station + " (No obs data)")
-                continue
+        #checks 180 hour only
+        if pd.isna(fcst_flat_all).all() == True:    
+            print("   Skipping station " + station + " (No forecast data)")
+            continue
         
+        if pd.isna(obs_flat_all).all() == True:    
+            print("   Skipping station " + station + " (No obs data)")
+            continue
+    
         # total stations that ended up being included (doesn't count ones with no data)
         num_stations = num_stations+1
       
-        if int(maxhour) >= 180 and variable!="PCPT24":
+        if int(maxhour) >= 180:
             fcst_NaNs_180hr, obs_flat_180hr = trim_fcst(all_fcst,obs_df_180hr,station,0,180,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)                            
             fcst_allstations_180hr.append(fcst_NaNs_180hr)
             obs_allstations_180hr.append(obs_flat_180hr)
@@ -643,7 +604,7 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
             fcst_allstations_day4.append(fcst_NaNs_day4)
             obs_allstations_day4.append(obs_flat_day4)
             
-        if int(maxhour) >= 84 and variable!="PCPT24":            
+        if int(maxhour) >= 84:            
             fcst_NaNs_84hr,  obs_flat_84hr  = trim_fcst(all_fcst,obs_df_84hr,station,0,84,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
             fcst_allstations_84hr.append(fcst_NaNs_84hr)
             obs_allstations_84hr.append(obs_flat_84hr)
@@ -653,10 +614,10 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
             fcst_allstations_day3.append(fcst_NaNs_day3)
             obs_allstations_day3.append(obs_flat_day3)
             
-        if variable!="PCPT24":
-            fcst_NaNs_60hr,  obs_flat_60hr  = trim_fcst(all_fcst,obs_df_60hr,station,0,60,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-            fcst_allstations_60hr.append(fcst_NaNs_60hr)
-            obs_allstations_60hr.append(obs_flat_60hr)
+ 
+        fcst_NaNs_60hr,  obs_flat_60hr  = trim_fcst(all_fcst,obs_df_60hr,station,0,60,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
+        fcst_allstations_60hr.append(fcst_NaNs_60hr)
+        obs_allstations_60hr.append(obs_flat_60hr)
                     
         fcst_NaNs_day1,  obs_flat_day1  = trim_fcst(all_fcst,obs_df_day1,station,0,24,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
         fcst_allstations_day1.append(fcst_NaNs_day1)
@@ -668,14 +629,14 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
 
     #sometimes theres no forecast data for a model
     if num_stations == 0:
-        print("   NO FORECAST DATA FOR " + model + grid)
+        print("   NO FORECAST DATA FOR " + stat_type + '-' + weight_type)
              
-        if variable!="PCPT24":
-            model_not_available(stat_type, weight_type, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,180,180,totalstations,'180hr',variable,filepath)
-            model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,120,120,totalstations,'120hr',variable,filepath)
-            model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,84,84,totalstations,'84hr',variable,filepath)
-            model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,60,60,totalstations,'60hr',variable,filepath)
-        
+     
+        model_not_available(stat_type, weight_type, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,180,180,totalstations,'180hr',variable,filepath)
+        model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,120,120,totalstations,'120hr',variable,filepath)
+        model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,84,84,totalstations,'84hr',variable,filepath)
+        model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,60,60,totalstations,'60hr',variable,filepath)
+    
         model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,168,24,totalstations,'day7',variable,filepath)
         model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,144,24,totalstations,'day6',variable,filepath)
         model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,120,24,totalstations,'day5',variable,filepath)
@@ -686,11 +647,11 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
         
     else:
     
-        if variable!="PCPT24":
-            get_statistics(delta, stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,180,180,fcst_allstations_180hr,obs_allstations_180hr,num_stations,totalstations,'180hr',variable,filepath)
-            get_statistics(delta,stat_type, weight_type, input_domain, savetype, date_entry1, date_entry2,maxhour,120,120,fcst_allstations_120hr,obs_allstations_120hr,num_stations,totalstations,'120hr',variable,filepath)
-            get_statistics(delta,stat_type, weight_type, input_domain, savetype, date_entry1, date_entry2,maxhour,84,84,fcst_allstations_84hr,obs_allstations_84hr,num_stations,totalstations,'84hr',variable,filepath)
-            get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,60,60,fcst_allstations_60hr,obs_allstations_60hr,num_stations,totalstations,'60hr',variable,filepath)
+
+        get_statistics(delta, stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,180,180,fcst_allstations_180hr,obs_allstations_180hr,num_stations,totalstations,'180hr',variable,filepath)
+        get_statistics(delta,stat_type, weight_type, input_domain, savetype, date_entry1, date_entry2,maxhour,120,120,fcst_allstations_120hr,obs_allstations_120hr,num_stations,totalstations,'120hr',variable,filepath)
+        get_statistics(delta,stat_type, weight_type, input_domain, savetype, date_entry1, date_entry2,maxhour,84,84,fcst_allstations_84hr,obs_allstations_84hr,num_stations,totalstations,'84hr',variable,filepath)
+        get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,60,60,fcst_allstations_60hr,obs_allstations_60hr,num_stations,totalstations,'60hr',variable,filepath)
 
                 
         get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,168,24,fcst_allstations_day7,obs_allstations_day7,num_stations,totalstations,'day7',variable,filepath)
@@ -702,11 +663,11 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
         get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,24,24,fcst_allstations_day1,obs_allstations_day1,num_stations,totalstations,'day1',variable,filepath)
 
 def PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,\
-                  stations_with_PCPT24, all_stations, start_date, end_date):
+                  all_stations, start_date, end_date):
 
     # get the hourly precip values
     obs_df_60hr_1,obs_df_84hr_1,obs_df_120hr_1,obs_df_180hr_1,obs_df_day1_1,obs_df_day2_1,obs_df_day3_1,obs_df_day4_1,obs_df_day5_1,obs_df_day6_1,obs_df_day7_1 = get_all_obs(delta, \
-        stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, stations_with_PCPT24, all_stations, "PCPTOT", \
+        stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, all_stations, "PCPTOT", \
     start_date, end_date, date_list_obs)
     
     # grab the extra hour on the last outlook day
@@ -753,7 +714,7 @@ def PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, sta
     #grab the 6-hr accum precip values
     obs_df_60hr_6,obs_df_84hr_6,obs_df_120hr_6,obs_df_180hr_6,obs_df_day1_6,obs_df_day2_6,obs_df_day3_6,obs_df_day4_6,obs_df_day5_6,\
         obs_df_day6_6,obs_df_day7_6 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, \
-                                                  stations_with_PCPT24, all_stations, "PCPT6", start_date, end_date, date_list_obs)
+                                                   all_stations, "PCPT6", start_date, end_date, date_list_obs)
         
     # grab the extra hour on the last outlook day
     obs_df_60hr_6 = obs_df_60hr_6.append(obs_df_180hr_6.iloc[60],ignore_index=True)
@@ -797,79 +758,3 @@ def PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, sta
 
     return(obs_df_60hr_all,obs_df_84hr_all,obs_df_120hr_all,obs_df_180hr_all,obs_df_day1_all,obs_df_day2_all,obs_df_day3_all,obs_df_day4_all,\
            obs_df_day5_all,obs_df_day6_all,obs_df_day7_all)
-
-def PCPT_obs_df_24(date_list_obs, delta, input_variable, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, \
-                   stations_with_PCPT24,all_stations,start_date, end_date):
-    
-    # get the hourly precip values
-    _,_,_,obs_df_180hr_1,obs_df_day1_1,obs_df_day2_1,obs_df_day3_1,obs_df_day4_1,obs_df_day5_1,obs_df_day6_1,obs_df_day7_1 = \
-        get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, stations_with_PCPT24, \
-                    all_stations, "PCPTOT", start_date, end_date, date_list_obs)
-            
-    # grab the extra hour on the last outlook day
-    obs_df_day1_1 = obs_df_day1_1.append(obs_df_180hr_1.iloc[180*delta + 24],ignore_index=True)
-    obs_df_day2_1 = obs_df_day2_1.append(obs_df_180hr_1.iloc[180*delta + 48],ignore_index=True)
-    obs_df_day3_1 = obs_df_day3_1.append(obs_df_180hr_1.iloc[180*delta + 72],ignore_index=True)
-    obs_df_day4_1 = obs_df_day4_1.append(obs_df_180hr_1.iloc[180*delta + 96],ignore_index=True)
-    obs_df_day5_1 = obs_df_day5_1.append(obs_df_180hr_1.iloc[180*delta + 120],ignore_index=True)
-    obs_df_day6_1 = obs_df_day6_1.append(obs_df_180hr_1.iloc[180*delta + 144],ignore_index=True)
-    obs_df_day7_1 = obs_df_day7_1.append(obs_df_180hr_1.iloc[180*delta + 168],ignore_index=True)
-    
-    
-    # remove the first hour (0 UTC)
-    obs_df_day1_1 = obs_df_day1_1.iloc[1:].reset_index(drop=True)
-    obs_df_day2_1 = obs_df_day2_1.iloc[1:].reset_index(drop=True)
-    obs_df_day3_1 = obs_df_day3_1.iloc[1:].reset_index(drop=True)
-    obs_df_day4_1 = obs_df_day4_1.iloc[1:].reset_index(drop=True)
-    obs_df_day5_1 = obs_df_day5_1.iloc[1:].reset_index(drop=True)
-    obs_df_day6_1 = obs_df_day6_1.iloc[1:].reset_index(drop=True)
-    obs_df_day7_1 = obs_df_day7_1.iloc[1:].reset_index(drop=True)
-  
-    
-    # sum every 6 hours (1-6 UTC, 7-12 UTC etc). report NaN if any of the 6 hours is missing
-    obs_df_day1_1_trimmed = obs_df_day1_1.groupby(obs_df_day1_1.index // 24).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day2_1_trimmed = obs_df_day2_1.groupby(obs_df_day2_1.index // 24).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day3_1_trimmed = obs_df_day3_1.groupby(obs_df_day3_1.index // 24).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day4_1_trimmed = obs_df_day4_1.groupby(obs_df_day4_1.index // 24).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day5_1_trimmed = obs_df_day5_1.groupby(obs_df_day5_1.index // 24).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day6_1_trimmed = obs_df_day6_1.groupby(obs_df_day6_1.index // 24).apply(pd.DataFrame.sum,skipna=False)
-    obs_df_day7_1_trimmed = obs_df_day7_1.groupby(obs_df_day7_1.index // 24).apply(pd.DataFrame.sum,skipna=False)
-
-     
-    #grab the 6-hr accum precip values
-    _,_,_,obs_df_180hr_24,obs_df_day1_24,obs_df_day2_24,obs_df_day3_24,obs_df_day4_24,obs_df_day5_24,obs_df_day6_24,obs_df_day7_24 = \
-        get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, stations_with_PCPT24, \
-                    all_stations, "PCPT24", start_date, end_date, date_list_obs)
-        
-    
-    # grab the extra hour on the last outlook day
-    obs_df_day1_24 = obs_df_day1_24.append(obs_df_180hr_24.iloc[24],ignore_index=True)
-    obs_df_day2_24 = obs_df_day2_24.append(obs_df_180hr_24.iloc[48],ignore_index=True)
-    obs_df_day3_24 = obs_df_day3_24.append(obs_df_180hr_24.iloc[72],ignore_index=True)
-    obs_df_day4_24 = obs_df_day4_24.append(obs_df_180hr_24.iloc[96],ignore_index=True)
-    obs_df_day5_24 = obs_df_day5_24.append(obs_df_180hr_24.iloc[120],ignore_index=True)
-    obs_df_day6_24 = obs_df_day6_24.append(obs_df_180hr_24.iloc[144],ignore_index=True)
-    obs_df_day7_24 = obs_df_day7_24.append(obs_df_180hr_24.iloc[168],ignore_index=True)
-    
-    # remove all values except the ones every 24 hours (24 (0) UTC, etc. (skipping the first))
-    obs_df_day1_24_trimmed = obs_df_day1_24.iloc[::24, :][1:].reset_index(drop=True)
-    obs_df_day2_24_trimmed = obs_df_day2_24.iloc[::24, :][1:].reset_index(drop=True)
-    obs_df_day3_24_trimmed = obs_df_day3_24.iloc[::24, :][1:].reset_index(drop=True)
-    obs_df_day4_24_trimmed = obs_df_day4_24.iloc[::24, :][1:].reset_index(drop=True)
-    obs_df_day5_24_trimmed = obs_df_day5_24.iloc[::24, :][1:].reset_index(drop=True)
-    obs_df_day6_24_trimmed = obs_df_day6_24.iloc[::24, :][1:].reset_index(drop=True)
-    obs_df_day7_24_trimmed = obs_df_day7_24.iloc[::24, :][1:].reset_index(drop=True)
-    
-    #combine the obs from manually accumulating 6 hours from hourly, and the pre-calculated 6 hours
-    obs_df_day1_all = pd.concat([obs_df_day1_1_trimmed, obs_df_day1_24_trimmed],axis=1)
-    obs_df_day2_all = pd.concat([obs_df_day2_1_trimmed, obs_df_day2_24_trimmed],axis=1)
-    obs_df_day3_all = pd.concat([obs_df_day3_1_trimmed, obs_df_day3_24_trimmed],axis=1)
-    obs_df_day4_all = pd.concat([obs_df_day4_1_trimmed, obs_df_day4_24_trimmed],axis=1)
-    obs_df_day5_all = pd.concat([obs_df_day5_1_trimmed, obs_df_day5_24_trimmed],axis=1)
-    obs_df_day6_all = pd.concat([obs_df_day6_1_trimmed, obs_df_day6_24_trimmed],axis=1)
-    obs_df_day7_all = pd.concat([obs_df_day7_1_trimmed, obs_df_day7_24_trimmed],axis=1)
-
-    obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr = [],[],[],[]
-    
-    return(obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1_all,obs_df_day2_all,obs_df_day3_all,obs_df_day4_all,obs_df_day5_all,obs_df_day6_all,obs_df_day7_all)
-     

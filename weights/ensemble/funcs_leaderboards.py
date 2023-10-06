@@ -331,14 +331,11 @@ def remove_missing_data(fcst, obs):
                 
     return(fcst,obs) 
 
-def make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2, time_domain, variable, filepath, MAE, RMSE, corr, len_fcst, numstations):
+def make_textfile(stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2, time_domain, variable, filepath, MAE, RMSE, corr, len_fcst, numstations):
    
-    if "ENS" in model:
-        modelpath= model + '/'
-    else:
-        modelpath = model + '/' + grid + '/'
-    f1 = open(textfile_folder + modelpath + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-    read_f1 = np.loadtxt(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
+    path = weight_type + '/' + input_domain + '/' + stat_type + '/'
+    f1 = open(textfile_folder + path  + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
+    read_f1 = np.loadtxt(textfile_folder +  path  + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
     if date_entry1 not in read_f1 and date_entry2 not in read_f1:
     
         f1.write(str(date_entry1) + " " + str(date_entry2) + "   ")
@@ -349,8 +346,8 @@ def make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2,
     
         f1.close()    
     
-    f2 = open(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-    read_f2 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
+    f2 = open(textfile_folder +  path  + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
+    read_f2 = np.loadtxt(textfile_folder +  path  + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
     if date_entry1 not in read_f2 and date_entry2 not in read_f2:
         f2.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         
@@ -361,8 +358,8 @@ def make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2,
         f2.close()  
     
     
-    f3 = open(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+") 
-    read_f3 = np.loadtxt(textfile_folder +  modelpath + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
+    f3 = open(textfile_folder +  path +  variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+") 
+    read_f3 = np.loadtxt(textfile_folder +  path +  variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
     if date_entry1 not in read_f3 and date_entry2 not in read_f3:
         f3.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         
@@ -427,7 +424,7 @@ def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,file
 
     return(fcst_NaNs, obs_NaNs)
 
-def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,fcst_allstations,obs_allstations,num_stations,totalstations,time_domain,variable,filepath):
+def get_statistics(delta, stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2, maxhour,hour,length,fcst_allstations,obs_allstations,num_stations,totalstations,time_domain,variable,filepath):
     
     if int(maxhour) >= hour:
         fcst_avg = np.nanmean(fcst_allstations,axis=0) 
@@ -444,7 +441,7 @@ def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_
         fcst_rounded = np.round(fcst_noNaNs,1)
         
         if len(fcst_rounded) == 0:
-            model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,hour,length,totalstations,time_domain,variable,filepath)
+            model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,hour,length,totalstations,time_domain,variable,filepath)
         
         else:
             MAE = mean_absolute_error(obs_rounded,fcst_rounded)
@@ -463,13 +460,11 @@ def get_statistics(delta, model,grid, input_domain, savetype, date_entry1, date_
             len_fcst = str(len(fcst_noNaNs)) + "/" + str(length)   
             numstations = str(num_stations) + "/" + str(totalstations)
             
-            make_textfile(model, grid, input_domain, savetype, date_entry1, date_entry2, time_domain, variable, filepath, MAE, RMSE, corr, len_fcst, numstations)
+            make_textfile(stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2, time_domain, variable, filepath, MAE, RMSE, corr, len_fcst, numstations)
 
-def model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,hour,length,totalstations,time_domain,variable,filepath):
-    if "ENS" in model:
-        modelpath = model + '/'
-    else:
-        modelpath = model + '/' + grid + '/'
+def model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,hour,length,totalstations,time_domain,variable,filepath):
+
+    path = weight_type + '/' + input_domain + '/' + stat_type + '/'
 
     if int(maxhour) >= hour:  
         if variable == "PCPT6":
@@ -489,8 +484,8 @@ def model_not_available(model, grid, delta, input_domain, date_entry1, date_entr
         numstations = "0/" + str(totalstations)
         
         
-        f1 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-        read_f1 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
+        f1 = open(textfile_folder +  path   + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
+        read_f1 = np.loadtxt(textfile_folder +  path  +  variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
         if date_entry1 not in read_f1 and date_entry2 not in read_f1:
             f1.write(str(date_entry1) + " " + str(date_entry2) + "   ")
             
@@ -501,8 +496,8 @@ def model_not_available(model, grid, delta, input_domain, date_entry1, date_entr
             f1.close()    
                 
         
-        f2 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
-        read_f2 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
+        f2 = open(textfile_folder +  path  +  variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+")       
+        read_f2 = np.loadtxt(textfile_folder +  path  +  variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
         if date_entry1 not in read_f2 and date_entry2 not in read_f2:
             f2.write(str(date_entry1) + " " + str(date_entry2) + "   ")
             
@@ -513,8 +508,8 @@ def model_not_available(model, grid, delta, input_domain, date_entry1, date_entr
             f2.close()  
             
         
-        f3 = open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+") 
-        read_f3 = np.loadtxt(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
+        f3 = open(textfile_folder +  path  +  variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",wm+"+") 
+        read_f3 = np.loadtxt(textfile_folder +  path  + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt",dtype=str)  
         if date_entry1 not in read_f3 and date_entry2 not in read_f3:
             f3.write(str(date_entry1) + " " + str(date_entry2) + "   ")
             
@@ -524,15 +519,14 @@ def model_not_available(model, grid, delta, input_domain, date_entry1, date_entr
             
             f3.close()  
 
-def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savetype, all_stations, station_df, variable, date_list, model, grid, maxhour, gridname, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, stations_with_PCPT24):
+def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savetype, all_stations, station_df, variable, date_list, stat_type, weight_type,  maxhour, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6):
     
   
     if os.path.isdir(filepath) == False:
         os.makedirs(filepath)
             
     # open the file for the current model and get all the stations from it
-    model_df_name = model+gridname
-    stations_in_domain = np.array(station_df.query(model_df_name+"==1")["Station ID"],dtype='str')
+    df_name = stat_type + '-' + weight_type
 
     #these variables will contain all the fcst and obs for the stations that exist for each model
     obs_allstations_180hr, fcst_allstations_180hr = [],[]
@@ -550,7 +544,16 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
     totalstations = 0
     num_stations = 0
     
-    for station in stations_in_domain:
+    if 'SFCTC' in variable:
+        stations_in_var = stations_with_SFCTC
+    elif 'SFCESPD' in variable:
+        stations_in_var = stations_with_SFCWSPD
+    elif 'PCPTOT' in variable:
+        stations_in_var = stations_with_PCPTOT
+    elif 'PCPT6' in variable:
+        stations_in_var = stations_with_PCPT6
+
+    for station in stations_in_var:
 
         if station not in all_stations:
             #print("   Skipping station " + station + ")
@@ -627,10 +630,6 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
             obs_allstations_day6.append(obs_flat_day6)
             
         if int(maxhour) >= 120:
-            if variable!="PCPT24":
-                fcst_NaNs_120hr, obs_flat_120hr = trim_fcst(all_fcst,obs_df_120hr,station,0,120,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
-                fcst_allstations_120hr.append(fcst_NaNs_120hr)
-                obs_allstations_120hr.append(obs_flat_120hr)
             
             fcst_NaNs_day5,  obs_flat_day5  = trim_fcst(all_fcst,obs_df_day5,station,96,120,variable,filepath,date_list,filehours,all_fcst_KF,maxhour, delta, input_domain)  
             fcst_allstations_day5.append(fcst_NaNs_day5)
@@ -669,35 +668,35 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
         print("   NO FORECAST DATA FOR " + model + grid)
              
         if variable!="PCPT24":
-            model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,180,180,totalstations,'180hr',variable,filepath)
-            model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,120,120,totalstations,'120hr',variable,filepath)
-            model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,84,84,totalstations,'84hr',variable,filepath)
-            model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,60,60,totalstations,'60hr',variable,filepath)
+            model_not_available(stat_type, weight_type, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,180,180,totalstations,'180hr',variable,filepath)
+            model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,120,120,totalstations,'120hr',variable,filepath)
+            model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,84,84,totalstations,'84hr',variable,filepath)
+            model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,60,60,totalstations,'60hr',variable,filepath)
         
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,168,24,totalstations,'day7',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,144,24,totalstations,'day6',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,120,24,totalstations,'day5',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,96,24,totalstations,'day4',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,72,24,totalstations,'day3',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,48,24,totalstations,'day2',variable,filepath)
-        model_not_available(model, grid, delta, input_domain, date_entry1, date_entry2, savetype, maxhour,24,24,totalstations,'day1',variable,filepath)
+        model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,168,24,totalstations,'day7',variable,filepath)
+        model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,144,24,totalstations,'day6',variable,filepath)
+        model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,120,24,totalstations,'day5',variable,filepath)
+        model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,96,24,totalstations,'day4',variable,filepath)
+        model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,72,24,totalstations,'day3',variable,filepath)
+        model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,48,24,totalstations,'day2',variable,filepath)
+        model_not_available(stat_type, weight_type,  delta, input_domain, date_entry1, date_entry2, savetype, maxhour,24,24,totalstations,'day1',variable,filepath)
         
     else:
     
         if variable!="PCPT24":
-            get_statistics(delta, model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,180,180,fcst_allstations_180hr,obs_allstations_180hr,num_stations,totalstations,'180hr',variable,filepath)
-            get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,120,120,fcst_allstations_120hr,obs_allstations_120hr,num_stations,totalstations,'120hr',variable,filepath)
-            get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,84,84,fcst_allstations_84hr,obs_allstations_84hr,num_stations,totalstations,'84hr',variable,filepath)
-            get_statistics(delta,model,grid, input_domain, savetype, date_entry1, date_entry2,maxhour,60,60,fcst_allstations_60hr,obs_allstations_60hr,num_stations,totalstations,'60hr',variable,filepath)
+            get_statistics(delta, stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,180,180,fcst_allstations_180hr,obs_allstations_180hr,num_stations,totalstations,'180hr',variable,filepath)
+            get_statistics(delta,stat_type, weight_type, input_domain, savetype, date_entry1, date_entry2,maxhour,120,120,fcst_allstations_120hr,obs_allstations_120hr,num_stations,totalstations,'120hr',variable,filepath)
+            get_statistics(delta,stat_type, weight_type, input_domain, savetype, date_entry1, date_entry2,maxhour,84,84,fcst_allstations_84hr,obs_allstations_84hr,num_stations,totalstations,'84hr',variable,filepath)
+            get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,60,60,fcst_allstations_60hr,obs_allstations_60hr,num_stations,totalstations,'60hr',variable,filepath)
 
                 
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,168,24,fcst_allstations_day7,obs_allstations_day7,num_stations,totalstations,'day7',variable,filepath)
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,144,24,fcst_allstations_day6,obs_allstations_day6,num_stations,totalstations,'day6',variable,filepath)
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,120,24,fcst_allstations_day5,obs_allstations_day5,num_stations,totalstations,'day5',variable,filepath)
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,96,24,fcst_allstations_day4,obs_allstations_day4,num_stations,totalstations,'day4',variable,filepath)
-        get_statistics(delta,model, grid, input_domain, savetype, date_entry1, date_entry2,maxhour,72,24,fcst_allstations_day3,obs_allstations_day3,num_stations,totalstations,'day3',variable,filepath) 
-        get_statistics(delta,model,grid, input_domain, savetype, date_entry1, date_entry2,maxhour,48,24,fcst_allstations_day2,obs_allstations_day2,num_stations,totalstations,'day2',variable,filepath)
-        get_statistics(delta,model,grid, input_domain, savetype, date_entry1, date_entry2,maxhour,24,24,fcst_allstations_day1,obs_allstations_day1,num_stations,totalstations,'day1',variable,filepath)
+        get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,168,24,fcst_allstations_day7,obs_allstations_day7,num_stations,totalstations,'day7',variable,filepath)
+        get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,144,24,fcst_allstations_day6,obs_allstations_day6,num_stations,totalstations,'day6',variable,filepath)
+        get_statistics(delta,stat_type, weight_type, input_domain, savetype, date_entry1, date_entry2,maxhour,120,24,fcst_allstations_day5,obs_allstations_day5,num_stations,totalstations,'day5',variable,filepath)
+        get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,96,24,fcst_allstations_day4,obs_allstations_day4,num_stations,totalstations,'day4',variable,filepath)
+        get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,72,24,fcst_allstations_day3,obs_allstations_day3,num_stations,totalstations,'day3',variable,filepath) 
+        get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,48,24,fcst_allstations_day2,obs_allstations_day2,num_stations,totalstations,'day2',variable,filepath)
+        get_statistics(delta,stat_type, weight_type,  input_domain, savetype, date_entry1, date_entry2,maxhour,24,24,fcst_allstations_day1,obs_allstations_day1,num_stations,totalstations,'day1',variable,filepath)
 
 def PCPT_obs_df_6(date_list_obs, delta, input_variable, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6,\
                   stations_with_PCPT24, all_stations, start_date, end_date):

@@ -119,7 +119,7 @@ all_stations = ['3510']
 
 stat_types = ['CSI', 'GSS', 'MAE_', 'POD', 'POFD', 'PSS', 'RMSE_', 'spcorr_']
 
-maxhour = '60'
+maxhours = ['60']
 ###########################################################
 ### -------------------- MAIN FUNCTION --------------------
 ###########################################################
@@ -139,22 +139,24 @@ def main(args):
 
     for stat_type in stat_types:
 
-        filepath = fcst_filepath + weight_type + '/' + stat_type + '/' + input_variable + '/'
+        for maxhour in maxhours:
 
-        filehours = get_filehours(1, int(maxhour))
+            filepath = fcst_filepath + weight_type + '/' + stat_type + '/' + input_variable + '/'
 
-        if check_dates(start_date, delta, filepath, station='3510') == False:
-            print("   Skipping model " + stat_type + " (check_dates flag)")
-            continue
+            filehours = get_filehours(1, int(maxhour))
+
+            if check_dates(start_date, delta, filepath, station='3510') == False:
+                print("   Skipping model " + stat_type + " (check_dates flag)")
+                continue
     
-        # if it can't find the folder for the model/grid pair 
-        if not os.path.isdir(filepath):
-            raise Exception("Missing grid/model pair (or wrong base filepath for ENS " + stat_type)
+            # if it can't find the folder for the model/grid pair 
+            if not os.path.isdir(filepath):
+                raise Exception("Missing grid/model pair (or wrong base filepath for ENS " + stat_type)
         
-        print("Now on.. ENS " + stat_type + " for " + input_variable)
+            print("Now on.. ENS " + stat_type + " for " + input_variable)
 
         
-        get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savetype, all_stations, station_df, input_variable, date_list, stat_type, weight_type,  maxhour, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
+            get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savetype, all_stations, station_df, input_variable, date_list, stat_type, weight_type,  maxhour, filehours, obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6)
 
 print('DONE!')
 if __name__ == "__main__":

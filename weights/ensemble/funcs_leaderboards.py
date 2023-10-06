@@ -94,7 +94,7 @@ def get_filehours(hour1,hour2):
     return(hours_list)
 
 
-def check_variable(variable, station, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, stations_with_PCPT24):
+def check_variable(variable, station, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6):
 
     flag = False
     
@@ -181,6 +181,7 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
     
     elif variable == "PCPT6":
         station_list = copy.deepcopy(stations_with_PCPT6) 
+    
     
     elif variable == "PCPT24":
         station_list = copy.deepcopy(stations_with_PCPT24) 
@@ -291,12 +292,11 @@ def get_fcst(station, filepath, variable, date_list,filehours):
     fcst = []
 
 # pulls out a list of the files for the given station+variable+hour wanted   
-
+    
     file = station + ".csv"
 
-    all_dates = np.loadtxt(filepath + file,usecols=0,dtype=str)
-
-
+    all_dates = np.loadtxt(filepath + file,usecols=0,skiprows = 1, dtype=str)
+    all_dates = pd.to_datetime(all_dates, format='%Y-%m-%d').strftime('%y%m%d')
 
     # gets the indices for the dates we want to select
     indices = []
@@ -309,8 +309,9 @@ def get_fcst(station, filepath, variable, date_list,filehours):
     
     # collects all fcst data for the given dates range
     # contains a list for every hour, each containing all of the wanted dates for that hour  
+    print(indices) 
+    open_fcst = np.loadtxt(filepath + file,usecols=1,delimiter=',', skiprows=indices[0]+1, max_rows=len(filehours), dtype=str)
     
-    open_fcst = np.loadtxt(filepath + file,usecols=1,dtype=str)[indices]
     new_fcst = np.where(open_fcst == "?", np.nan, open_fcst) #sometimes ENS reads as ?
                 
     fcst.append(new_fcst.astype(np.float))
@@ -321,6 +322,8 @@ def get_fcst(station, filepath, variable, date_list,filehours):
 
 # this removes (NaNs) any fcst data where the obs is not recorded, or fcst is -999
 def remove_missing_data(fcst, obs):
+    print(fcst)
+    print(obs)
     for i in range(len(fcst)):        
         if math.isnan(obs[i]) == True:
             fcst[i] = np.nan
@@ -559,14 +562,14 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
             #print("   Skipping station " + station + ")
             continue
 
-        if check_variable(variable, station, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, stations_with_PCPT24) == False:                  
+        if check_variable(variable, station, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6) == False:                  
             #print("   Skipping station " + station + " (no " + variable + " data)")
             continue
         
         if len(station) < 4:
             station = "0" +str(station)
         
-        if check_dates(date_entry1, delta, filepath, variable, station) == False:
+        if check_dates(date_entry1, delta, filepath, station) == False:
             print("   Skipping station " + station + " (not enough dates yet)")
             continue
 
@@ -592,7 +595,7 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
         
         all_fcst_KF = False
             
-        all_fcst = get_fcst(station, filepath, variable, date_list,filehours, date_entry1, date_entry2)    #goes to maxhour       
+        all_fcst = get_fcst(station, filepath, variable, date_list,filehours)    #goes to maxhour       
        
         fcst_final_all = np.array(all_fcst).T
         fcst_flat_all = fcst_final_all.flatten()

@@ -50,7 +50,7 @@ textfile_folder = '/verification/weighted-Statistics/'
 weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
 
 #output folder for sql tables after weighted ensemble is made
-save_folder = '/home/verif/verif-post-process/weights/ensemble/output/'
+save_folder = '/home/verif/verif-post-process/weights/ensemble/output-lf/'
 
 ###########################################################
 ### -------------------- INPUT ----------------------------

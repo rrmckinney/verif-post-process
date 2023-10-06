@@ -39,11 +39,11 @@ station_file = '/home/verif/verif-post-process/input/station_list_master.txt'
 models_file = '/home/verif/verif-post-process/input/model_list.txt'
 
 #folder where the stats save
-textfile_folder = '/verification/Statistics/'
+textfile_folder = '/verification/Statistics/ENS_W/'
 
 #editting mode for textfile
 
-wm = 'a'
+wm = 'w'
 ###########################################################
 ### -------------------- INPUTS -- ------------------------
 ###########################################################
@@ -322,8 +322,8 @@ def get_fcst(station, filepath, variable, date_list,filehours):
 
 # this removes (NaNs) any fcst data where the obs is not recorded, or fcst is -999
 def remove_missing_data(fcst, obs):
-    print(fcst)
-    print(obs)
+    print(len(fcst))
+    print(len(obs))
     for i in range(len(fcst)):        
         if math.isnan(obs[i]) == True:
             fcst[i] = np.nan
@@ -379,12 +379,13 @@ def trim_fcst(all_fcst,obs_df,station,start,end,variable,filepath,date_list,file
     print(end)
     if variable == "PCPT6":
         if int(end)==int(maxhour):
-            trimmed_fcst = all_fcst[start+1:end-5] 
+            trimmed_fcst = all_fcst[0][start+1:end-5] 
         else:
-            trimmed_fcst = all_fcst[start+1:end+1]  
+            trimmed_fcst = all_fcst[0][start+1:end+1]  
     else:
-        trimmed_fcst = all_fcst[start:end]   
-       
+        trimmed_fcst = all_fcst[0][start:end]   
+    
+    
     fcst_final = np.array(trimmed_fcst).T
     fcst_flat = fcst_final.flatten() 
     
@@ -528,7 +529,7 @@ def get_rankings(filepath, delta, input_domain, date_entry1, date_entry2, savety
     
     if 'SFCTC' in variable:
         stations_in_var = stations_with_SFCTC
-    elif 'SFCESPD' in variable:
+    elif 'SFCWSPD' in variable:
         stations_in_var = stations_with_SFCWSPD
     elif 'PCPTOT' in variable:
         stations_in_var = stations_with_PCPTOT

@@ -45,7 +45,7 @@ fcst_filepath = "/home/verif/verif-post-process/weights/ensemble/output/"
 station_file = '/home/verif/verif-post-process/input/station_list_master.txt'
 
 #folder where the stats save
-textfile_folder = '/verification/Statistics/'
+textfile_folder = '/verification/Statistics/ENS_W/'
 
 ###########################################################
 ### -------------------- INPUT ----------------------------
@@ -117,7 +117,10 @@ stations_with_PCPT6 = ['3510']
 
 all_stations = ['3510']
 
-stat_types = ['CSI', 'GSS', 'MAE_', 'POD', 'POFD', 'PSS', 'RMSE_', 'spcorr_']
+if 'SFCTC' in input_variable:
+    stat_types = ['MAE_', 'RMSE_', 'spcorr_']
+else:
+    stat_types = ['CSI', 'GSS', 'MAE_', 'POD', 'POFD', 'PSS', 'RMSE_', 'spcorr_', 'HSS']
 
 maxhours = ['60']
 ###########################################################

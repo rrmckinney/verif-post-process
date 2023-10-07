@@ -286,7 +286,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
         df3 = pd.DataFrame()
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
             for w in range(len(seasons_dates)):
-            
+                
                 f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
                     + stat_cat + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                 weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])

@@ -1,0 +1,210 @@
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invali[?2004h[?1049h[22;0;0t[?1h=[?2004h[?12h[?12l[27m[23m[29m[m[H[2J[?25l[1;1Hpython3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC [35m$domain[m yearly RMSE_ [35m$time_domain[m NA
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC_KF [35m$domain[m yearly RMSE_ [35m$time_domain[m NA
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD [35m$domain[m yearly RMSE_ [35m$time_domain[m NA
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD_KF [35m$domain[m yearly RMSE_ [35m$time_domain[m NA
+
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPTOT [35m$domain[m yearly CAT_ [35m$time_domain[m POD
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPT6 [35m$domain[m yearly CAT_ [35m$time_domain[m POD
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC [35m$domain[m yearly CAT_ [35m$time_domain[m POD
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC_KF [35m$domain[m yearly CAT_ [35m$time_domain[m POD
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD [35m$domain[m yearly CAT_ [35m$time_domain[m POD
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD_KF [35m$domain[m yearly CAT_ [35m$time_domain[m POD
+
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPTOT [35m$domain[m yearly CAT_ [35m$time_domain[m POFD
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPT6 [35m$domain[m yearly CAT_ [35m$time_domain[m POFD
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC [35m$domain[m yearly CAT_ [35m$time_domain[m POFD
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC_KF [35m$domain[m yearly CAT_ [35m$time_domain[m POFD
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD [35m$domain[m yearly CAT_ [35m$time_domain[m POFD
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD_KF [35m$domain[m yearly CAT_ [35m$time_domain[m POFD
+
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPTOT [35m$domain[m yearly CAT_ [35m$time_domain[m PSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPT6 [35m$domain[m yearly CAT_ [35m$time_domain[m PSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC [35m$domain[m yearly CAT_ [35m$time_domain[m PSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC_KF [35m$domain[m yearly CAT_ [35m$time_domain[m PSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD [35m$domain[m yearly CAT_ [35m$time_domain[m PSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD_KF [35m$domain[m yearly CAT_ [35m$time_domain[m PSS
+
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPTOT [35m$domain[m yearly CAT_ [35m$time_domain[m HSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPT6 [35m$domain[m yearly CAT_ [35m$time_domain[m HSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC [35m$domain[m yearly CAT_ [35m$time_domain[m HSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC_KF [35m$domain[m yearly CAT_ [35m$time_domain[m HSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD [35m$domain[m yearly CAT_ [35m$time_domain[m HSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD_KF [35m$domain[m yearly CAT_ [35m$time_domain[m HSS
+
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPTOT [35m$domain[m yearly CAT_ [35m$time_domain[m GSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPT6 [35m$domain[m yearly CAT_ [35m$time_domain[m GSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC [35m$domain[m yearly CAT_ [35m$time_domain[m GSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC_KF [35m$domain[m yearly CAT_ [35m$time_domain[m GSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD [35m$domain[m yearly CAT_ [35m$time_domain[m GSS
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD_KF [35m$domain[m yearly CAT_ [35m$time_domain[m GSS
+
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPTOT [35m$domain[m yearly CAT_ [35m$time_domain[m CSI
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m PCPT6 [35m$domain[m yearly CAT_ [35m$time_domain[m CSI
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC [35m$domain[m yearly CAT_ [35m$time_domain[m CSI
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCTC_KF [35m$domain[m yearly CAT_ [35m$time_domain[m CSI
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD [35m$domain[m yearly CAT_ [35m$time_domain[m CSI
+python3 mk_weighted_ensemble.py [35m$start_date[m [35m$end_date[m SFCWSPD_KF [35m$domain[m yearly CAT_ [35m$time_domain[m CSI[48;181H79,0-1[8CBot[47;1H[?25h[?25l
+
+[32mW11: Warning: File "run-all-wens-pwa.sh" has changed since editing started[m
+[32mSee ":help W11" for more info.[m
+[32m[O]K, (L)oad File: [?25h[m[?2004l[?1l>[?1049l[23;0;0tVim: Caught deadly signal HUP
+Vim: Finished.
+[48;1Hat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.
+Traceback (most recent call last):
+  File "mk_weighted_ensemble.py", line 119, in <module>
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+Exception: Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.

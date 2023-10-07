@@ -1,5 +1,5 @@
-2023-10-04 14:59:06.690793
-Performing WEEKLY calculation for 230915 to 230921
+2023-10-05 14:30:10.861747
+Performing WEEKLY calculation for 230922 to 230928
 Reading observational dataframe for SFCTC_KF.. 
     Now on station 2162
     Now on station 1972
@@ -1236,9 +1236,9 @@ Now on.. WRF2GFS_g1 for SFCTC_KF
    Skipping station 0399 (No forecast data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
-   Skipping station 2358 (No obs data)
+   Skipping station 2358 (No forecast data)
    Skipping station 2069 (No forecast data)
-   Skipping station 0692 (No obs data)
+   Skipping station 0692 (No forecast data)
 Now on.. WRF2GFS_g2 for SFCTC_KF
    Skipping station 2979 (No forecast data)
    Skipping station 0402 (No forecast data)
@@ -1307,9 +1307,9 @@ Now on.. WRF2GFS81_g1 for SFCTC_KF
    Skipping station 0399 (No forecast data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
-   Skipping station 2358 (No obs data)
+   Skipping station 2358 (No forecast data)
    Skipping station 2069 (No forecast data)
-   Skipping station 0692 (No obs data)
+   Skipping station 0692 (No forecast data)
 Now on.. WRF2GFS81_g2 for SFCTC_KF
    Skipping station 2979 (No forecast data)
    Skipping station 0402 (No forecast data)
@@ -1495,9 +1495,9 @@ Now on.. ENS for SFCTC_KF
    Skipping station 0399 (No forecast data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
-   Skipping station 2358 (No obs data)
+   Skipping station 2358 (No forecast data)
    Skipping station 2069 (No forecast data)
-   Skipping station 0692 (No obs data)
+   Skipping station 0692 (No forecast data)
 Now on.. ENS_lr for SFCTC_KF
    Skipping station 2979 (No forecast data)
    Skipping station 0402 (No forecast data)
@@ -1521,9 +1521,9 @@ Now on.. ENS_lr for SFCTC_KF
    Skipping station 0399 (No forecast data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
-   Skipping station 2358 (No obs data)
+   Skipping station 2358 (No forecast data)
    Skipping station 2069 (No forecast data)
-   Skipping station 0692 (No obs data)
+   Skipping station 0692 (No forecast data)
 Now on.. ENS_hr for SFCTC_KF
    Skipping station 2979 (No forecast data)
    Skipping station 0402 (No forecast data)
@@ -1570,7 +1570,7 @@ Now on.. ENS_LR for SFCTC_KF
    Skipping station 0399 (No forecast data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
-   Skipping station 2358 (No obs data)
+   Skipping station 2358 (No forecast data)
    Skipping station 2069 (No forecast data)
-   Skipping station 0692 (No obs data)
+   Skipping station 0692 (No forecast data)
 DONE!

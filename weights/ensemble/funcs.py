@@ -58,9 +58,6 @@ fall = ['211001','211130', '220901','220930']
 seasons_dates = [winter,spring,summer,fall]
 seasons = ['winter', 'spring', 'summer', 'fall']
 
-# logistic curve steepness (stated in file names)
-k = '100'
-
 # weight outlook: the forecast outlook the weights are based upon, 60hr is the only outlook that has all 51 members
 weight_outlook = '60hr'
 
@@ -287,7 +284,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
             for w in range(len(seasons_dates)):
                 
-                f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
+                f = weights_folder + "weights-seasonal/" + stat_type + '/weights_' \
                     + stat_cat + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                 weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
                 weight = float(weight_file.iloc[:,0])
@@ -324,7 +321,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
 
         else:
             for w in range(len(seasons_dates)):
-                    f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
+                    f = weights_folder + "weights-seasonal/" + stat_type + '/weights_all' \
                         + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                     
                     weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
@@ -361,7 +358,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
 
     elif weight_type == 'yearly':
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
-            f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_' \
+            f = weights_folder + "weights-yearly/" + stat_type + '/weights_' \
                 + stat_cat + '_' + weight_outlook + '_' + variable
             weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
             weight = float(weight_file.iloc[:,0])
@@ -373,7 +370,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
             df3['ENS_W'] = df3.sum(axis=1)
                 
         else:
-                f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
+                f = weights_folder + "weights-yearly/" + stat_type + '/weights_all' \
                     + '_' + weight_outlook + '_' + variable 
                     
                 weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
@@ -390,7 +387,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
     plt.savefig('ENS_W_'+ variable + '_all')
     return(df3.ENS_W)
 
-def fcst_grab(station_df, savetype, stat_type, k, weight_type, filepath, delta, input_domain,  \
+def fcst_grab(station_df, savetype, stat_type, weight_type, filepath, delta, input_domain,  \
                     date_entry1, date_entry2, variable, date_list, model, grid, maxhour, gridname, filehours, \
                     obs_df, station):
             
@@ -415,7 +412,7 @@ def fcst_grab(station_df, savetype, stat_type, k, weight_type, filepath, delta, 
     # total stations that should be included in each model/grid
     totalstations = totalstations+1
         
-    all_fcst = get_fcst(stat_type,k,maxhour, station, filepath, variable, date_list,filehours, date_entry1, \
+    all_fcst = get_fcst(stat_type,maxhour, station, filepath, variable, date_list,filehours, date_entry1, \
                         date_entry2, weight_type, model_df_name)    #goes to maxhour       
 
     

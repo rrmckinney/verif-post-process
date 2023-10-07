@@ -57,7 +57,7 @@ save_folder = '/home/verif/verif-post-process/weights/ensemble/output-pwa/'
 ###########################################################
 
 # takes an input date for the first and last day you want calculations for, must be a range of 7 or 30 days apart
-if len(sys.argv) == 10:
+if len(sys.argv) == 9:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
     input_startdate = datetime.strptime(start_date, "%y%m%d").date()
@@ -98,15 +98,11 @@ if len(sys.argv) == 10:
     if stat_type not in ['CAT_', 'MAE_', 'RMSE_','spcorr_']:# statistic type used to get model: CAT_ includes 6 categorical scores within it, all these need tailing '_'
         raise Exception("Invalid stat type input entries. Options: CAT_, MAE_, RMSE_, spcorr_. Case sensitive and tailing '_' required")
 
-    k = sys.argv[7]
-    if k not in ['40','80','100','150','200','500','1000']:
-        raise Exception("Invalid k value. Options: 40, 80, 100, 150, 200, 500, 1000.")
-    
-    time_domain = sys.argv[8]
+    time_domain = sys.argv[7]
     if time_domain not in ['60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']:
         raise Exception("Invalid time domain. Options: '60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7'")
     
-    stat_cat = sys.argv[9]
+    stat_cat = sys.argv[8]
     if stat_cat not in ['POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS', 'NA']:
         raise Exception("Invalid CAT score type. Options: 'POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS' if stat type is \
                         'CAT'; otherwise 'NA'; do not need tailing '_'")
@@ -251,7 +247,7 @@ def main(args):
                 
                 print("Now on.. " + model + gridname + " for " + input_variable)
 
-                fcst, model_df_name = fcst_grab(station_df, savetype, stat_type, k, weight_type, filepath, delta, input_domain,  \
+                fcst, model_df_name = fcst_grab(station_df, savetype, stat_type, weight_type, filepath, delta, input_domain,  \
                     date_entry1, date_entry2, input_variable, date_list, model, grid, maxhour, gridname, filehours, \
                     obs_df, station)
                     

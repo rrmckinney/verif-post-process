@@ -259,7 +259,7 @@ def main(args):
         
         print(fcst_all)
         
-        ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
+        ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable, k)
         
         if stat_type == 'CAT_':
             

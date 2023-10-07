@@ -38,7 +38,7 @@ models_file = '/home/verif/verif-post-process/input/model_list.txt'
 textfile_folder = '/verification/weighted-Statistics/'
 
 #folder where the weights are located
-weights_folder = '/home/verif/verif-post-process/weights/PWA/output/'
+weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
 
 ###########################################################
 ### -------------------- INPUTS -- ------------------------
@@ -274,7 +274,7 @@ def remove_missing_data(fcst, obs):
     return(fcst,obs) 
 
 
-def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable):
+def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable, k):
     
     start_date = datetime.strptime(start_date, '%y%m%d')
     end_date = datetime.strptime(end_date, '%y%m%d')
@@ -284,7 +284,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
             for w in range(len(seasons_dates)):
                 
-                f = weights_folder + "weights-seasonal/" + stat_type + '/weights_' \
+                f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
                     + stat_cat + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                 weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
                 weight = float(weight_file.iloc[:,0])
@@ -321,7 +321,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
 
         else:
             for w in range(len(seasons_dates)):
-                    f = weights_folder + "weights-seasonal/" + stat_type + '/weights_all' \
+                    f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
                         + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
                     
                     weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
@@ -358,7 +358,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
 
     elif weight_type == 'yearly':
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
-            f = weights_folder + "weights-yearly/" + stat_type + '/weights_' \
+            f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_' \
                 + stat_cat + '_' + weight_outlook + '_' + variable
             weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
             weight = float(weight_file.iloc[:,0])
@@ -370,7 +370,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
             df3['ENS_W'] = df3.mean(axis=1)
                 
         else:
-                f = weights_folder + "weights-yearly/" + stat_type + '/weights_all' \
+                f = weights_folder + "weights-yearly/" + k + '/' + stat_type + '/weights_all' \
                     + '_' + weight_outlook + '_' + variable 
                     
                 weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])

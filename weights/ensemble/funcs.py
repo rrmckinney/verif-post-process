@@ -38,7 +38,7 @@ models_file = '/home/verif/verif-post-process/input/model_list.txt'
 textfile_folder = '/verification/weighted-Statistics/'
 
 #folder where the weights are located
-weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
+weights_folder = '/home/verif/verif-post-process/weights/PWA/output/'
 
 ###########################################################
 ### -------------------- INPUTS -- ------------------------

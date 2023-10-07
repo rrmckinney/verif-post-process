@@ -251,7 +251,7 @@ def main(args):
                 
                 print("Now on.. " + model + gridname + " for " + input_variable)
 
-                fcst, model_df_name = fcst_grab(station_df, savetype, stat_type, k, weight_type, filepath, delta, input_domain,  \
+                fcst, model_df_name = fcst_grab(station_df, savetype, stat_type,  weight_type, filepath, delta, input_domain,  \
                     date_entry1, date_entry2, input_variable, date_list, model, grid, maxhour, gridname, filehours, \
                     obs_df, station)
                     

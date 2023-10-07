@@ -62,7 +62,7 @@ seasons = ['winter', 'spring', 'summer', 'fall']
 weight_outlook = '60hr'
 
 #editting mode for textfile
-wm = 'a'
+wm = 'w'
 
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------

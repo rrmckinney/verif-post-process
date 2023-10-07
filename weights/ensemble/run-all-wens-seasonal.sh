@@ -5,7 +5,7 @@ var='PCPTOT'
 domain='small'
 weight_type='seasonal'
 stat_type='MAE_'
-k=40
+k=100
 time_domain='60hr'
 stat_cat='PSS'
 

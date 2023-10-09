@@ -240,7 +240,7 @@ def get_all_obs(delta, station, variable, start_date, end_date, date_list_obs, a
     return(obs_df)
 
 # returns the fcst data for the given model/grid
-def get_fcst(stat_type, k,maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
+def get_fcst(stat_type, maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
     df_new = make_df(date_list, start_date, end_date)
 
     if "PCPT" in variable:

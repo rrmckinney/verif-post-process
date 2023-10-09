@@ -15,66 +15,25 @@ conda activate verification
 cd /home/verif/verif-post-process/weights/ensemble/src
 
 
-python3 mk_weighted_ensemble.py $start_date $end_date PCPTOT $domain $weight_type $stat_type $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date PCPT6 $domain seasonal MAE_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC $domain seasonal MAE_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC_KF $domain seasonal MAE_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD $domain seasonal MAE_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD_KF $domain seasonal MAE_ $k $time_domain NA
-
-python3 mk_weighted_ensemble.py $start_date $end_date PCPTOT $domain seasonal spcorr_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date PCPT6 $domain seasonal spcorr_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC $domain seasonal spcorr_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC_KF $domain seasonal spcorr_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD $domain seasonal spcorr_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD_KF $domain seasonal spcorr_ $k $time_domain NA
-
-python3 mk_weighted_ensemble.py $start_date $end_date PCPTOT $domain seasonal RMSE_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date PCPT6 $domain seasonal RMSE_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC $domain seasonal RMSE_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC_KF $domain seasonal RMSE_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD $domain seasonal RMSE_ $k $time_domain NA
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD_KF $domain seasonal RMSE_ $k $time_domain NA
-
-python3 mk_weighted_ensemble.py $start_date $end_date PCPTOT $domain seasonal CAT_ $k $time_domain POD
-python3 mk_weighted_ensemble.py $start_date $end_date PCPT6 $domain seasonal CAT_ $k $time_domain POD
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC $domain seasonal CAT_ $k $time_domain POD
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC_KF $domain seasonal CAT_ $k $time_domain POD
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD $domain seasonal CAT_ $k $time_domain POD
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD_KF $domain seasonal CAT_ $k $time_domain POD
-
-python3 mk_weighted_ensemble.py $start_date $end_date PCPTOT $domain seasonal CAT_ $k $time_domain POFD
-python3 mk_weighted_ensemble.py $start_date $end_date PCPT6 $domain seasonal CAT_ $k $time_domain POFD
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC $domain seasonal CAT_ $k $time_domain POFD
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC_KF $domain seasonal CAT_ $k $time_domain POFD
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD $domain seasonal CAT_ $k $time_domain POFD
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD_KF $domain seasonal CAT_ $k $time_domain POFD
-
-python3 mk_weighted_ensemble.py $start_date $end_date PCPTOT $domain seasonal CAT_ $k $time_domain PSS
-python3 mk_weighted_ensemble.py $start_date $end_date PCPT6 $domain seasonal CAT_ $k $time_domain PSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC $domain seasonal CAT_ $k $time_domain PSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC_KF $domain seasonal CAT_ $k $time_domain PSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD $domain seasonal CAT_ $k $time_domain PSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD_KF $domain seasonal CAT_ $k $time_domain PSS
-
-python3 mk_weighted_ensemble.py $start_date $end_date PCPTOT $domain seasonal CAT_ $k $time_domain HSS
-python3 mk_weighted_ensemble.py $start_date $end_date PCPT6 $domain seasonal CAT_ $k $time_domain HSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC $domain seasonal CAT_ $k $time_domain HSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC_KF $domain seasonal CAT_ $k $time_domain HSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD $domain seasonal CAT_ $k $time_domain HSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD_KF $domain seasonal CAT_ $k $time_domain HSS
-
-python3 mk_weighted_ensemble.py $start_date $end_date PCPTOT $domain seasonal CAT_ $k $time_domain GSS
-python3 mk_weighted_ensemble.py $start_date $end_date PCPT6 $domain seasonal CAT_ $k $time_domain GSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC $domain seasonal CAT_ $k $time_domain GSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC_KF $domain seasonal CAT_ $k $time_domain GSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD $domain seasonal CAT_ $k $time_domain GSS
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD_KF $domain seasonal CAT_ $k $time_domain GSS
-
-python3 mk_weighted_ensemble.py $start_date $end_date PCPTOT $domain seasonal CAT_ $k $time_domain CSI
-python3 mk_weighted_ensemble.py $start_date $end_date PCPT6 $domain seasonal CAT_ $k $time_domain CSI
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC $domain seasonal CAT_ $k $time_domain CSI
-python3 mk_weighted_ensemble.py $start_date $end_date SFCTC_KF $domain seasonal CAT_ $k $time_domain CSI
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD $domain seasonal CAT_ $k $time_domain CSI
-python3 mk_weighted_ensemble.py $start_date $end_date SFCWSPD_KF $domain seasonal CAT_ $k $time_domain CSI
+for x in 'MAE_' 'RMSE_' 'spcorr_' 'CAT_'
+do	
+    if [x = 'CAT_']
+    do
+        for s in 'POD' 'POFD' 'PSS' 'HSS' 'CSI' 'GSS'
+        do
+            for v in 'PCPTOT' 'SFCTC' 'SFCTC_KF' 'SFCWSPD' 'SFCWSPD_KF' 'PCPT6'
+            do 
+            python3 mk_weighted_ensemble.py $start_date $end_date $v $domain $weight_type $x $k $time_domain $s
+            done
+        done
+    done
+    else
+    do
+        for v in 'PCPTOT' 'SFCTC' 'SFCTC_KF' 'SFCWSPD' 'SFCWSPD_KF' 'PCPT6'
+        do 
+            stat_cat='NA'
+            python3 mk_weighted_ensemble.py $start_date $end_date $v $domain $weight_type $x $k $time_domain $stat_cat
+        done
+    done
+done
 

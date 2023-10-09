@@ -11,7 +11,7 @@ stat_cat='PSS'
 source /home/verif/.bash_profile
 conda activate verification
 
-cd /home/verif/verif-post-process/weights/ensemble
+cd /home/verif/verif-post-process/weights/ensemble/src
 
 
 python3 mk_weighted_ensemble.py $start_date $end_date PCPTOT $domain $weight_type $stat_type $time_domain NA

@@ -281,7 +281,7 @@ def main(args):
         axs[1].plot(fcst_all)
         axs[1].plot(ENS_W, 'ko')
 
-        plt.savefig('obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+stat_type+'_'+stat_cat)
+        plt.savefig(save_folder + 'img/obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+stat_type+'_'+stat_cat)
         
         elapsed = time.time() - t #closes log file
     

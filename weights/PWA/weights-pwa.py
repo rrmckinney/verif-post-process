@@ -40,7 +40,7 @@ models_file = '/home/verif/verif-post-process/input/model_list_weights.txt'
 
 textfile_folder = '/verification/Statistics/'
 
-output_folder = '/home/verif/verif-post-process/weights/PWA/output/'
+output_folder = '/home/verif/verif-post-process/weights/PWA/output/weights-yearly/'
 ###########################################################
 ### -------------------- INPUT ------------------------
 ###########################################################
@@ -121,7 +121,7 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 
 # The stat you want to base your weights off of:
 #choose "CAT_" for categorical scores (PCPT6, PCPTOT, SFCWSPD, SFCWSPD_KF) only, "MAE_", "RMSE_" or "SPCORR_"
-stat_type = "MAE_"
+stat_type = "CAT_"
 
 # weighting curve steepness, Stull chose 100, so will test with that
 k = 100
@@ -270,16 +270,16 @@ def get_rankings(variable,time_domain):
 
                 if int(dataratio.split("/")[0]) < int(dataratio.split("/")[1])-removed_hours*(delta+1):
                     if int(numstations.split("/")[0]) != int(numstations.split("/")[1]): 
-                        modelnames.append(legend_labels[leg_count] + "*^")
+                        modelnames.append(model + gridname)
                     else:
                         modelnames.append(legend_labels[leg_count] + "*")
-                    edited_modelnames.append(legend_labels[leg_count] + ":  (" + dataratio + ")")
+                    edited_modelnames.append(model + gridname)
               
                 else:
                     if int(numstations.split("/")[0]) != int(numstations.split("/")[1]): 
-                        modelnames.append(legend_labels[leg_count] + "^")
+                        modelnames.append(model+gridname)
                     else:
-                        modelnames.append(legend_labels[leg_count])
+                        modelnames.append(model+gridname)
                    
             #else:
             #    print("   Skipping  " + model + gridname + "   " + time_domain + " (doesn't exist)")
@@ -451,37 +451,37 @@ def main(args):
                 POD_weights, modelnames_sortedPOD, POFD_weights, modelnames_sortedPOFD, PSS_weights, modelnames_sortedPSS, HSS_weights, modelnames_sortedHSS, CSI_weights, modelnames_sortedCSI, GSS_weights, modelnames_sortedGSS = make_weights(var, time_domain, time_label,POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
         
                 weights_POD = pd.DataFrame([POD_weights], columns = modelnames_sortedPOD)
-                weights_POD.to_csv(output_folder + stat_type + '/weights_POD_'+time_domain+'_'+var)
+                weights_POD.to_csv(output_folder + stat_type + '/weights_POD_'+time_domain+'_'+var, mode = 'w')
                 
                 weights_POFD = pd.DataFrame([POFD_weights], columns = modelnames_sortedPOFD)
-                weights_POFD.to_csv(output_folder + stat_type + '/weights_POFD_'+time_domain+'_'+var)
+                weights_POFD.to_csv(output_folder + stat_type + '/weights_POFD_'+time_domain+'_'+var, mode = 'w')
                 
                 weights_PSS = pd.DataFrame([PSS_weights], columns = modelnames_sortedPSS)
-                weights_PSS.to_csv(output_folder + stat_type + '/weights_PSS_'+time_domain+'_'+var)
+                weights_PSS.to_csv(output_folder + stat_type + '/weights_PSS_'+time_domain+'_'+var, mode='w')
                 
                 weights_HSS = pd.DataFrame([HSS_weights], columns = modelnames_sortedHSS)
-                weights_HSS.to_csv(output_folder + stat_type + '/weights_HSS_'+time_domain+'_'+var)
+                weights_HSS.to_csv(output_folder + stat_type + '/weights_HSS_'+time_domain+'_'+var, mode = 'w')
                 
                 weights_CSI = pd.DataFrame([CSI_weights], columns = modelnames_sortedCSI)
-                weights_CSI.to_csv(output_folder + stat_type + '/weights_CSI_'+time_domain+'_'+var)
+                weights_CSI.to_csv(output_folder + stat_type + '/weights_CSI_'+time_domain+'_'+var, mode ='w')
                 
                 weights_GSS = pd.DataFrame([GSS_weights], columns = modelnames_sortedGSS)
-                weights_GSS.to_csv(output_folder + stat_type + '/weights_GSS_'+time_domain+'_'+var)
+                weights_GSS.to_csv(output_folder + stat_type + '/weights_GSS_'+time_domain+'_'+var, mode = 'w')
             
             elif stat_type == "MAE_":
                 MAE_weight, modelnames_sortedMAE = make_weights(var, time_domain, time_label,POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
                 weights_all = pd.DataFrame([MAE_weight], columns = modelnames_sortedMAE)
-                weights_all.to_csv(output_folder + stat_type + '/weights_all_'+time_domain+'_'+var)
+                weights_all.to_csv(output_folder + stat_type + '/weights_all_'+time_domain+'_'+var, mode = 'w')
 
             elif stat_type == "RMSE_":
                 RMSE_weight, modelnames_sortedRMSE = make_weights(var, time_domain, time_label,POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
                 weights_all = pd.DataFrame([RMSE_weight], columns = modelnames_sortedRMSE)
-                weights_all.to_csv(output_folder + stat_type + '/weights_all_'+time_domain+'_'+var)
+                weights_all.to_csv(output_folder + stat_type + '/weights_all_'+time_domain+'_'+var, mode = 'w')
             
             elif stat_type == "spcorr_":
                 SPCORR_weight, modelnames_sortedSPCORR = make_weights(var, time_domain, time_label,POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
                 weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
-                weights_all.to_csv(output_folder + stat_type + '/weights_all_'+time_domain+'_'+var)
+                weights_all.to_csv(output_folder + stat_type + '/weights_all_'+time_domain+'_'+var, mode = 'w')
             
             time_count = time_count+1
             

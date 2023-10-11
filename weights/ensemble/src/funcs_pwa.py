@@ -299,6 +299,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                     df3 = df3.sort_index()
                     
                     #make the weighted ensemble in the last column     
+                    df3 = df3.replace(0, np.NaN)
                     df3['ENS_W'] = df3.mean(axis=1)
                 
                 #fall has four dates as september is a year later than oct/nov as stats started in oct
@@ -316,6 +317,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                     df3 = df3.sort_index()
 
                     #make the weighted ensemble in the last column     
+                    df3 = df3.replace(0, np.NaN)
                     df3['ENS_W'] = df3.mean(axis=1)
 
 
@@ -336,7 +338,8 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                         df3 = pd.concat([df3,df])
                         df3 = df3.sort_index()
                         
-                        #make the weighted ensemble in the last column     
+                        #make the weighted ensemble in the last column
+                        df3 = df3.replace(0, np.NaN)
                         df3['ENS_W'] = df3.mean(axis=1)
 
                     #fall has four dates as september is a year later than oct/nov as stats started in oct
@@ -354,6 +357,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                         df3 = df3.sort_index()
                         
                         #make the weighted ensemble in the last column     
+                        df3 = df3.replace(0, np.NaN)
                         df3['ENS_W'] = df3.mean(axis=1)
 
     elif weight_type == 'yearly':
@@ -367,6 +371,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
             df3 = df3*weight
 
             #make the weighted ensemble in the last column     
+            df3 = df3.replace(0, np.NaN)
             df3['ENS_W'] = df3.mean(axis=1)
                 
         else:
@@ -382,7 +387,9 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                 df3 = df3.sort_index()
                 
                 #make the weighted ensemble in the last column     
+                df3 = df3.replace(0, np.NaN)
                 df3['ENS_W'] = df3.mean(axis=1)
+                
     #plt.boxplot(df3)
     plt.savefig('ENS_W_'+ variable + '_all')
     return(df3.ENS_W)

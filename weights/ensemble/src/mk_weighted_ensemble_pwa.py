@@ -21,8 +21,8 @@ from datetime import timedelta
 import sys
 import copy
 import matplotlib.pyplot as plt
+from funcs_pwa import *
 import time
-from funcs import *
 import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)
 

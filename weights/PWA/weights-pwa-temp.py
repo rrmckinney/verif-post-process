@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 ###########################################################
 
 #location to save the images internally
-save_folder = "/home/verif/verif-post-process/weights/LF/output/weights-seasonal/"
+save_folder = "/home/verif/verif-post-process/weights/LF/output/weights-yearly/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list.txt'
@@ -73,18 +73,13 @@ else:
     raise Exception("Invalid input entries. Needs YYMMDD for start and end dates")
 
 
+
 time_domains = ['60hr','84hr','120hr','180hr','day1','day2','day3','day4','day5','day6','day7']
 
 time_labels = ['outlook hours 1-60','outlook hours 1-84','outlook hours 1-120','outlook hours 1-180',
                'day 1 outlook (hours 1-24)','day 2 outlook (hours 25-48)','day 3 outlook (hours 49-72)',
                'day 4 outlook (hours 73-96)','day 5 outlook (hours 97-120)','day 6 outlook (hours 121-144)',
                'day 7 outlook (hours 145-168)']
-
-winter = ['211201','220228']
-spring = ['220301','220531']
-summer = ['220601','220831']
-fall = ['211001','211130', '220901','220930']
-seasons = [winter,spring,summer,fall]
 
 #stations = np.loadtxt(station_file,usecols=0,delimiter=',',dtype='str')
 
@@ -117,7 +112,6 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 # The stat you want to base your weights off of:
 #choose "MAE_", "RMSE_" or "SPCORR_"
 stat_type = sys.argv[5]
-
 # weighting curve steepness, now user input, testing several values
 k = int(sys.argv[4])
 
@@ -126,7 +120,7 @@ print(k)
 ### -------------------- FUNCTIONS ------------------------
 ###########################################################
 
-def get_rankings(variable,time_domain,season):
+def get_rankings(variable,time_domain):
     
      MAE_list, RMSE_list, SPCORR_list, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations = [],[],[],[],[],[],[],[]
      
@@ -138,6 +132,7 @@ def get_rankings(variable,time_domain,season):
         
         for grid in grids[i].split(","): #loops through each grid size for each model
         
+        
             #ENS only has one grid (and its not saved in a g folder)
             if "ENS" in model:
                 modelpath = model + '/'
@@ -146,73 +141,43 @@ def get_rankings(variable,time_domain,season):
                 modelpath = model + '/' + grid + '/'
                 gridname = "_" + grid
                      
-            print("Now on.. " + model + gridname + "   " + variable + " " + str(k) +" " +season[0] + " "+ season[1])
-            
+            print("Now on.. " + model + gridname + "   " + variable + " " + str(k))
             if os.path.isfile(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + stat_type + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"):
-                
-                #open the stat  file
+                #open the CAT file
                 with open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + stat_type + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt") as f:
                     lines = f.readlines()
-                    
+                
                 if stat_type == "MAE_":
                     MAE_mean = []
                     for line in lines:
-                        if float(season[0]) <= float(line.split("   ")[0][0:6]) and float(season[1]) >=float(line.split("  ")[1][0:6]):
+                        if date_entry1 <= line.split("   ")[0][0:6] and date_entry2 not in line:
                             MAE = line.split("   ")[1]
                             dataratio = line.split("   ")[2]
                             numstations = line.split("   ")[3].strip()
 
                             MAE_mean.append(float(MAE))
-                            
-                            if len(season) > 2:
-                                if float(season[2]) <= float(line.split("   ")[0][0:6]) and float(season[3]) >=float(line.split("   ")[1][0:6]):
-                                    MAE = line.split("   ")[1]
-                                    dataratio = line.split("   ")[2]
-                                    numstations = line.split("   ")[3].strip()
-
-                                    MAE_mean.append(float(MAE))
-                    
                     MAE = np.nanmean(MAE_mean)
                 
                 elif stat_type == "RMSE_":
                     RMSE_mean = []
                     for line in lines:
-                        if float(season[0]) <= float(line.split("   ")[0][0:6]) and float(season[1]) >=float(line.split("  ")[1][0:6]):
+                        if date_entry1 <= line.split("   ")[0][0:6] and date_entry2 not in line:
                             RMSE = line.split("   ")[1]
                             dataratio = line.split("   ")[2]
                             numstations = line.split("   ")[3].strip()
 
                             RMSE_mean.append(float(RMSE))
-                    
-                            
-                            if len(season) > 2:
-                                if float(season[2]) <= float(line.split("   ")[0][0:6]) and float(season[3]) >=float(line.split("   ")[1][0:6]):
-                                    RMSE = line.split("   ")[1]
-                                    dataratio = line.split("   ")[2]
-                                    numstations = line.split("   ")[3].strip()
-
-                                    RMSE_mean.append(float(RMSE))        
-                    
                     RMSE = np.nanmean(RMSE_mean)
                 
                 elif stat_type == "spcorr_":
                     SPCORR_mean = []
                     for line in lines:
-                        if float(season[0]) <= float(line.split("   ")[0][0:6]) and float(season[1]) >=float(line.split("  ")[1][0:6]):
+                        if date_entry1 <= line.split("   ")[0][0:6] and date_entry2 not in line:
                             SPCORR = line.split("   ")[1]
                             dataratio = line.split("   ")[2]
                             numstations = line.split("   ")[3].strip()
 
                             SPCORR_mean.append(float(SPCORR))
-
-                            if len(season) > 2:
-                                if float(season[2]) <= float(line.split("   ")[0][0:6]) and float(season[3]) >=float(line.split("   ")[1][0:6]):
-                                    SPCORR = line.split("   ")[1]
-                                    dataratio = line.split("   ")[2]
-                                    numstations = line.split("   ")[3].strip()
-
-                                    SPCORR_mean.append(float(SPCORR))
-
                     SPCORR = np.nanmean(SPCORR_mean)
                 
                 else:
@@ -220,8 +185,7 @@ def get_rankings(variable,time_domain,season):
                     skipped_modelnames.append(legend_labels[leg_count] + ":  (none)")
                     leg_count = leg_count+1
                     continue
-                
-
+                    
                 #this removes models if more than half of data points are missing
                 if int(dataratio.split("/")[0]) < int(dataratio.split("/")[1])/2: 
                     print("   **Skipping " + model + grid + ", less than 50% of data points**")
@@ -307,15 +271,14 @@ def get_obs_dates(time_domain):
     return(obs_dates)
 
 def make_weights(MAE, RMSE, SPCORR, modelnames):
-    
+
     if stat_type == "MAE_":
         
         MAE_weights = []
         MAE_sorted, modelnames_sortedMAE = zip(*sorted(zip(MAE, modelnames)))
         
-        MAE_xo = np.mean(MAE_sorted)
         for i in range(len(MAE_sorted)):
-            MAE_weight = 1/(1+exp(-k*(MAE_sorted[i]-MAE_xo)))
+            MAE_weight = MAE_sorted[i]/sum(MAE_sorted)
             MAE_weights.append(MAE_weight)        
         
         MAE_weights = [i/sum(MAE_weights) for i in MAE_weights]
@@ -326,11 +289,10 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         RMSE_weights = []
         RMSE_sorted, modelnames_sortedRMSE = zip(*sorted(zip(RMSE, modelnames)))
         
-        RMSE_xo = np.mean(RMSE_sorted)
         for i in range(len(RMSE_sorted)):
-            RMSE_weight = 1/(1+exp(-k*(RMSE_sorted[i]-RMSE_xo)))
+            RMSE_weight = RMSE_sorted[i]/sum(RMSE_sorted)
             RMSE_weights.append(RMSE_weight)
-        
+
         RMSE_weights = [i/sum(RMSE_weights) for i in RMSE_weights]
         return(RMSE_weights, modelnames_sortedRMSE)
 
@@ -339,62 +301,41 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         SPCORR_weights = []
         SPCORR_sorted, modelnames_sortedSPCORR = zip(*sorted(zip(SPCORR, modelnames)))
         
-        SPCORR_xo = np.mean(SPCORR_sorted)
         for i in range(len(SPCORR_sorted)):
-            SPCORR_weight = 1/(1+exp(-k*(SPCORR_sorted[i]-SPCORR_xo)))
+            SPCORR_weight = SPCORR_sorted[i]/sum(SPCORR_sorted)
             SPCORR_weights.append(SPCORR_weight)
-        
+
         SPCORR_weights = [i/sum(SPCORR_weights) for i in SPCORR_weights]
         return(SPCORR_weights, modelnames_sortedSPCORR)
         
 def main(args):
-        
+   
     var_i = 0
     for var in variables: #loop through variables
         
         time_count = 0
         for time_domain in time_domains:
-            
-            time_label = time_labels[time_count]
-            
-            for s in range(len(seasons)):
-                
-                if s == 0:
-                    period = 'winter'
-                elif s ==1:
-                    period = 'spring'
-                elif s ==2:
-                    period = 'summer'
-                elif s == 3:
-                    period = 'fall'
-
-                if var == "PCPT24" and time_domain in ['60hr','84hr','120hr','180hr']:
-                    print('yes')
-                    
-                    time_count = time_count+1
-                    continue
-            
+                        
             #these returned variables are lists that contain one stat for each model (so length=#num of models)
-                MAE, RMSE, SPCORR, modelnames = get_rankings(var,time_domain,seasons[s])
+            MAE, RMSE, SPCORR, modelnames = get_rankings(var,time_domain)
            
-                if stat_type == "MAE_":
-                    MAE_weight, modelnames_sortedMAE = make_weights(MAE, RMSE, SPCORR, modelnames)
-                    weights_all = pd.DataFrame([MAE_weight], columns = modelnames_sortedMAE)
-                    weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+            if stat_type == "MAE_":
+                MAE_weight, modelnames_sortedMAE = make_weights(MAE, RMSE, SPCORR, modelnames)
+                weights_all = pd.DataFrame([MAE_weight], columns = modelnames_sortedMAE)
+                weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
 
-                elif stat_type == "RMSE_":
-                    RMSE_weight, modelnames_sortedRMSE = make_weights(MAE, RMSE, SPCORR, modelnames)
-                    weights_all = pd.DataFrame([RMSE_weight], columns = modelnames_sortedRMSE)
-                    weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+            elif stat_type == "RMSE_":
+                RMSE_weight, modelnames_sortedRMSE = make_weights(MAE, RMSE, SPCORR, modelnames)
+                weights_all = pd.DataFrame([RMSE_weight], columns = modelnames_sortedRMSE)
+                weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
             
-                elif stat_type == "spcorr_":
-                    SPCORR_weight, modelnames_sortedSPCORR = make_weights(MAE, RMSE, SPCORR, modelnames)
-                    weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
-                    weights_all.to_csv(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+            elif stat_type == "spcorr_":
+                SPCORR_weight, modelnames_sortedSPCORR = make_weights(MAE, RMSE, SPCORR, modelnames)
+                weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
+                weights_all.to_csv(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var)
             
             time_count = time_count+1
             
-
 
         var_i=var_i+1
             

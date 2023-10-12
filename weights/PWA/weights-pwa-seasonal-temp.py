@@ -313,12 +313,11 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         MAE_weights = []
         MAE_sorted, modelnames_sortedMAE = zip(*sorted(zip(MAE, modelnames)))
         
-        MAE_xo = np.mean(MAE_sorted)
         for i in range(len(MAE_sorted)):
-            MAE_weight = 1/(1+exp(-k*(MAE_sorted[i]-MAE_xo)))
+            MAE_weight = MAE_sorted[i]/sum(MAE_sorted)
             MAE_weights.append(MAE_weight)        
         
-        #MAE_weights = [i/sum(MAE_weights) for i in MAE_weights]
+        MAE_weights = [i/sum(MAE_weights) for i in MAE_weights]
         return(MAE_weights, modelnames_sortedMAE)
 
     elif stat_type == "RMSE_":
@@ -326,12 +325,11 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         RMSE_weights = []
         RMSE_sorted, modelnames_sortedRMSE = zip(*sorted(zip(RMSE, modelnames)))
         
-        RMSE_xo = np.mean(RMSE_sorted)
         for i in range(len(RMSE_sorted)):
-            RMSE_weight = 1/(1+exp(-k*(RMSE_sorted[i]-RMSE_xo)))
+            RMSE_weight = RMSE_sorted[i]/sum(RMSE_sorted)
             RMSE_weights.append(RMSE_weight)
         
-        #RMSE_weights = [i/sum(RMSE_weights) for i in RMSE_weights]
+        RMSE_weights = [i/sum(RMSE_weights) for i in RMSE_weights]
         return(RMSE_weights, modelnames_sortedRMSE)
 
     elif stat_type == "spcorr_":
@@ -339,12 +337,11 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         SPCORR_weights = []
         SPCORR_sorted, modelnames_sortedSPCORR = zip(*sorted(zip(SPCORR, modelnames)))
         
-        SPCORR_xo = np.mean(SPCORR_sorted)
         for i in range(len(SPCORR_sorted)):
-            SPCORR_weight = 1/(1+exp(-k*(SPCORR_sorted[i]-SPCORR_xo)))
+            SPCORR_weight = SPCORR_sorted[i]/sum(SPCORR_sorted)
             SPCORR_weights.append(SPCORR_weight)
         
-        # SPCORR_weights = [i/sum(SPCORR_weights) for i in SPCORR_weights]
+        SPCORR_weights = [i/sum(SPCORR_weights) for i in SPCORR_weights]
         return(SPCORR_weights, modelnames_sortedSPCORR)
         
 def main(args):

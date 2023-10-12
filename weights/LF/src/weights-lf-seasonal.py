@@ -377,32 +377,32 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         CSI_sorted, modelnames_sortedCSI = zip(*sorted(zip(CSI, modelnames)))
         GSS_sorted, modelnames_sortedGSS = zip(*sorted(zip(GSS, modelnames)))
     
-        POD_xo = np.median(POD_sorted)
+        POD_xo = np.mean(POD_sorted)
         for i in range(len(POD_sorted)):
             POD_weight = 1/(1+exp(-k*(POD_sorted[i]-POD_xo)))
             POD_weights.append(POD_weight)
 
-        POFD_xo = np.median(POFD_sorted)
+        POFD_xo = np.mean(POFD_sorted)
         for i in range(len(POFD_sorted)):
             POFD_weight = 1/(1+exp(-k*(POFD_sorted[i]-POFD_xo)))
             POFD_weights.append(POFD_weight)
 
-        PSS_xo = np.median(PSS_sorted)
+        PSS_xo = np.mean(PSS_sorted)
         for i in range(len(PSS_sorted)):
             PSS_weight = 1/(1+exp(-k*(PSS_sorted[i]-PSS_xo)))
             PSS_weights.append(PSS_weight)
 
-        HSS_xo = np.median(HSS_sorted)
+        HSS_xo = np.mean(HSS_sorted)
         for i in range(len(HSS_sorted)):
             HSS_weight = 1/(1+exp(-k*(HSS_sorted[i]-HSS_xo)))
             HSS_weights.append(HSS_weight)
 
-        CSI_xo = np.median(CSI_sorted)
+        CSI_xo = np.mean(CSI_sorted)
         for i in range(len(CSI_sorted)):
             CSI_weight = 1/(1+exp(-k*(CSI_sorted[i]-CSI_xo)))
             CSI_weights.append(CSI_weight)
 
-        GSS_xo = np.median(GSS_sorted)
+        GSS_xo = np.mean(GSS_sorted)
         for i in range(len(GSS_sorted)):
             GSS_weight = 1/(1+exp(-k*(GSS_sorted[i]-GSS_xo)))
             GSS_weights.append(GSS_weight)
@@ -421,7 +421,7 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         MAE_weights = []
         MAE_sorted, modelnames_sortedMAE = zip(*sorted(zip(MAE, modelnames)))
         
-        MAE_xo = np.median(MAE_sorted)
+        MAE_xo = np.mean(MAE_sorted)
         for i in range(len(MAE_sorted)):
             MAE_weight = 1/(1+exp(-k*(MAE_sorted[i]-MAE_xo)))
             MAE_weights.append(MAE_weight)        
@@ -434,7 +434,7 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         RMSE_weights = []
         RMSE_sorted, modelnames_sortedRMSE = zip(*sorted(zip(RMSE, modelnames)))
         
-        RMSE_xo = np.median(RMSE_sorted)
+        RMSE_xo = np.mean(RMSE_sorted)
         for i in range(len(RMSE_sorted)):
             RMSE_weight = 1/(1+exp(-k*(RMSE_sorted[i]-RMSE_xo)))
             RMSE_weights.append(RMSE_weight)
@@ -447,7 +447,7 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         SPCORR_weights = []
         SPCORR_sorted, modelnames_sortedSPCORR = zip(*sorted(zip(SPCORR, modelnames)))
         
-        SPCORR_xo = np.median(SPCORR_sorted)
+        SPCORR_xo = np.mean(SPCORR_sorted)
         for i in range(len(SPCORR_sorted)):
             SPCORR_weight = 1/(1+exp(-k*(SPCORR_sorted[i]-SPCORR_xo)))
             SPCORR_weights.append(SPCORR_weight)

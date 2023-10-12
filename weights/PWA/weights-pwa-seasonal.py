@@ -6,6 +6,7 @@ Created in summer 2023
 @author: Reagan McKinney
 
 This script is based on a logistic curve weighting scheme.
+
 """
 
 import os
@@ -73,6 +74,7 @@ else:
     raise Exception("Invalid input entries. Needs YYMMDD for start and end dates")
 
 
+
 time_domains = ['60hr','84hr','120hr','180hr','day1','day2','day3','day4','day5','day6','day7']
 
 time_labels = ['outlook hours 1-60','outlook hours 1-84','outlook hours 1-120','outlook hours 1-180',
@@ -88,9 +90,9 @@ seasons = [winter,spring,summer,fall]
 
 #stations = np.loadtxt(station_file,usecols=0,delimiter=',',dtype='str')
 
-variables = ['SFCTC', 'SFCTC_KF']
-variable_names = ['Temperature-Raw', 'Temperature-KF']
-variable_units = ['[C]','[C]']
+variables = ['PCPTOT', 'SFCWSPD_KF', 'SFCWSPD', 'PCPT6']
+variable_names = ['Hourly Precipitation', 'Wind Speed-KF ', 'Wind Speed-Raw', '6-Hour Accumulated Precipitation']
+variable_units = ['[mm/hr]','[km/hr]','[km/hr]', '[mm/6hr]']
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
 models = np.loadtxt(models_file,usecols=0,dtype='str')
@@ -115,20 +117,19 @@ for i in range(len(model_names)):
 model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CDB7F6','#65fe08','#fc3232','#754200','#00FFFF','#fc23ba','#a1a1a1','#000000','#000000','#000000','#000000']
 
 # The stat you want to base your weights off of:
-#choose "MAE_", "RMSE_" or "SPCORR_"
+#choose "CAT_" for categorical scores (PCPT6, PCPTOT, SFCWSPD, SFCWSPD_KF) only, "MAE_", "RMSE_" or "SPCORR_"
 stat_type = sys.argv[5]
 
 # weighting curve steepness, now user input, testing several values
 k = int(sys.argv[4])
 
-print(k)
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------
 ###########################################################
 
 def get_rankings(variable,time_domain,season):
     
-     MAE_list, RMSE_list, SPCORR_list, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations = [],[],[],[],[],[],[],[]
+     POD_list,POFD_list,PSS_list, HSS_list, CSI_list, GSS_list, MAE_list, RMSE_list, SPCORR_list, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations = [],[],[],[],[],[],[],[], [], [], [],[],[],[]
      
      leg_count = 0
      color_count = 0
@@ -146,15 +147,63 @@ def get_rankings(variable,time_domain,season):
                 modelpath = model + '/' + grid + '/'
                 gridname = "_" + grid
                      
-            print("Now on.. " + model + gridname + "   " + variable + " " + str(k) +" " +season[0] + " "+ season[1])
+            print("Now on.. " + model + gridname + "   " + stat_type + " "+variable + " " + str(k) +" " +season[0] + " "+ season[1])
             
             if os.path.isfile(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + stat_type + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"):
                 
                 #open the stat  file
                 with open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + stat_type + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt") as f:
                     lines = f.readlines()
+                
+                if stat_type == "CAT_":
+                    POD_mean, POFD_mean, PSS_mean, HSS_mean, CSI_mean, GSS_mean = [],[],[],[],[],[]
+                    for line in lines:
+                        if float(season[0]) <= float(line.split("   ")[0][0:6]) and float(season[1]) >=float(line.split("  ")[1][0:6]):
+                            
+                            POD = line.split("   ")[5]
+                            POFD = line.split("   ")[6]
+                            PSS = line.split("   ")[7]
+                            HSS = line.split("   ")[8]
+                            CSI = line.split("   ")[9]
+                            GSS = line.split("   ")[10]
+                            dataratio = line.split("   ")[11]
+                            numstations = line.split("   ")[12].strip()
+
+                            POD_mean.append(float(POD))
+                            POFD_mean.append(float(POFD))
+                            PSS_mean.append(float(PSS))
+                            HSS_mean.append(float(HSS))
+                            CSI_mean.append(float(CSI))
+                            GSS_mean.append(float(GSS))
+                        
+                            if len(season) > 2:
+                                if float(season[2]) <= float(line.split("   ")[0][0:6]) and float(season[3]) >=float(line.split("   ")[1][0:6]):
+                                
+                                    POD = line.split("   ")[5]
+                                    POFD = line.split("   ")[6]
+                                    PSS = line.split("   ")[7]
+                                    HSS = line.split("   ")[8]
+                                    CSI = line.split("   ")[9]
+                                    GSS = line.split("   ")[10]
+                                    dataratio = line.split("   ")[11]
+                                    numstations = line.split("   ")[12].strip()
+
+                                    POD_mean.append(float(POD))
+                                    POFD_mean.append(float(POFD))
+                                    PSS_mean.append(float(PSS))
+                                    HSS_mean.append(float(HSS))
+                                    CSI_mean.append(float(CSI))
+                                    GSS_mean.append(float(GSS))
+                            
+
+                    POD = np.nanmean(POD_mean)
+                    POFD = np.nanmean(POFD_mean)
+                    PSS = np.nanmean(PSS_mean)
+                    HSS = np.nanmean(HSS_mean)
+                    CSI = np.nanmean(CSI_mean)
+                    GSS = np.nanmean(GSS_mean)
                     
-                if stat_type == "MAE_":
+                elif stat_type == "MAE_":
                     MAE_mean = []
                     for line in lines:
                         if float(season[0]) <= float(line.split("   ")[0][0:6]) and float(season[1]) >=float(line.split("  ")[1][0:6]):
@@ -243,7 +292,16 @@ def get_rankings(variable,time_domain,season):
                 if int(numstations.split("/")[0]) < int(numstations.split("/")[1]): 
                     numofstations.append(legend_labels[leg_count] + ": (" + numstations + ")")
                 
-                if stat_type == "MAE_":
+                if stat_type == "CAT_":
+                    POD_list.append(float(POD))
+                    POFD_list.append(float(POFD))
+                    PSS_list.append(float(PSS))
+                    HSS_list.append(float(HSS))
+                    CSI_list.append(float(CSI))
+                    GSS_list.append(float(GSS))
+                    modelcolors.append(model_colors[color_count])
+                
+                elif stat_type == "MAE_":
                     MAE_list.append(float(MAE))
                 
                 elif stat_type == "RMSE_":
@@ -265,11 +323,12 @@ def get_rankings(variable,time_domain,season):
                         modelnames.append(model+gridname)
                    
 
+
             leg_count = leg_count+1
          
         color_count = color_count+1
              
-     return(MAE_list, RMSE_list, SPCORR_list, modelnames)
+     return(POD_list,POFD_list,PSS_list, HSS_list, CSI_list, GSS_list,MAE_list, RMSE_list, SPCORR_list, modelnames)
  
 def get_obs_dates(time_domain):
     
@@ -306,19 +365,61 @@ def get_obs_dates(time_domain):
     
     return(obs_dates)
 
-def make_weights(MAE, RMSE, SPCORR, modelnames):
+def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
+    if stat_type == "CAT_":
+        POD_weights, POFD_weights, PSS_weights, HSS_weights, CSI_weights, GSS_weights = [],[],[],[],[],[]
+
+        #sorts them greatest to least/least to greatest
+        POD_sorted, modelnames_sortedPOD = zip(*sorted(zip(POD, modelnames)))
+        POFD_sorted, modelnames_sortedPOFD = zip(*sorted(zip(POFD, modelnames)))
+        PSS_sorted, modelnames_sortedPSS = zip(*sorted(zip(PSS, modelnames)))
+        HSS_sorted, modelnames_sortedHSS = zip(*sorted(zip(HSS, modelnames)))
+        CSI_sorted, modelnames_sortedCSI = zip(*sorted(zip(CSI, modelnames)))
+        GSS_sorted, modelnames_sortedGSS = zip(*sorted(zip(GSS, modelnames)))
     
-    if stat_type == "MAE_":
+        for i in range(len(POD_sorted)):
+            POD_weight = POD_sorted[i]/sum(POD_sorted)
+            POD_weights.append(POD_weight)
+
+        for i in range(len(POFD_sorted)):
+            POFD_weight = POFD_sorted[i]/sum(POFD_sorted)
+            POFD_weights.append(POFD_weight)
+
+        for i in range(len(PSS_sorted)):
+            PSS_weight = PSS_sorted[i]/sum(PSS_sorted)
+            PSS_weights.append(PSS_weight)
+
+        for i in range(len(HSS_sorted)):
+            HSS_weight = HSS_sorted[i]/sum(HSS_sorted)
+            HSS_weights.append(HSS_weight)
+
+        for i in range(len(CSI_sorted)):
+            CSI_weight = CSI_sorted[i]/sum(CSI_sorted)
+            CSI_weights.append(CSI_weight)
+
+        for i in range(len(GSS_sorted)):
+            GSS_weight = GSS_sorted[i]/sum(GSS_sorted)
+            GSS_weights.append(GSS_weight)
+        
+        # POD_weights = [i/sum(POD_weights) for i in POD_weights]        
+        # POFD_weights = [i/sum(POFD_weights) for i in POFD_weights]
+        # PSS_weights = [i/sum(PSS_weights) for i in PSS_weights]
+        # HSS_weights = [i/sum(HSS_weights) for i in HSS_weights]
+        # CSI_weights = [i/sum(CSI_weights) for i in CSI_weights]
+        # GSS_weights = [i/sum(GSS_weights) for i in GSS_weights]
+
+        return(POD_weights, modelnames_sortedPOD, POFD_weights, modelnames_sortedPOFD, PSS_weights, modelnames_sortedPSS, HSS_weights, modelnames_sortedHSS, CSI_weights, modelnames_sortedCSI, GSS_weights, modelnames_sortedGSS)
+    
+    elif stat_type == "MAE_":
         
         MAE_weights = []
         MAE_sorted, modelnames_sortedMAE = zip(*sorted(zip(MAE, modelnames)))
         
-        MAE_xo = np.mean(MAE_sorted)
         for i in range(len(MAE_sorted)):
-            MAE_weight = 1/(1+exp(-k*(MAE_sorted[i]-MAE_xo)))
+            MAE_weight = MAE_sorted[i]/sum(MAE_sorted)
             MAE_weights.append(MAE_weight)        
         
-        #MAE_weights = [i/sum(MAE_weights) for i in MAE_weights]
+        # MAE_weights = [i/sum(MAE_weights) for i in MAE_weights]
         return(MAE_weights, modelnames_sortedMAE)
 
     elif stat_type == "RMSE_":
@@ -326,12 +427,11 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         RMSE_weights = []
         RMSE_sorted, modelnames_sortedRMSE = zip(*sorted(zip(RMSE, modelnames)))
         
-        RMSE_xo = np.mean(RMSE_sorted)
         for i in range(len(RMSE_sorted)):
-            RMSE_weight = 1/(1+exp(-k*(RMSE_sorted[i]-RMSE_xo)))
+            RMSE_weight = RMSE_sorted[i]/sum(RMSE_sorted)
             RMSE_weights.append(RMSE_weight)
         
-        #RMSE_weights = [i/sum(RMSE_weights) for i in RMSE_weights]
+        # RMSE_weights = [i/sum(RMSE_weights) for i in RMSE_weights]
         return(RMSE_weights, modelnames_sortedRMSE)
 
     elif stat_type == "spcorr_":
@@ -339,9 +439,9 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         SPCORR_weights = []
         SPCORR_sorted, modelnames_sortedSPCORR = zip(*sorted(zip(SPCORR, modelnames)))
         
-        SPCORR_xo = np.mean(SPCORR_sorted)
+        SPCORR_xo = np.median(SPCORR_sorted)
         for i in range(len(SPCORR_sorted)):
-            SPCORR_weight = 1/(1+exp(-k*(SPCORR_sorted[i]-SPCORR_xo)))
+            SPCORR_weight = SPCORR_sorted[i]/sum(SPCORR_sorted)
             SPCORR_weights.append(SPCORR_weight)
         
         # SPCORR_weights = [i/sum(SPCORR_weights) for i in SPCORR_weights]
@@ -375,30 +475,48 @@ def main(args):
                     continue
             
             #these returned variables are lists that contain one stat for each model (so length=#num of models)
-                MAE, RMSE, SPCORR, modelnames = get_rankings(var,time_domain,seasons[s])
+                POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames = get_rankings(var,time_domain,seasons[s])
            
-                if stat_type == "MAE_":
-                    MAE_weight, modelnames_sortedMAE = make_weights(MAE, RMSE, SPCORR, modelnames)
+                if stat_type == "CAT_":
+                    POD_weights, modelnames_sortedPOD, POFD_weights, modelnames_sortedPOFD, PSS_weights, modelnames_sortedPSS, HSS_weights, modelnames_sortedHSS, CSI_weights, modelnames_sortedCSI, GSS_weights, modelnames_sortedGSS = make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames)
+                    weights_POD = pd.DataFrame([POD_weights], columns = modelnames_sortedPOD)
+                    weights_POD.to_csv(save_folder + str(k) + '/' + stat_type + '/weights_POD_'+time_domain+'_'+var+'_'+period, mode = 'w')
+                
+                    weights_POFD = pd.DataFrame([POFD_weights], columns = modelnames_sortedPOFD)
+                    weights_POFD.to_csv(save_folder + str(k) + '/' + stat_type + '/weights_POFD_'+time_domain+'_'+var+ '_'+period, mode = 'w')
+                
+                    weights_PSS = pd.DataFrame([PSS_weights], columns = modelnames_sortedPSS)
+                    weights_PSS.to_csv(save_folder + str(k) + '/' + stat_type + '/weights_PSS_'+time_domain+'_'+var+'_'+period, mode = 'w')
+                
+                    weights_HSS = pd.DataFrame([HSS_weights], columns = modelnames_sortedHSS)
+                    weights_HSS.to_csv(save_folder + str(k) + '/' + stat_type + '/weights_HSS_'+time_domain+'_'+var+'_'+period, mode = 'w')
+                
+                    weights_CSI = pd.DataFrame([CSI_weights], columns = modelnames_sortedCSI)
+                    weights_CSI.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_CSI_'+time_domain+'_'+var+'_'+period, mode = 'w')
+                
+                    weights_GSS = pd.DataFrame([GSS_weights], columns = modelnames_sortedGSS)
+                    weights_GSS.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_GSS_'+time_domain+'_'+var+'_'+period, mode = 'w')
+            
+                elif stat_type == "MAE_":
+                    MAE_weight, modelnames_sortedMAE = make_weights(POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames)
                     weights_all = pd.DataFrame([MAE_weight], columns = modelnames_sortedMAE)
-                    weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period, mode = 'w')
 
                 elif stat_type == "RMSE_":
-                    RMSE_weight, modelnames_sortedRMSE = make_weights(MAE, RMSE, SPCORR, modelnames)
+                    RMSE_weight, modelnames_sortedRMSE = make_weights(POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames)
                     weights_all = pd.DataFrame([RMSE_weight], columns = modelnames_sortedRMSE)
-                    weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period, mode = 'w')
             
                 elif stat_type == "spcorr_":
-                    SPCORR_weight, modelnames_sortedSPCORR = make_weights(MAE, RMSE, SPCORR, modelnames)
+                    SPCORR_weight, modelnames_sortedSPCORR = make_weights(POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames)
                     weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
-                    weights_all.to_csv(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    print(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    weights_all.to_csv(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period, mode = 'w')
             
             time_count = time_count+1
-            
-
 
         var_i=var_i+1
             
-    #sys.stdout.close() #close log file
 
 if __name__ == "__main__":
     main(sys.argv)

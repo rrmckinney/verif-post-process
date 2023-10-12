@@ -390,7 +390,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                 df3 = df3.replace(0, np.NaN)
                 df3['ENS_W'] = df3.mean(axis=1)
                 
-    return(df3.ENS_W)
+    return(df3)
 
 def fcst_grab(station_df, savetype, stat_type, weight_type, filepath, delta, input_domain,  \
                     date_entry1, date_entry2, variable, date_list, model, grid, maxhour, gridname, filehours, \

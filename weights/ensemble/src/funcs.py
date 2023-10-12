@@ -387,7 +387,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
                 df3 = df3.sort_index()
                 
                 #make the weighted ensemble in the last column     
-                df3 = df3.replace(, np.NaN)
+                df3 = df3.replace(0, np.NaN)
                 df3['ENS_W'] = df3.mean(axis=1)
 
     #plt.boxplot(df3)

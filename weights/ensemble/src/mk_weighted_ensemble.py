@@ -261,28 +261,27 @@ def main(args):
         
         ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable, k)
         
-        if stat_type == 'CAT_':
+        # if stat_type == 'CAT_':
             
-           path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
-           if os.path.isdir(path) == False:
-              os.makedirs(path)
+        #     path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
+        #     if os.path.isdir(path) == False:
+        #         os.makedirs(path)
             
-           ENS_W.to_csv(path + station +'.csv')
+        #     ENS_W.to_csv(path + station +'.csv')
 
-        else:
-          path = save_folder + weight_type + '/' + stat_type + '/' + input_variable + '/'
+        # else:
+        #     path = save_folder + weight_type + '/' + stat_type + '/' + input_variable + '/'
             
-          if os.path.isdir(path) == False:
-              os.makedirs(path)
+        #     if os.path.isdir(path) == False:
+        #         os.makedirs(path)
             
-          ENS_W.to_csv(path + station +'.csv')
+        #     ENS_W.to_csv(path + station +'.csv')
         
         fig, axs = plt.subplots(2, figsize=(50,10))
         
-        axs[0].plot(obs_df)
         axs[0].plot(ENS_W, 'ko')
         
-        axs[1].plot(fcst_all)
+        # axs[1].plot(fcst_all)
         axs[1].plot(ENS_W, 'ko')
 
         plt.savefig('obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+stat_type+'_'+stat_cat)

@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 ###########################################################
 
 #location to save the images internally
-save_folder = "/home/verif/verif-post-process/weights/LF/output/weights-seasonal/"
+save_folder = "/home/verif/verif-post-process/weights/PWA/output/weights-seasonal/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list.txt'
@@ -377,17 +377,17 @@ def main(args):
                 if stat_type == "MAE_":
                     MAE_weight, modelnames_sortedMAE = make_weights(MAE, RMSE, SPCORR, modelnames)
                     weights_all = pd.DataFrame([MAE_weight], columns = modelnames_sortedMAE)
-                    weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    weights_all.to_csv(save_folder+ stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
 
                 elif stat_type == "RMSE_":
                     RMSE_weight, modelnames_sortedRMSE = make_weights(MAE, RMSE, SPCORR, modelnames)
                     weights_all = pd.DataFrame([RMSE_weight], columns = modelnames_sortedRMSE)
-                    weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    weights_all.to_csv(save_folder + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
             
                 elif stat_type == "spcorr_":
                     SPCORR_weight, modelnames_sortedSPCORR = make_weights(MAE, RMSE, SPCORR, modelnames)
                     weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
-                    weights_all.to_csv(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    weights_all.to_csv(save_folder+ stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
             
             time_count = time_count+1
             

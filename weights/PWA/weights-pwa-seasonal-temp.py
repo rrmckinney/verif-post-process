@@ -36,7 +36,7 @@ textfile_folder = '/verification/Statistics/'
 ###########################################################
 
 # takes an input date for the last day of the week you want to include
-if len(sys.argv) == 6:
+if len(sys.argv) == 5:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) + '00'  
     input_startdate = datetime.datetime.strptime(start_date, "%y%m%d%H").date()
@@ -116,12 +116,8 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 
 # The stat you want to base your weights off of:
 #choose "MAE_", "RMSE_" or "SPCORR_"
-stat_type = sys.argv[5]
+stat_type = sys.argv[4]
 
-# weighting curve steepness, now user input, testing several values
-k = int(sys.argv[4])
-
-print(k)
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------
 ###########################################################
@@ -146,7 +142,7 @@ def get_rankings(variable,time_domain,season):
                 modelpath = model + '/' + grid + '/'
                 gridname = "_" + grid
                      
-            print("Now on.. " + model + gridname + "   " + variable + " " + str(k) +" " +season[0] + " "+ season[1])
+            print("Now on.. " + model + gridname + "   " + variable + " " +season[0] + " "+ season[1])
             
             if os.path.isfile(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + stat_type + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"):
                 
@@ -315,9 +311,10 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         
         for i in range(len(MAE_sorted)):
             MAE_weight = MAE_sorted[i]/sum(MAE_sorted)
+            if MAE_weight > 1: MAE_weight = 1-MAE_weight
+            else: MAE_weight = 1+ MAE_weight
             MAE_weights.append(MAE_weight)        
         
-        MAE_weights = [i/sum(MAE_weights) for i in MAE_weights]
         return(MAE_weights, modelnames_sortedMAE)
 
     elif stat_type == "RMSE_":
@@ -327,9 +324,10 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         
         for i in range(len(RMSE_sorted)):
             RMSE_weight = RMSE_sorted[i]/sum(RMSE_sorted)
+            if RMSE_weight > 1: RMSE_weight = 1-RMSE_weight
+            else: RMSE_weight = 1+ RMSE_weight
             RMSE_weights.append(RMSE_weight)
         
-        RMSE_weights = [i/sum(RMSE_weights) for i in RMSE_weights]
         return(RMSE_weights, modelnames_sortedRMSE)
 
     elif stat_type == "spcorr_":
@@ -339,9 +337,10 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         
         for i in range(len(SPCORR_sorted)):
             SPCORR_weight = SPCORR_sorted[i]/sum(SPCORR_sorted)
+            if SPCORR_weight > 1: SPCORR_weight = 1-SPCORR_weight
+            else: SPCORR_weight = 1+ SPCORR_weight
             SPCORR_weights.append(SPCORR_weight)
-        
-        SPCORR_weights = [i/sum(SPCORR_weights) for i in SPCORR_weights]
+
         return(SPCORR_weights, modelnames_sortedSPCORR)
         
 def main(args):
@@ -377,7 +376,7 @@ def main(args):
                 if stat_type == "MAE_":
                     MAE_weight, modelnames_sortedMAE = make_weights(MAE, RMSE, SPCORR, modelnames)
                     weights_all = pd.DataFrame([MAE_weight], columns = modelnames_sortedMAE)
-                    weights_all.to_csv(save_folder+ stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    weights_all.to_csv(save_folder +stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
 
                 elif stat_type == "RMSE_":
                     RMSE_weight, modelnames_sortedRMSE = make_weights(MAE, RMSE, SPCORR, modelnames)
@@ -387,7 +386,7 @@ def main(args):
                 elif stat_type == "spcorr_":
                     SPCORR_weight, modelnames_sortedSPCORR = make_weights(MAE, RMSE, SPCORR, modelnames)
                     weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
-                    weights_all.to_csv(save_folder+ stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    weights_all.to_csv(save_folder+stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
             
             time_count = time_count+1
             

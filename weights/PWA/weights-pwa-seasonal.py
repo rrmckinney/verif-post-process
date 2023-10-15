@@ -22,7 +22,7 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 ###########################################################
 
 #location to save the images internally
-save_folder = "/home/verif/verif-post-process/weights/PWA/output/weights-seasonal/"
+save_folder = "/home/verif/verif-post-process/weights/LF/output/weights-seasonal/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list.txt'
@@ -37,7 +37,7 @@ textfile_folder = '/verification/Statistics/'
 ###########################################################
 
 # takes an input date for the last day of the week you want to include
-if len(sys.argv) == 6:
+if len(sys.argv) == 5:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) + '00'  
     input_startdate = datetime.datetime.strptime(start_date, "%y%m%d%H").date()
@@ -118,10 +118,8 @@ model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CD
 
 # The stat you want to base your weights off of:
 #choose "CAT_" for categorical scores (PCPT6, PCPTOT, SFCWSPD, SFCWSPD_KF) only, "MAE_", "RMSE_" or "SPCORR_"
-stat_type = sys.argv[5]
+stat_type = sys.argv[4]
 
-# weighting curve steepness, now user input, testing several values
-k = int(sys.argv[4])
 
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------
@@ -147,7 +145,7 @@ def get_rankings(variable,time_domain,season):
                 modelpath = model + '/' + grid + '/'
                 gridname = "_" + grid
                      
-            print("Now on.. " + model + gridname + "   " + stat_type + " "+variable + " " + str(k) +" " +season[0] + " "+ season[1])
+            print("Now on.. " + model + gridname + "   " + stat_type + " "+variable + " " +season[0] + " "+ season[1])
             
             if os.path.isfile(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + stat_type + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"):
                 
@@ -379,26 +377,38 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
     
         for i in range(len(POD_sorted)):
             POD_weight = POD_sorted[i]/sum(POD_sorted)
+            if POD_weight > 1: POD_weight = 1-POD_weight
+            else: POD_weight = 1+ POD_weight
             POD_weights.append(POD_weight)
 
         for i in range(len(POFD_sorted)):
             POFD_weight = POFD_sorted[i]/sum(POFD_sorted)
+            if POFD_weight > 1: POFD_weight = 1-POFD_weight
+            else: POFD_weight = 1+ POFD_weight
             POFD_weights.append(POFD_weight)
 
         for i in range(len(PSS_sorted)):
             PSS_weight = PSS_sorted[i]/sum(PSS_sorted)
+            if PSS_weight > 1: PSS_weight = 1-PSS_weight
+            else: PSS_weight = 1+ PSS_weight
             PSS_weights.append(PSS_weight)
 
         for i in range(len(HSS_sorted)):
             HSS_weight = HSS_sorted[i]/sum(HSS_sorted)
+            if HSS_weight > 1: HSS_weight = 1-HSS_weight
+            else: HSS_weight = 1+ HSS_weight
             HSS_weights.append(HSS_weight)
 
         for i in range(len(CSI_sorted)):
             CSI_weight = CSI_sorted[i]/sum(CSI_sorted)
+            if CSI_weight > 1: CSI_weight = 1-CSI_weight
+            else: CSI_weight = 1+ CSI_weight
             CSI_weights.append(CSI_weight)
 
         for i in range(len(GSS_sorted)):
             GSS_weight = GSS_sorted[i]/sum(GSS_sorted)
+            if GSS_weight > 1: GSS_weight = 1-GSS_weight
+            else: GSS_weight = 1+ GSS_weight
             GSS_weights.append(GSS_weight)
         
         # POD_weights = [i/sum(POD_weights) for i in POD_weights]        
@@ -417,6 +427,8 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         
         for i in range(len(MAE_sorted)):
             MAE_weight = MAE_sorted[i]/sum(MAE_sorted)
+            if MAE_weight > 1: MAE_weight = 1-MAE_weight
+            else: MAE_weight = 1+ MAE_weight
             MAE_weights.append(MAE_weight)        
         
         # MAE_weights = [i/sum(MAE_weights) for i in MAE_weights]
@@ -429,6 +441,8 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         
         for i in range(len(RMSE_sorted)):
             RMSE_weight = RMSE_sorted[i]/sum(RMSE_sorted)
+            if RMSE_weight > 1: RMSE_weight = 1-RMSE_weight
+            else: RMSE_weight = 1+ RMSE_weight
             RMSE_weights.append(RMSE_weight)
         
         # RMSE_weights = [i/sum(RMSE_weights) for i in RMSE_weights]
@@ -442,6 +456,8 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         SPCORR_xo = np.median(SPCORR_sorted)
         for i in range(len(SPCORR_sorted)):
             SPCORR_weight = SPCORR_sorted[i]/sum(SPCORR_sorted)
+            if SPCORR_weight > 1: SPCORR_weight = 1-SPCORR_weight
+            else: SPCORR_weight = 1+ SPCORR_weight
             SPCORR_weights.append(SPCORR_weight)
         
         # SPCORR_weights = [i/sum(SPCORR_weights) for i in SPCORR_weights]
@@ -480,22 +496,22 @@ def main(args):
                 if stat_type == "CAT_":
                     POD_weights, modelnames_sortedPOD, POFD_weights, modelnames_sortedPOFD, PSS_weights, modelnames_sortedPSS, HSS_weights, modelnames_sortedHSS, CSI_weights, modelnames_sortedCSI, GSS_weights, modelnames_sortedGSS = make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames)
                     weights_POD = pd.DataFrame([POD_weights], columns = modelnames_sortedPOD)
-                    weights_POD.to_csv(save_folder  + stat_type + '/weights_POD_'+time_domain+'_'+var+'_'+period, mode = 'w')
+                    weights_POD.to_csv(save_folder + stat_type + '/weights_POD_'+time_domain+'_'+var+'_'+period, mode = 'w')
                 
                     weights_POFD = pd.DataFrame([POFD_weights], columns = modelnames_sortedPOFD)
-                    weights_POFD.to_csv(save_folder  + stat_type + '/weights_POFD_'+time_domain+'_'+var+ '_'+period, mode = 'w')
+                    weights_POFD.to_csv(save_folder + stat_type + '/weights_POFD_'+time_domain+'_'+var+ '_'+period, mode = 'w')
                 
                     weights_PSS = pd.DataFrame([PSS_weights], columns = modelnames_sortedPSS)
-                    weights_PSS.to_csv(save_folder + stat_type + '/weights_PSS_'+time_domain+'_'+var+'_'+period, mode = 'w')
+                    weights_PSS.to_csv(save_folder +  stat_type + '/weights_PSS_'+time_domain+'_'+var+'_'+period, mode = 'w')
                 
                     weights_HSS = pd.DataFrame([HSS_weights], columns = modelnames_sortedHSS)
-                    weights_HSS.to_csv(save_folder + stat_type + '/weights_HSS_'+time_domain+'_'+var+'_'+period, mode = 'w')
+                    weights_HSS.to_csv(save_folder +  stat_type + '/weights_HSS_'+time_domain+'_'+var+'_'+period, mode = 'w')
                 
                     weights_CSI = pd.DataFrame([CSI_weights], columns = modelnames_sortedCSI)
-                    weights_CSI.to_csv(save_folder  + stat_type + '/weights_CSI_'+time_domain+'_'+var+'_'+period, mode = 'w')
+                    weights_CSI.to_csv(save_folder + stat_type + '/weights_CSI_'+time_domain+'_'+var+'_'+period, mode = 'w')
                 
                     weights_GSS = pd.DataFrame([GSS_weights], columns = modelnames_sortedGSS)
-                    weights_GSS.to_csv(save_folder  + stat_type + '/weights_GSS_'+time_domain+'_'+var+'_'+period, mode = 'w')
+                    weights_GSS.to_csv(save_folder +stat_type + '/weights_GSS_'+time_domain+'_'+var+'_'+period, mode = 'w')
             
                 elif stat_type == "MAE_":
                     MAE_weight, modelnames_sortedMAE = make_weights(POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames)
@@ -510,6 +526,7 @@ def main(args):
                 elif stat_type == "spcorr_":
                     SPCORR_weight, modelnames_sortedSPCORR = make_weights(POD,POFD,PSS, HSS, CSI, GSS, MAE, RMSE, SPCORR, modelnames)
                     weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
+                    print(save_folder+stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
                     weights_all.to_csv(save_folder+ stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period, mode = 'w')
             
             time_count = time_count+1

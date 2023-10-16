@@ -310,7 +310,7 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         MAE_sorted, modelnames_sortedMAE = zip(*sorted(zip(MAE, modelnames)))
         
         for i in range(len(MAE_sorted)):
-            MAE_weight = MAE_sorted[i]/sum(MAE_sorted)
+            MAE_weight = MAE_sorted[i]
             if MAE_weight > 1: MAE_weight = 1-MAE_weight
             else: MAE_weight = 1+ MAE_weight
             MAE_weights.append(MAE_weight)        
@@ -323,7 +323,7 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         RMSE_sorted, modelnames_sortedRMSE = zip(*sorted(zip(RMSE, modelnames)))
         
         for i in range(len(RMSE_sorted)):
-            RMSE_weight = RMSE_sorted[i]/sum(RMSE_sorted)
+            RMSE_weight = RMSE_sorted[i]
             if RMSE_weight > 1: RMSE_weight = 1-RMSE_weight
             else: RMSE_weight = 1+ RMSE_weight
             RMSE_weights.append(RMSE_weight)
@@ -336,7 +336,7 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         SPCORR_sorted, modelnames_sortedSPCORR = zip(*sorted(zip(SPCORR, modelnames)))
         
         for i in range(len(SPCORR_sorted)):
-            SPCORR_weight = SPCORR_sorted[i]/sum(SPCORR_sorted)
+            SPCORR_weight = SPCORR_sorted[i]
             if SPCORR_weight > 1: SPCORR_weight = 1-SPCORR_weight
             else: SPCORR_weight = 1+ SPCORR_weight
             SPCORR_weights.append(SPCORR_weight)

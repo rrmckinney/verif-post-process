@@ -376,37 +376,37 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         GSS_sorted, modelnames_sortedGSS = zip(*sorted(zip(GSS, modelnames)))
     
         for i in range(len(POD_sorted)):
-            POD_weight = POD_sorted[i]/sum(POD_sorted)
+            POD_weight = POD_sorted[i]
             if POD_weight > 1: POD_weight = 1-POD_weight
             else: POD_weight = 1+ POD_weight
             POD_weights.append(POD_weight)
 
         for i in range(len(POFD_sorted)):
-            POFD_weight = POFD_sorted[i]/sum(POFD_sorted)
+            POFD_weight = POFD_sorted[i]
             if POFD_weight > 1: POFD_weight = 1-POFD_weight
             else: POFD_weight = 1+ POFD_weight
             POFD_weights.append(POFD_weight)
 
         for i in range(len(PSS_sorted)):
-            PSS_weight = PSS_sorted[i]/sum(PSS_sorted)
+            PSS_weight = PSS_sorted[i]
             if PSS_weight > 1: PSS_weight = 1-PSS_weight
             else: PSS_weight = 1+ PSS_weight
             PSS_weights.append(PSS_weight)
 
         for i in range(len(HSS_sorted)):
-            HSS_weight = HSS_sorted[i]/sum(HSS_sorted)
+            HSS_weight = HSS_sorted[i]
             if HSS_weight > 1: HSS_weight = 1-HSS_weight
             else: HSS_weight = 1+ HSS_weight
             HSS_weights.append(HSS_weight)
 
         for i in range(len(CSI_sorted)):
-            CSI_weight = CSI_sorted[i]/sum(CSI_sorted)
+            CSI_weight = CSI_sorted[i]
             if CSI_weight > 1: CSI_weight = 1-CSI_weight
             else: CSI_weight = 1+ CSI_weight
             CSI_weights.append(CSI_weight)
 
         for i in range(len(GSS_sorted)):
-            GSS_weight = GSS_sorted[i]/sum(GSS_sorted)
+            GSS_weight = GSS_sorted[i]
             if GSS_weight > 1: GSS_weight = 1-GSS_weight
             else: GSS_weight = 1+ GSS_weight
             GSS_weights.append(GSS_weight)
@@ -426,7 +426,7 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         MAE_sorted, modelnames_sortedMAE = zip(*sorted(zip(MAE, modelnames)))
         
         for i in range(len(MAE_sorted)):
-            MAE_weight = MAE_sorted[i]/sum(MAE_sorted)
+            MAE_weight = MAE_sorted[i]
             if MAE_weight > 1: MAE_weight = 1-MAE_weight
             else: MAE_weight = 1+ MAE_weight
             MAE_weights.append(MAE_weight)        
@@ -440,7 +440,7 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         RMSE_sorted, modelnames_sortedRMSE = zip(*sorted(zip(RMSE, modelnames)))
         
         for i in range(len(RMSE_sorted)):
-            RMSE_weight = RMSE_sorted[i]/sum(RMSE_sorted)
+            RMSE_weight = RMSE_sorted[i]
             if RMSE_weight > 1: RMSE_weight = 1-RMSE_weight
             else: RMSE_weight = 1+ RMSE_weight
             RMSE_weights.append(RMSE_weight)
@@ -455,7 +455,7 @@ def make_weights(POD,POFD,PSS, HSS, CSI, GSS,MAE, RMSE, SPCORR, modelnames):
         
         SPCORR_xo = np.median(SPCORR_sorted)
         for i in range(len(SPCORR_sorted)):
-            SPCORR_weight = SPCORR_sorted[i]/sum(SPCORR_sorted)
+            SPCORR_weight = SPCORR_sorted[i]
             if SPCORR_weight > 1: SPCORR_weight = 1-SPCORR_weight
             else: SPCORR_weight = 1+ SPCORR_weight
             SPCORR_weights.append(SPCORR_weight)

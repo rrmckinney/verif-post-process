@@ -112,7 +112,7 @@ if len(sys.argv) == 9:
         raise Exception("Invalid input options. CAT_ can only be used with precip and wind variables NOT temp.")
 
 else:
-    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type and k.")
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type, time domain and the categorical stat (NA for continuous stats).")
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
 models = np.loadtxt(models_file,usecols=0,dtype='str')

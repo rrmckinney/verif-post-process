@@ -12,9 +12,13 @@ import os
 import numpy as np
 import pandas as pd
 import datetime #import datetime, timedelta
+from datetime import timedelta
 import sys
 from math import exp
+from statistics import mean 
+import copy
 import warnings
+import sqlite3
 warnings.filterwarnings("ignore",category=RuntimeWarning)
 ###########################################################
 ### -------------------- FILEPATHS ------------------------
@@ -29,14 +33,18 @@ station_file = '/home/verif/verif-post-process/input/station_list.txt'
 #description file for models
 models_file = '/home/verif/verif-post-process/input/model_list_weights.txt'
 
-textfile_folder = '/verification/Statistics/'
+#location where obs files are (all sql databases should be in this directory)
+obs_filepath = "/verification/Observations/"
+
+#location where forecast files are (immediately within this directory should be model folders, then grid folders, then the sql databases)
+fcst_filepath = "/verification/Forecasts/"
 
 ###########################################################
 ### -------------------- INPUT ------------------------
 ###########################################################
 
 # takes an input date for the last day of the week you want to include
-if len(sys.argv) == 6:
+if len(sys.argv) == 5:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) + '00'  
     input_startdate = datetime.datetime.strptime(start_date, "%y%m%d%H").date()
@@ -68,17 +76,15 @@ if len(sys.argv) == 6:
     input_domain = sys.argv[3]
     if input_domain not in ['large','small']:
         raise Exception("Invalid domain input entries. Current options: large, small. Case sensitive.")
-         
+    
+    # weighting curve steepness, now user input, testing several values
+    k = int(sys.argv[4])
+    if input_domain not in ['40','80', '100', '150', '200', '500','1000']:
+        raise Exception("Invalid domain input entries. Current options:'40','80', '100', '150', '200', '500','1000'. Case sensitive.")
+    
 else:
-    raise Exception("Invalid input entries. Needs YYMMDD for start and end dates")
+    raise Exception("Invalid input entries. Needs YYMMDD for start and end dates, domain size, and k")
 
-
-time_domains = ['60hr','84hr','120hr','180hr','day1','day2','day3','day4','day5','day6','day7']
-
-time_labels = ['outlook hours 1-60','outlook hours 1-84','outlook hours 1-120','outlook hours 1-180',
-               'day 1 outlook (hours 1-24)','day 2 outlook (hours 25-48)','day 3 outlook (hours 49-72)',
-               'day 4 outlook (hours 73-96)','day 5 outlook (hours 97-120)','day 6 outlook (hours 121-144)',
-               'day 7 outlook (hours 145-168)']
 
 winter = ['211201','220228']
 spring = ['220301','220531']
@@ -86,11 +92,12 @@ summer = ['220601','220831']
 fall = ['211001','211130', '220901','220930']
 seasons = [winter,spring,summer,fall]
 
+time_domain = '60hr'
 #stations = np.loadtxt(station_file,usecols=0,delimiter=',',dtype='str')
 
-variables = ['SFCTC', 'SFCTC_KF']
-variable_names = ['Temperature-Raw', 'Temperature-KF']
-variable_units = ['[C]','[C]']
+variables = ['SFCTC', 'SFCTC_KF', 'SFCWSPD', 'SFCWSPD_KF', 'PCPTOT', 'PCPT6']
+variable_names = ['Temperature-Raw', 'Temperature-KF', 'Wind Speed-Raw', 'Wind Speed-KF', 'Hourly Precipitation','6-Hour Accumulated Precipitation']
+variable_units = ['[C]','[C]','[km/hr]','[km/hr]', '[mm/hr]','[mm/6hr]']
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
 models = np.loadtxt(models_file,usecols=0,dtype='str')
@@ -99,297 +106,371 @@ grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1,
 gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
 model_names = np.loadtxt(models_file,usecols=4,dtype='str') #longer names, used for legend
 
-# this loop makes the names for each model/grid pair that will go in the legend
-legend_labels = []
-for i in range(len(model_names)):
-    for grid in gridres[i].split(","):
-        model = model_names[i]
+# thresholds for discluding erroneous data 
+precip_threshold = 250 #recorded at Buffalo Gap 1961 https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/floods/events-prairie-provinces.html
+wind_threshold = 400 #recorded Edmonton, AB 1987 http://wayback.archive-it.org/7084/20170925152846/https://www.ec.gc.ca/meteo-weather/default.asp?lang=En&n=6A4A3AC5-1#tab5
+temp_min = -63 #recorded in Snag, YT 1947 http://wayback.archive-it.org/7084/20170925152846/https://www.ec.gc.ca/meteo-weather/default.asp?lang=En&n=6A4A3AC5-1#tab5
+temp_max = 49.6 #recorded in Lytton, BC 2021 https://www.canada.ca/en/environment-climate-change/services/top-ten-weather-stories/2021.html#toc2
 
-        if "_" in model: #only for ENS models, which don't have grid res options
-            legend_labels.append(model.replace("_"," "))
-        else:
-            legend_labels.append(model + grid)
+#station_info
+station_df = pd.read_csv(station_file)
 
+stations_with_SFCTC = np.array(station_df.query("SFCTC==1")["Station ID"],dtype=str)
+stations_with_SFCWSPD = np.array(station_df.query("SFCWSPD==1")["Station ID"],dtype=str)
+stations_with_PCPTOT = np.array(station_df.query("PCPTOT==1")["Station ID"],dtype=str)
+stations_with_PCPT6 = np.array(station_df.query("PCPT6==1")["Station ID"],dtype=str)
+stations_with_PCPT24 = np.array(station_df.query("PCPT24==1")["Station ID"],dtype=str)
 
-#colors to plot, must be same length (or longer) than models list
-model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CDB7F6','#65fe08','#fc3232','#754200','#00FFFF','#fc23ba','#a1a1a1','#000000','#000000','#000000','#000000']
-
-# The stat you want to base your weights off of:
-#choose "MAE_", "RMSE_" or "SPCORR_"
-stat_type = sys.argv[5]
-
-# weighting curve steepness, now user input, testing several values
-k = int(sys.argv[4])
-
-print(k)
+all_stations = np.array(station_df.query("`Small domain`==1")["Station ID"],dtype=str)
+    
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------
 ###########################################################
 
-def get_rankings(variable,time_domain,season):
+# makes a list of the dates you want from start to end, used to make sure the models and obs have the right dates
+# obs get their own list because it will be different days than the initializition dates from the models for anything
+#   past hours 0-24
+def listofdates(start_date, end_date, obs = False):
+    if obs == False:
+        start = datetime.datetime.strptime(start_date, "%y%m%d").date()
+        end = datetime.datetime.strptime(end_date, "%y%m%d").date()
+
+    elif obs == True:
+        startday = 0 #forhour 1
+        endday = 7 #for hour 180
+        
+        start = datetime.datetime.strptime(start_date, "%y%m%d").date() + timedelta(days=startday)
+        end = datetime.datetime.strptime(end_date, "%y%m%d").date() + timedelta(days=endday)
     
-     MAE_list, RMSE_list, SPCORR_list, modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations = [],[],[],[],[],[],[],[]
+    numdays = (end-start).days 
+    date_list = [(start + datetime.timedelta(days=x)).strftime("%y%m%d") for x in range(numdays+1)]
+
+    return(date_list)
+
+#lists the hour filenames that we are running for
+def get_filehours(hour1,hour2):
      
-     leg_count = 0
-     color_count = 0
+    hours_list = []
+    for i in range(hour1,hour2+1):
+        i = i-1
+        if i < 10:
+            hour = "0" + str(i)
+        else:
+            hour = str(i)
+        hours_list.append(hour)
+        
+    return(hours_list)
+
+
+def check_variable(variable, station, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, stations_with_PCPT24):
+
+    flag = False
     
-     for i in range(len(models)):
-        model = models[i] #loops through each model
+    if variable == 'SFCTC_KF' or variable == 'SFCTC':
         
-        for grid in grids[i].split(","): #loops through each grid size for each model
-        
-            #ENS only has one grid (and its not saved in a g folder)
-            if "ENS" in model:
-                modelpath = model + '/'
-                gridname = ""
-            else:
-                modelpath = model + '/' + grid + '/'
-                gridname = "_" + grid
-                     
-            print("Now on.. " + model + gridname + "   " + variable + " " + str(k) +" " +season[0] + " "+ season[1])
-            
-            if os.path.isfile(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + stat_type + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"):
-                
-                #open the stat  file
-                with open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + stat_type + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt") as f:
-                    lines = f.readlines()
-                    
-                if stat_type == "MAE_":
-                    MAE_mean = []
-                    for line in lines:
-                        if float(season[0]) <= float(line.split("   ")[0][0:6]) and float(season[1]) >=float(line.split("  ")[1][0:6]):
-                            MAE = line.split("   ")[1]
-                            dataratio = line.split("   ")[2]
-                            numstations = line.split("   ")[3].strip()
-
-                            MAE_mean.append(float(MAE))
-                            
-                            if len(season) > 2:
-                                if float(season[2]) <= float(line.split("   ")[0][0:6]) and float(season[3]) >=float(line.split("   ")[1][0:6]):
-                                    MAE = line.split("   ")[1]
-                                    dataratio = line.split("   ")[2]
-                                    numstations = line.split("   ")[3].strip()
-
-                                    MAE_mean.append(float(MAE))
-                    
-                    MAE = np.nanmean(MAE_mean)
-                
-                elif stat_type == "RMSE_":
-                    RMSE_mean = []
-                    for line in lines:
-                        if float(season[0]) <= float(line.split("   ")[0][0:6]) and float(season[1]) >=float(line.split("  ")[1][0:6]):
-                            RMSE = line.split("   ")[1]
-                            dataratio = line.split("   ")[2]
-                            numstations = line.split("   ")[3].strip()
-
-                            RMSE_mean.append(float(RMSE))
-                    
-                            
-                            if len(season) > 2:
-                                if float(season[2]) <= float(line.split("   ")[0][0:6]) and float(season[3]) >=float(line.split("   ")[1][0:6]):
-                                    RMSE = line.split("   ")[1]
-                                    dataratio = line.split("   ")[2]
-                                    numstations = line.split("   ")[3].strip()
-
-                                    RMSE_mean.append(float(RMSE))        
-                    
-                    RMSE = np.nanmean(RMSE_mean)
-                
-                elif stat_type == "spcorr_":
-                    SPCORR_mean = []
-                    for line in lines:
-                        if float(season[0]) <= float(line.split("   ")[0][0:6]) and float(season[1]) >=float(line.split("  ")[1][0:6]):
-                            SPCORR = line.split("   ")[1]
-                            dataratio = line.split("   ")[2]
-                            numstations = line.split("   ")[3].strip()
-
-                            SPCORR_mean.append(float(SPCORR))
-
-                            if len(season) > 2:
-                                if float(season[2]) <= float(line.split("   ")[0][0:6]) and float(season[3]) >=float(line.split("   ")[1][0:6]):
-                                    SPCORR = line.split("   ")[1]
-                                    dataratio = line.split("   ")[2]
-                                    numstations = line.split("   ")[3].strip()
-
-                                    SPCORR_mean.append(float(SPCORR))
-
-                    SPCORR = np.nanmean(SPCORR_mean)
-                
-                else:
-                    print("   **Skipping " + model + grid + ", no data yet**")
-                    skipped_modelnames.append(legend_labels[leg_count] + ":  (none)")
-                    leg_count = leg_count+1
-                    continue
-                
-
-                #this removes models if more than half of data points are missing
-                if int(dataratio.split("/")[0]) < int(dataratio.split("/")[1])/2: 
-                    print("   **Skipping " + model + grid + ", less than 50% of data points**")
-                    skipped_modelnames.append(legend_labels[leg_count] + ":  (" + dataratio + ")")
-                    leg_count = leg_count+1
-                    continue
-                
-                #only applies for the hrs and day 1 (not day2-7)
-                if model + gridname in ["WRF3GEM_g3","WRF3GFS_g3","WRF3GFSgc01_g3","WRF4ICON_g3"]:
-                    removed_hours = 3
-                elif model + gridname in ["WRF3GEM_g4","WRF3GFS_g4"]:
-                    removed_hours = 6
-                elif model + gridname == "WRF3GFS_g5":
-                    removed_hours = 9
-                else:
-                    removed_hours = 0
-                
-                # this checks how many stations were used in each average
-                if int(numstations.split("/")[0]) < int(numstations.split("/")[1]): 
-                    numofstations.append(legend_labels[leg_count] + ": (" + numstations + ")")
-                
-                if stat_type == "MAE_":
-                    MAE_list.append(float(MAE))
-                
-                elif stat_type == "RMSE_":
-                    RMSE_list.append(float(RMSE))
-                
-                elif stat_type == "spcorr_":
-                    SPCORR_list.append(float(SPCORR))
-
-                if int(dataratio.split("/")[0]) < int(dataratio.split("/")[1])-removed_hours*(delta+1):
-                    if int(numstations.split("/")[0]) != int(numstations.split("/")[1]): 
-                        modelnames.append(model + gridname)
-                    else:
-                        modelnames.append(model + gridname)
+        if str(station) in stations_with_SFCTC:
+            flag=True
               
-                else:
-                    if int(numstations.split("/")[0]) != int(numstations.split("/")[1]): 
-                        modelnames.append(model+gridname)
-                    else:
-                        modelnames.append(model+gridname)
-                   
-
-            leg_count = leg_count+1
-         
-        color_count = color_count+1
-             
-     return(MAE_list, RMSE_list, SPCORR_list, modelnames)
+    elif variable == 'SFCWSPD_KF' or variable == 'SFCWSPD':
+          
+        if str(station) in stations_with_SFCWSPD:
+            flag=True
+            
+    elif variable == "PCPTOT":
+        
+        if str(station) in stations_with_PCPTOT:
+            flag=True
+            
+    elif variable == "PCPT6":
+        
+        if str(station) in stations_with_PCPTOT or str(station) in stations_with_PCPT6:
+            flag=True            
  
-def get_obs_dates(time_domain):
-    
-    def obs_days(add_start,add_end):
-        obs_startdate = input_startdate + datetime.timedelta(days=add_start)
-        obs_enddate = input_enddate + datetime.timedelta(days=add_end)       
-        start = datetime.datetime.strftime(obs_startdate,"%b. %d, %Y")
-        end = datetime.datetime.strftime(obs_enddate,"%b. %d, %Y")
+    elif variable == "PCPT24":
         
-        return(start + ' to ' + end)
+        if str(station) in stations_with_PCPTOT or str(station) in stations_with_PCPT24:
+            flag=True        
+            
+    return(flag)
 
-    if time_domain == '60hr':
-        obs_dates = obs_days(0,3)      
-    elif time_domain == '84hr':
-        obs_dates = obs_days(0,4)
-    elif time_domain == '120hr':
-        obs_dates = obs_days(0,5)       
-    elif time_domain == '180hr':
-        obs_dates = obs_days(0,8)      
-    elif time_domain == 'day1':
-        obs_dates = obs_days(0,0)
-    elif time_domain == 'day2':
-        obs_dates = obs_days(1,1)
-    elif time_domain == 'day3':
-        obs_dates = obs_days(2,2)
-    elif time_domain == 'day4':
-        obs_dates = obs_days(3,3)
-    elif time_domain == 'day5':
-        obs_dates = obs_days(4,4)
-    elif time_domain == 'day6':
-        obs_dates = obs_days(5,5)
-    elif time_domain == 'day7':
-        obs_dates = obs_days(6,6)        
+# checks to see if the right amount of dates exist, which is used for when new models/stations are added
+# default station exists for when a new model is added (instead of new station)
+def check_dates(start_date, delta, filepath, variable, station):
+    flag = True
     
-    return(obs_dates)
+    if len(station) < 4:
+        station = "0" +station
+    if "PCPT" in variable:
+        variable = "PCPTOT"
+    
+    sql_path = filepath + station + ".sqlite"
+    sql_con = sqlite3.connect(sql_path)
 
-def make_weights(MAE, RMSE, SPCORR, modelnames):
+    cursor = sql_con.cursor()
+    cursor.execute("SELECT DISTINCT Date from 'All'")
+    sql_result = cursor.fetchall()
+    sql_result = [x[0] for x in sql_result]
     
-    if stat_type == "MAE_":
-        
-        MAE_weights = []
-        MAE_sorted, modelnames_sortedMAE = zip(*sorted(zip(MAE, modelnames)))
-        
-        MAE_xo = np.mean(MAE_sorted)
-        for i in range(len(MAE_sorted)):
-            MAE_weight = 1/(1+exp(-k*(MAE_sorted[i]-MAE_xo)))
-            MAE_weights.append(MAE_weight)        
-        
-        #MAE_weights = [i/sum(MAE_weights) for i in MAE_weights]
-        return(MAE_weights, modelnames_sortedMAE)
+    if len(sql_result) < delta+1:
+        print( "  Not enough dates available for this model/station/variable")
+        flag = False
+    elif int("20" + start_date) < int(sql_result[0]):
+        print("    Model collection started " + str(sql_result[0]) + ", which is after input start_date")
+        flag = False
+    cursor.close()
+    
+    return(flag)
 
-    elif stat_type == "RMSE_":
-    
-        RMSE_weights = []
-        RMSE_sorted, modelnames_sortedRMSE = zip(*sorted(zip(RMSE, modelnames)))
+def make_df(date_list_obs, start_date, end_date):
+    date_list_obs = listofdates(start_date, end_date, obs=True)
+    df_new = pd.DataFrame()
+    for day in date_list_obs:
+        dates = [day] * 24
+        filehours_obs = get_filehours(1, 24)
         
-        RMSE_xo = np.mean(RMSE_sorted)
-        for i in range(len(RMSE_sorted)):
-            RMSE_weight = 1/(1+exp(-k*(RMSE_sorted[i]-RMSE_xo)))
-            RMSE_weights.append(RMSE_weight)
+        df = pd.DataFrame({'date': dates, 'time': filehours_obs})
+        df['datetime'] = pd.to_datetime(df['date']+' '+df['time'], format = '%y%m%d %H')
         
-        #RMSE_weights = [i/sum(RMSE_weights) for i in RMSE_weights]
-        return(RMSE_weights, modelnames_sortedRMSE)
+        df_new = pd.concat([df_new, df])
+    df_new = df_new.set_index('datetime') 
+    return(df_new)
 
-    elif stat_type == "spcorr_":
+def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, period, all_stations, variable, start_date, end_date, date_list_obs):
     
-        SPCORR_weights = []
-        SPCORR_sorted, modelnames_sortedSPCORR = zip(*sorted(zip(SPCORR, modelnames)))
+    print("Reading observational dataframe for " + variable + ".. ")
+    
+    df_new = make_df(date_list_obs, start_date, end_date)
+    
+    if variable == 'SFCTC_KF' or variable == 'SFCTC':
+        station_list = copy.deepcopy(stations_with_SFCTC)              
+    elif variable == 'SFCWSPD_KF' or variable == 'SFCWSPD':  
+        station_list = copy.deepcopy(stations_with_SFCWSPD) 
+    elif variable == "PCPTOT":
+        if variable == "PCPT6":
+            station_list = [st for st in stations_with_PCPTOT if st not in stations_with_PCPT6 ]
+        else:
+            station_list = copy.deepcopy(stations_with_PCPTOT)        
+    
+    elif variable == "PCPT6":
+        station_list = copy.deepcopy(stations_with_PCPT6) 
+
+    #KF variables are the same as raw for obs
+    if "_KF" in variable:
+        variable = variable[:-3]
+            
+    obs_df = pd.DataFrame()  
+
+    
+    for station in station_list:
+        print( "    Now on station " + station) 
+         
+        if station not in all_stations:
+            #print("   Skipping station " + station)
+            continue
+        if len(station) < 4:
+            station = "0" +station
         
-        SPCORR_xo = np.mean(SPCORR_sorted)
-        for i in range(len(SPCORR_sorted)):
-            SPCORR_weight = 1/(1+exp(-k*(SPCORR_sorted[i]-SPCORR_xo)))
-            SPCORR_weights.append(SPCORR_weight)
+        if "PCPT" in variable:
+            if check_dates(start_date, delta, fcst_filepath + 'ENS/' + variable + '/fcst.t/', "PCPTOT", station) == False:
+                print("   Skipping station " + station + " (not enough dates yet)")
+                continue
+        else:
+            if check_dates(start_date, delta, fcst_filepath + 'ENS/' + variable + '/fcst.t/', variable, station) == False:
+                print("   Skipping station " + station + " (not enough dates yet)")
+                continue        
+
+        sql_con = sqlite3.connect(obs_filepath + variable + "/" + station + ".sqlite")
+        sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(start_date) + " AND 20" + str(end_date)       
+        obs = pd.read_sql_query(sql_query, sql_con)
+        obs['datetime'] = None
+
+        if len(period) >2:
+            sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(fall[2]) + " AND 20" + str(fall[3])       
+            obs2 = pd.read_sql_query(sql_query, sql_con)
+            obs2['datetime'] = None
+            obs = pd.concat(obs, obs2)
+
+        for y in range(len(obs['Time'])):
+            hour = int(obs['Time'][y])/100
+            obs.loc[y,'datetime'] = pd.to_datetime(obs.loc[y,'Date'], format='%Y%m%d') + timedelta(hours=hour)
         
-        # SPCORR_weights = [i/sum(SPCORR_weights) for i in SPCORR_weights]
-        return(SPCORR_weights, modelnames_sortedSPCORR)
+
+        obs = obs.set_index('datetime')
+        
+        df_all = df_new.join(obs, on='datetime')
+        
+        obs_all = df_all['Val']
+        # remove data that falls outside the physical bounds (higher than the verified records for Canada
+        for i in range(len(obs_all)):
+            
+            if variable == 'SFCTC_KF' or variable == 'SFCTC':
+                if obs_all[i] > temp_max:
+                    obs_all[i] = np.nan
+                if obs_all[i] < temp_min:
+                    obs_all[i] = np.nan
+            
+            if variable == 'SFCWSPD_KF' or variable == 'SFCWSPD':
+                if obs_all[i] > wind_threshold:
+                    obs_all[i] = np.nan
+            
+            if variable == 'PCPTOT':
+                if obs_all[i] > precip_threshold:
+                    obs_all[i] = np.nan
+   
+        final_obs = np.array(obs_all).T
+        obs_df[station] = final_obs.flatten() 
+
+    return(obs_df)
+
+# returns the fcst data for the given model/grid
+def get_fcst(station, filepath, variable, date_list,start_date, end_date):
+    
+    fcst_df = pd.DataFrame()  
+
+    for station in all_stations:
+
+        df_new = make_df(date_list, start_date, end_date)
+
+        if "PCPT" in variable:
+            variable = "PCPTOT"
+        # pulls out a list of the files for the given station+variable+hour wanted   
+        sql_con = sqlite3.connect(filepath + station + ".sqlite")
+        sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" + str(date_list[0]) + " AND 20" + str(date_list[len(date_list)-1])
+        fcst = pd.read_sql_query(sql_query, sql_con)
+        
+        fcst['datetime'] = None 
+        for x in range(len(fcst['Offset'])):
+            fcst.loc[x, 'datetime'] = pd.to_datetime(start_date, format='%y%m%d') + timedelta(hours=int(x))
+        
+        fcst = fcst.set_index('datetime')
+        fcst_all = df_new.join(fcst, on='datetime')
+    
+        final_obs = np.array(fcst_all).T
+        fcst_df[station] = final_obs.flatten() 
+    
+    return(fcst_df)
+
+def make_weights(fcst, obs, modelname):
+    weights_all = []
+    for s in range(len(all_stations)):
+
+        for i in range(len(fcst)):
+            weight = 1/(1+exp(-k*(fcst[:,s][i]-obs[:,s][i])))
+            weights_all.append(weight)
+
+    weights = mean(weights_all)
+    weights = pd.DataFrame(weight, columns = modelname)
+    return(weights)
         
 def main(args):
-        
+    
     var_i = 0
     for var in variables: #loop through variables
         
         time_count = 0
-        for time_domain in time_domains:
-            
-            time_label = time_labels[time_count]
-            
-            for s in range(len(seasons)):
+        weights_all = pd.DataFrame()
+        for i in range(len(models)):
+            model = models[i] #loops through each model
+       
+            for grid_i in range(len(grids[i].split(","))): #loops through each grid size for each model
                 
-                if s == 0:
-                    period = 'winter'
-                elif s ==1:
-                    period = 'spring'
-                elif s ==2:
-                    period = 'summer'
-                elif s == 3:
-                    period = 'fall'
+                grid = grids[i].split(",")[grid_i]
+                
+                if "_KF" in var:
+                    file_var = var[:-3]
+                else:
+                    file_var = var
 
-                if var == "PCPT24" and time_domain in ['60hr','84hr','120hr','180hr']:
-                    print('yes')
-                    
-                    time_count = time_count+1
+                #ENS only has one grid (and its not saved in a g folder)
+                if model == 'ENS' and '_KF' in var:    
+                    filepath = fcst_filepath + model + '/' + file_var + '/fcst.KF_MH.t/'
+                    gridname = ''
+                    modelname = model + gridname
+                elif model == 'ENS':
+                    filepath = fcst_filepath + model + '/' + file_var + '/fcst.t/'
+                    gridname = ''
+                    modelname = model + gridname
+
+                elif model == "ENS_LR" and "_KF" in var:
+                    filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.LR.KF_MH.t/'
+                    gridname = ''
+                    modelname = model + gridname
+
+                elif model == "ENS_lr" and "_KF" in var:
+                    filepath = fcst_filepath+model[:-3] + '/' + file_var + '/fcst.lr.KF_MH.t/'
+                    gridname = ''
+                    modelname = model + gridname
+
+                elif model == "ENS_hr" and "_KF" in var:
+                    filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.hr.KF_MH.t/'
+                    gridname = ''
+                    modelname = model + gridname
+
+                elif model =="ENS_hr":
+                    filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.hr.t/"
+                    gridname = ''
+                    modelname = model + gridname
+
+                elif model =="ENS_lr":
+                    filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.lr.t/"
+                    gridname = ''
+                    modelname = model + gridname
+
+                elif model =="ENS_LR":
+                    filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.LR.t/"
+                    gridname = ''
+                    modelname = model + gridname
+
+                elif "_KF" in var:
+                    filepath = fcst_filepath +model + '/' + grid + '/' + file_var + "/fcst.KF_MH/"          
+                    gridname = "_" + grid
+                    modelname = model + gridname
+
+                else:
+                    filepath = fcst_filepath + model + '/' + grid + '/' + file_var + '/fcst.t/'
+                    gridname = "_" + grid
+                    modelname = model + gridname
+
+                
+                if check_dates(start_date, delta, filepath, var, station='3510') == False:
+                    print("   Skipping model " + model + gridname + " (check_dates flag)")
                     continue
             
-            #these returned variables are lists that contain one stat for each model (so length=#num of models)
-                MAE, RMSE, SPCORR, modelnames = get_rankings(var,time_domain,seasons[s])
-           
-                if stat_type == "MAE_":
-                    MAE_weight, modelnames_sortedMAE = make_weights(MAE, RMSE, SPCORR, modelnames)
-                    weights_all = pd.DataFrame([MAE_weight], columns = modelnames_sortedMAE)
-                    weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                # if it can't find the folder for the model/grid pair 
+                if not os.path.isdir(filepath):
+                    raise Exception("Missing grid/model pair (or wrong base filepath for" + model + gridname)
+                
+                print("Now on.. " + model + gridname + " for " + var)
 
-                elif stat_type == "RMSE_":
-                    RMSE_weight, modelnames_sortedRMSE = make_weights(MAE, RMSE, SPCORR, modelnames)
-                    weights_all = pd.DataFrame([RMSE_weight], columns = modelnames_sortedRMSE)
-                    weights_all.to_csv(save_folder +str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                for s in range(len(seasons)):
+                    
+                    if s == 0:
+                        period = 'winter'
+                        start_date = winter[0]
+                        end_date = winter[1]
+                    elif s ==1:
+                        period = 'spring'
+                        start_date = spring[0]
+                        end_date = spring[1]
+                    elif s ==2:
+                        period = 'summer'
+                        start_date = summer[0]
+                        end_date = summer[1]
+                    elif s == 3:
+                        period = 'fall'
+                        start_date = fall[0]
+                        end_date = fall[1]
+                
+                #these returned variables are lists that contain one stat for each model (so length=#num of models)
+                    
+                    date_list = listofdates(start_date, end_date, obs=False)
+                    date_list_obs = listofdates(start_date, end_date, obs=True)
+                    
+                    obs = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, period, all_stations, var, start_date, end_date, date_list_obs)
+                    fcst = get_fcst(filepath, var, date_list, start_date, end_date)
             
-                elif stat_type == "spcorr_":
-                    SPCORR_weight, modelnames_sortedSPCORR = make_weights(MAE, RMSE, SPCORR, modelnames)
-                    weights_all = pd.DataFrame([SPCORR_weight], columns = modelnames_sortedSPCORR)
+                    weights= make_weights(fcst, obs,modelname)
+                    weights_all = pd.concat([weights_all, weights], axis =1)
                     weights_all.to_csv(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
             
             time_count = time_count+1

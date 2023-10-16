@@ -288,7 +288,7 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
             sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(fall[2]) + " AND 20" + str(fall[3])       
             obs2 = pd.read_sql_query(sql_query, sql_con)
             obs2['datetime'] = None
-            obs = pd.concat(obs, obs2)
+            obs = pd.concat([obs, obs2])
 
         for y in range(len(obs['Time'])):
             hour = int(obs['Time'][y])/100
@@ -323,7 +323,7 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
     return(obs_df)
 
 # returns the fcst data for the given model/grid
-def get_fcst(station, filepath, variable, date_list,start_date, end_date):
+def get_fcst(station, filepath, variable, date_list,start_date, end_date, period):
     
     fcst_df = pd.DataFrame()  
 
@@ -335,9 +335,15 @@ def get_fcst(station, filepath, variable, date_list,start_date, end_date):
             variable = "PCPTOT"
         # pulls out a list of the files for the given station+variable+hour wanted   
         sql_con = sqlite3.connect(filepath + station + ".sqlite")
-        sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" + str(date_list[0]) + " AND 20" + str(date_list[len(date_list)-1])
+        sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" + str(start_date) + " AND 20" + str(end_date)
         fcst = pd.read_sql_query(sql_query, sql_con)
         
+        if len(period) >2:
+            sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(fall[2]) + " AND 20" + str(fall[3])       
+            fcst2 = pd.read_sql_query(sql_query, sql_con)
+            fcst2['datetime'] = None
+            fcst = pd.concat([fcst, fcst2])
+
         fcst['datetime'] = None 
         for x in range(len(fcst['Offset'])):
             fcst.loc[x, 'datetime'] = pd.to_datetime(start_date, format='%y%m%d') + timedelta(hours=int(x))
@@ -367,7 +373,6 @@ def main(args):
     var_i = 0
     for var in variables: #loop through variables
         
-        time_count = 0
         weights_all = pd.DataFrame()
         for i in range(len(models)):
             model = models[i] #loops through each model
@@ -442,6 +447,7 @@ def main(args):
                 
                 print("Now on.. " + model + gridname + " for " + var)
 
+                fcst_all, obs_all = [], []
                 for s in range(len(seasons)):
                     
                     if s == 0:
@@ -467,17 +473,17 @@ def main(args):
                     date_list_obs = listofdates(start_date, end_date, obs=True)
                     
                     obs = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, period, all_stations, var, start_date, end_date, date_list_obs)
-                    fcst = get_fcst(filepath, var, date_list, start_date, end_date)
-            
-                    weights= make_weights(fcst, obs,modelname)
-                    weights_all = pd.concat([weights_all, weights], axis =1)
-                    weights_all.to_csv(save_folder+str(k) + '/' + stat_type + '/weights_all_'+time_domain+'_'+var+'_'+period)
-            
-            time_count = time_count+1
-            
+                    fcst = get_fcst(filepath, var, date_list, start_date, end_date, period)
 
+                    fcst_all = pd.concat([fcst_all,fcst])
+                    obs_all.append(obs)
 
-        var_i=var_i+1
+                weights= make_weights(fcst_all, obs_all,modelname)
+                weights_all = pd.concat([weights_all, weights], axis =1)
+        
+        weights_all.to_csv(save_folder+str(k) + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    
+    var_i=var_i+1
             
     #sys.stdout.close() #close log file
 

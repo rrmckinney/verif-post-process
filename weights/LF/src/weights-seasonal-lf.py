@@ -28,7 +28,7 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 save_folder = "/home/verif/verif-post-process/weights/LF/output/weights-seasonal/"
 
 #description file for stations
-station_file = '/home/verif/verif-post-process/input/station_list.txt'
+station_file = '/home/verif/verif-post-process/input/station_list_master.txt'
 
 #description file for models
 models_file = '/home/verif/verif-post-process/input/model_list_weights.txt'
@@ -79,7 +79,7 @@ if len(sys.argv) == 5:
     
     # weighting curve steepness, now user input, testing several values
     k = int(sys.argv[4])
-    if input_domain not in ['40','80', '100', '150', '200', '500','1000']:
+    if k not in [40,80,100,150,200,500,1000]:
         raise Exception("Invalid domain input entries. Current options:'40','80', '100', '150', '200', '500','1000'. Case sensitive.")
     
 else:
@@ -288,8 +288,8 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
             sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(fall[2]) + " AND 20" + str(fall[3])       
             obs2 = pd.read_sql_query(sql_query, sql_con)
             obs2['datetime'] = None
-            obs = pd.concat([obs, obs2])
-
+            obs = pd.concat([obs, obs2], ignore_index=True)
+        
         for y in range(len(obs['Time'])):
             hour = int(obs['Time'][y])/100
             obs.loc[y,'datetime'] = pd.to_datetime(obs.loc[y,'Date'], format='%Y%m%d') + timedelta(hours=hour)
@@ -323,28 +323,29 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
     return(obs_df)
 
 # returns the fcst data for the given model/grid
-def get_fcst(station, filepath, variable, date_list,start_date, end_date, period):
-    
+def get_fcst( filepath, variable, date_list,start_date, end_date, period):
     fcst_df = pd.DataFrame()  
 
     for station in all_stations:
+        if len(station) < 4:
+            station = '0' + str(station)
 
         df_new = make_df(date_list, start_date, end_date)
 
         if "PCPT" in variable:
             variable = "PCPTOT"
+        
         # pulls out a list of the files for the given station+variable+hour wanted   
         sql_con = sqlite3.connect(filepath + station + ".sqlite")
         sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" + str(start_date) + " AND 20" + str(end_date)
         fcst = pd.read_sql_query(sql_query, sql_con)
-        
+        fcst['datetime'] = None 
         if len(period) >2:
             sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(fall[2]) + " AND 20" + str(fall[3])       
             fcst2 = pd.read_sql_query(sql_query, sql_con)
             fcst2['datetime'] = None
-            fcst = pd.concat([fcst, fcst2])
-
-        fcst['datetime'] = None 
+            fcst = pd.concat([fcst, fcst2], ignore_index=True)
+        
         for x in range(len(fcst['Offset'])):
             fcst.loc[x, 'datetime'] = pd.to_datetime(start_date, format='%y%m%d') + timedelta(hours=int(x))
         
@@ -437,9 +438,9 @@ def main(args):
                     modelname = model + gridname
 
                 
-                if check_dates(start_date, delta, filepath, var, station='3510') == False:
-                    print("   Skipping model " + model + gridname + " (check_dates flag)")
-                    continue
+                #if check_dates(start_date, delta, filepath, var, station='3510') == False:
+                #   print("   Skipping model " + model + gridname + " (check_dates flag)")
+                #   continue
             
                 # if it can't find the folder for the model/grid pair 
                 if not os.path.isdir(filepath):
@@ -447,9 +448,10 @@ def main(args):
                 
                 print("Now on.. " + model + gridname + " for " + var)
 
-                fcst_all, obs_all = [], []
+                fcst_all = pd.DataFrame()
+                obs_all = pd.DataFrame()
                 for s in range(len(seasons)):
-                    
+                    print(s) 
                     if s == 0:
                         period = 'winter'
                         start_date = winter[0]
@@ -475,7 +477,7 @@ def main(args):
                     obs = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, period, all_stations, var, start_date, end_date, date_list_obs)
                     fcst = get_fcst(filepath, var, date_list, start_date, end_date, period)
 
-                    fcst_all = pd.concat([fcst_all,fcst])
+                    fcst_all = pd.concat([fcst_all,fcst], ignore_index=True)
                     obs_all.append(obs)
 
                 weights= make_weights(fcst_all, obs_all,modelname)

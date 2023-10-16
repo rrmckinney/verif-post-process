@@ -22,7 +22,7 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 ###########################################################
 
 #location to save the images internally
-save_folder = "/home/verif/verif-post-process/weights/LF/output/weights-seasonal/"
+save_folder = "/home/verif/verif-post-process/weights/PWA/output/weights-seasonal/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list.txt'

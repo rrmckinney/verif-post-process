@@ -3,8 +3,8 @@ source /home/verif/.bash_profile
 #start_date=`date --date="-1 months -7 days" +%y%m%d`
 #end_date=`date --date="-7 days" +%y%m%d`
 
-start_date='230819'
-end_date='230825'
+start_date='230902'
+end_date='230908'
 d='small'
 
 conda activate verification

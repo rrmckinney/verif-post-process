@@ -190,7 +190,7 @@ def get_statistics(variable,time_domain):
                    
 def plot_timeseries(var, var_name, var_unit, time_domain, MAE,RMSE,spcorr,startdates,modelnames,modelcolors):
                            
-    fig, (ax1, ax2, ax3) = plt.subplots(3, 1,figsize=(25,17),dpi=150)
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1,figsize=(35,17),dpi=150)
     total = len(modelnames)
     for i in range(total):
         model = modelnames[i]
@@ -206,31 +206,31 @@ def plot_timeseries(var, var_name, var_unit, time_domain, MAE,RMSE,spcorr,startd
                 dates.append(datetime.datetime.strftime(input_date,"%m-%d-%y"))
         ax1.plot(dates,MAE[i],color=color,linestyle=line_type, marker='o', label = model)
         ax2.plot(dates,RMSE[i],color=color,linestyle=line_type, marker='o', label = model)
-        ax3.plot(dates,spcorr[i],color=color,linestyle=line_type, marker='o', label = model)
+        ax3.plot(dates,spcorr[i],color=color,linestyle=line_type, marker='o', label = model, )
 
-    
     plt.setp(ax1.get_xticklabels(), visible=False)
     plt.setp(ax2.get_xticklabels(), visible=False)
-    
+    #plt.setp(ax3.get_xticklabels()[::5], visible=True,fontsize=12, rotation=45)
+
     #plt.legend(bbox_to_anchor=(1, -0.4),ncol=12)
     
     if savetype=="monthly":
         plt.xlabel('verification ' + savetype[:-2],fontsize=18)
     elif savetype=="weekly":
         plt.xlabel('verification ' + savetype[:-2] + ' (first initialization date of week)',fontsize=18)
-        
-    plt.xticks(fontsize=12,rotation=45)
+    
+    plt.xticks(fontsize=12, rotation=45)
     
     ax1.set_title('Mean absolute error',fontsize=18)
-    ax1.tick_params(axis = 'both', labelsize = 12)
+    ax1.tick_params(axis = 'y', labelsize = 12)
     ax1.set_ylabel(var_name + " MAE " + var_unit,fontsize=16)
     
     ax2.set_title('Root-mean-squared error',fontsize=18)
-    ax2.tick_params(axis = 'both', labelsize = 12)
+    ax2.tick_params(axis = 'y', labelsize = 12)
     ax2.set_ylabel(var_name + " RMSE " + var_unit,fontsize=16)
     
     ax3.set_title('Spearmans Correlation',fontsize=18)
-    ax3.tick_params(axis = 'both', labelsize = 12)
+    ax3.tick_params(axis = 'y', labelsize = 12)
     ax3.set_ylabel(var_name + " Spearmans Correlation",fontsize=16)
 
 

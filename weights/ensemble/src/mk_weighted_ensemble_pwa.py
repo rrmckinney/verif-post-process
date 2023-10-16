@@ -277,7 +277,7 @@ def main(args):
         
         axs[0].plot(ENS_W, 'ko')
         
-        #axs[1].plot(fcst_all)
+        axs[1].plot(fcst_all)
         axs[1].plot(ENS_W, 'ko')
 
         plt.savefig(save_folder + 'img/obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+stat_type+'_'+stat_cat)

@@ -1,7 +1,7 @@
 #!/bin/bash -l
 start_date='211008' #should not change, first day of stats calcs
-#end_date=`date --date" -8 days" +%y%m%d`
-end_date='231009'
+end_date=`date --date" -5 days" +%y%m%d`
+#end_date='231009'
 
 source /home/verif/.bash_profile
 

@@ -118,15 +118,15 @@ else:
     raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, k, and time domain")
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
-#models = np.loadtxt(models_file,usecols=0,dtype='str')
-#grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
-#gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
-#hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
+models = np.loadtxt(models_file,usecols=0,dtype='str')
+grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
+gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
+hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
 
-models = ['MM5']
-grids = ['g2,g3,g4']
-gridres = ['36,12,4']
-hours = ['60,60,60']
+#models = ['MM5']
+#grids = ['g2,g3,g4']
+#gridres = ['36,12,4']
+#hours = ['60,60,60']
 
 station_df = pd.read_csv(station_file)
 

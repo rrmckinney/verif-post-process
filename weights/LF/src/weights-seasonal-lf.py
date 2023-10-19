@@ -19,6 +19,7 @@ from statistics import mean
 import copy
 import warnings
 import sqlite3
+from sklearn import preprocessing
 warnings.filterwarnings("ignore",category=RuntimeWarning)
 ###########################################################
 ### -------------------- FILEPATHS ------------------------
@@ -100,15 +101,15 @@ variable_names = ['Temperature-Raw', 'Temperature-KF', 'Wind Speed-Raw', 'Wind S
 variable_units = ['[C]','[C]','[km/hr]','[km/hr]', '[mm/hr]','[mm/6hr]']
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
-#models = np.loadtxt(models_file,usecols=0,dtype='str')
+models = np.loadtxt(models_file,usecols=0,dtype='str')
 
-#grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
-#gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
+grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
+gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
 #model_names = np.loadtxt(models_file,usecols=4,dtype='str') #longer names, used for legend
 
-models = ['MM5']
-grids = ['g2,g3,g4']
-gridres = ['30,12,4']
+#models = ['MM5']
+#grids = ['g2,g3,g4']
+#gridres = ['30,12,4']
 
 # thresholds for discluding erroneous data 
 precip_threshold = 250 #recorded at Buffalo Gap 1961 https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/floods/events-prairie-provinces.html
@@ -384,14 +385,18 @@ def main(args):
     
     var_i = 0
     for var in variables: #loop through variables
-        weights_all = pd.DataFrame()
+        
         
         fcst_all = pd.DataFrame()
         obs_all = pd.DataFrame()
-        for s in range(len(seasons)):
-            period = seasons[s]
-            start_date = seasons[s][0]
-            end_date = seasons[s][1]
+        for season in range(len(seasons)):
+            weights_all, modelnames = [], []
+            if season==0: period = 'winter'
+            elif season==1: period = 'spring'
+            elif season==2: period = 'summer'
+            elif season==3: period = 'fall'
+            start_date = seasons[season][0]
+            end_date = seasons[season][1]
 
             for i in range(len(models)):
                 model = models[i] #loops through each model
@@ -463,15 +468,19 @@ def main(args):
                     obs = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, period, all_stations, var, start_date, end_date, date_list_obs)
                     fcst = get_fcst(filepath, var, date_list, start_date, end_date, period)
 
-                fcst_all = pd.concat([fcst_all,fcst], ignore_index=True)
-                obs_all = pd.concat([obs_all,obs],ignore_index=True)
+                    fcst_all = pd.concat([fcst_all,fcst], ignore_index=True)
+                    obs_all = pd.concat([obs_all,obs],ignore_index=True)
                 
-                weights= make_weights(fcst_all, obs_all,modelname)
-            
-            weights_all = pd.concat([weights_all, weights], axis =1)
-                
-            weights_all = weights_all/np.linalg.norm(weights_all)
-            weights_all.to_csv(save_folder+str(k) + '/weights_all_'+time_domain+'_'+var+'_'+period, mode='w')
+                    weights= make_weights(fcst_all, obs_all,modelname)
+                    weights_all = np.append(weights_all, weights.values)
+                    modelnames = np.append(modelnames, weights.columns)
+            #print([i/sum(np.array(weights_all.values)) for i in np.array(weights_all.values)]) 
+            #weights_norm = preprocessing.normalize(np.array(weights_all.values))
+            weights_norm = weights_all/weights_all.sum()
+            weights_final = pd.DataFrame(data=weights_norm).T 
+            weights_final.columns = modelnames
+            print(weights_final)
+            weights_final.to_csv(save_folder+str(k) + '/weights_all_'+time_domain+'_'+var+'_'+period, mode='w')
                     
     var_i=var_i+1
             

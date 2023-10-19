@@ -389,25 +389,10 @@ def main(args):
         fcst_all = pd.DataFrame()
         obs_all = pd.DataFrame()
         for s in range(len(seasons)):
-            if s == 0:
-                period = 'winter'
-                start_date = winter[0]
-                end_date = winter[1]
-            elif s ==1:
-                period = 'spring'
-                start_date = spring[0]
-                end_date = spring[1]
-            elif s ==2:
-                period = 'summer'
-                start_date = summer[0]
-                end_date = summer[1]
-            elif s == 3:
-                period = 'fall'
-                start_date = fall[0]
-                end_date = fall[1]
+            period = seasons[s]
+            start_date = seasons[s][0]
+            end_date = seasons[s][1]
 
-
-        
             for i in range(len(models)):
                 model = models[i] #loops through each model
        
@@ -429,48 +414,39 @@ def main(args):
                         filepath = fcst_filepath + model + '/' + file_var + '/fcst.t/'
                         gridname = ''
                         modelname = model + gridname
-
                     elif model == "ENS_LR" and "_KF" in var:
                         filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.LR.KF_MH.t/'
                         gridname = ''
                         modelname = model + gridname
-
                     elif model == "ENS_lr" and "_KF" in var:
                         filepath = fcst_filepath+model[:-3] + '/' + file_var + '/fcst.lr.KF_MH.t/'
                         gridname = ''
                         modelname = model + gridname
-
                     elif model == "ENS_hr" and "_KF" in var:
                         filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.hr.KF_MH.t/'
                         gridname = ''
                         modelname = model + gridname
-
                     elif model =="ENS_hr":
                         filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.hr.t/"
                         gridname = ''
                         modelname = model + gridname
-
                     elif model =="ENS_lr":
                         filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.lr.t/"
                         gridname = ''
                         modelname = model + gridname
-
                     elif model =="ENS_LR":
                         filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.LR.t/"
                         gridname = ''
                         modelname = model + gridname
-
                     elif "_KF" in var:
                         filepath = fcst_filepath +model + '/' + grid + '/' + file_var + "/fcst.KF_MH/"          
                         gridname = "_" + grid
                         modelname = model + gridname
-
                     else:
                         filepath = fcst_filepath + model + '/' + grid + '/' + file_var + '/fcst.t/'
                         gridname = "_" + grid
                         modelname = model + gridname
 
-                
                     #if check_dates(start_date, delta, filepath, var, station='3510') == False:
                     #   print("   Skipping model " + model + gridname + " (check_dates flag)")
                     #   continue
@@ -481,18 +457,17 @@ def main(args):
                 
                     print("Now on.. " + model + gridname + " for " + var)
 
-                
-                    
                     date_list = listofdates(start_date, end_date, obs=False)
                     date_list_obs = listofdates(start_date, end_date, obs=True)
                     
                     obs = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, period, all_stations, var, start_date, end_date, date_list_obs)
                     fcst = get_fcst(filepath, var, date_list, start_date, end_date, period)
 
-                    fcst_all = pd.concat([fcst_all,fcst], ignore_index=True)
-                    obs_all = pd.concat([obs_all,obs],ignore_index=True)
+                fcst_all = pd.concat([fcst_all,fcst], ignore_index=True)
+                obs_all = pd.concat([obs_all,obs],ignore_index=True)
                 
-                    weights= make_weights(fcst_all, obs_all,modelname)
+                weights= make_weights(fcst_all, obs_all,modelname)
+            
             weights_all = pd.concat([weights_all, weights], axis =1)
                 
             weights_all = weights_all/np.linalg.norm(weights_all)

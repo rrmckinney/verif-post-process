@@ -240,7 +240,7 @@ def get_all_obs(delta, station, variable, start_date, end_date, date_list_obs, a
     return(obs_df)
 
 # returns the fcst data for the given model/grid
-def get_fcst(stat_type, maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
+def get_fcst( maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
     df_new = make_df(date_list, start_date, end_date)
 
     if "PCPT" in variable:
@@ -274,91 +274,53 @@ def remove_missing_data(fcst, obs):
     return(fcst,obs) 
 
 
-def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable, k):
+def mk_ensemble( weight_type,  model_df_name, start_date, end_date, df_all, variable, k):
     
     start_date = datetime.strptime(start_date, '%y%m%d')
     end_date = datetime.strptime(end_date, '%y%m%d')
     
     if weight_type == 'seasonal':
         df3 = pd.DataFrame()
-        if stat_type == 'CAT_' and 'SFCTC' not in variable:
-            for w in range(len(seasons_dates)):
+        for w in range(len(seasons_dates)):
                 
-                f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_' \
-                    + stat_cat + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
-                weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                weight = float(weight_file.iloc[:,0])
+            f = weights_folder + "weights-seasonal/" + k + '/weights_all_' \
+                    +  weight_outlook + '_' + variable + '_' + seasons[w]
+            weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
+            #weight_file = weight_file/np.linalg.norm(weight_file)
+            weight = float(weight_file.iloc[:,0])
 
-                if len(seasons_dates[w]) == 2:
-                    date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
-                    date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
+            if len(seasons_dates[w]) == 2:
+                date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
+                date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
                     
-                    df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
-                    df = df.astype(float)*weight
-                    df3 = pd.concat([df3,df])
-                    df3 = df3.sort_index()
+                df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                df = df.astype(float)*weight
+                df3 = pd.concat([df3,df])
+                df3 = df3.sort_index()
                     
-                    #make the weighted ensemble in the last column     
-                    df3 = df3.replace(0, np.NaN)
-                    df3['ENS_W'] = df3.mean(axis=1)
+                #make the weighted ensemble in the last column     
+                df3 = df3.replace(0, np.NaN)
+                df3['ENS_W'] = df3.sum(axis=1)
                 
-                #fall has four dates as september is a year later than oct/nov as stats started in oct
-                elif len(seasons_dates[w]) > 2:
-                    date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
-                    date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
-                    date3 = datetime.strptime(seasons_dates[w][2], '%y%m%d')
-                    date4 = datetime.strptime(seasons_dates[w][3], '%y%m%d')
+            #fall has four dates as september is a year later than oct/nov as stats started in oct
+            elif len(seasons_dates[w]) > 2:
+                date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
+                date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
+                date3 = datetime.strptime(seasons_dates[w][2], '%y%m%d')
+                date4 = datetime.strptime(seasons_dates[w][3], '%y%m%d')
                     
-                    df1 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
-                    df2 = df_all[(df_all.index >= date3) & (df_all.index < date4)]
-                    df = pd.concat([df1, df2])
-                    df = df*weight
-                    df3 = pd.concat([df3,df])
-                    df3 = df3.sort_index()
+                df1 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                df2 = df_all[(df_all.index >= date3) & (df_all.index < date4)]
+                df = pd.concat([df1, df2])
+                df = df*weight
+                df3 = pd.concat([df3,df])
+                df3 = df3.sort_index()
 
-                    #make the weighted ensemble in the last column     
-                    df3 = df3.replace(0, np.NaN)
-                    df3['ENS_W'] = df3.mean(axis=1)
+                #make the weighted ensemble in the last column     
+                df3 = df3.replace(0, np.NaN)
+                df3['ENS_W'] = df3.sum(axis=1)
 
 
-        else:
-            for w in range(len(seasons_dates)):
-                    f = weights_folder + "weights-seasonal/" + k + '/' + stat_type + '/weights_all' \
-                        + '_' + weight_outlook + '_' + variable + '_' + seasons[w]
-                    
-                    weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-                    weight = float(weight_file.iloc[:,0])
-
-                    if len(seasons_dates[w]) == 2:
-                        date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
-                        date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
-                        
-                        df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
-                        df = df*weight
-                        df3 = pd.concat([df3,df])
-                        df3 = df3.sort_index()
-                        
-                        #make the weighted ensemble in the last column     
-                        df3 = df3.replace(0, np.NaN)
-                        df3['ENS_W'] = df3.mean(axis=1)
-
-                    #fall has four dates as september is a year later than oct/nov as stats started in oct
-                    elif len(seasons_dates[w]) > 2:
-                        date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
-                        date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
-                        date3 = datetime.strptime(seasons_dates[w][2], '%y%m%d')
-                        date4 = datetime.strptime(seasons_dates[w][3], '%y%m%d')
-                        
-                        df1 = df_all[(df_all.index >= date1) & (df_all.index < date2)]
-                        df2 = df_all[(df_all.index >= date3) & (df_all.index < date4)]
-                        df = pd.concat([df1, df2])
-                        df = df*weight
-                        df3 = pd.concat([df3,df])
-                        df3 = df3.sort_index()
-                        
-                        #make the weighted ensemble in the last column     
-                        df3 = df3.replace(0, np.NaN)
-                        df3['ENS_W'] = df3.mean(axis=1)
 
     elif weight_type == 'yearly':
         if stat_type == 'CAT_' and 'SFCTC' not in variable:
@@ -392,7 +354,7 @@ def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end
 
     return(df3)
 
-def fcst_grab(station_df, savetype, stat_type, weight_type, filepath, delta, input_domain,  \
+def fcst_grab(station_df, savetype, weight_type, filepath, delta, input_domain,  \
                     date_entry1, date_entry2, variable, date_list, model, grid, maxhour, gridname, filehours, \
                     obs_df, station):
             
@@ -417,7 +379,7 @@ def fcst_grab(station_df, savetype, stat_type, weight_type, filepath, delta, inp
     # total stations that should be included in each model/grid
     totalstations = totalstations+1
         
-    all_fcst = get_fcst(stat_type,maxhour, station, filepath, variable, date_list,filehours, date_entry1, \
+    all_fcst = get_fcst(maxhour, station, filepath, variable, date_list,filehours, date_entry1, \
                         date_entry2, weight_type, model_df_name)    #goes to maxhour       
 
     

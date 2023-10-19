@@ -100,11 +100,15 @@ variable_names = ['Temperature-Raw', 'Temperature-KF', 'Wind Speed-Raw', 'Wind S
 variable_units = ['[C]','[C]','[km/hr]','[km/hr]', '[mm/hr]','[mm/6hr]']
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
-models = np.loadtxt(models_file,usecols=0,dtype='str')
+#models = np.loadtxt(models_file,usecols=0,dtype='str')
 
-grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
-gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
-model_names = np.loadtxt(models_file,usecols=4,dtype='str') #longer names, used for legend
+#grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
+#gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
+#model_names = np.loadtxt(models_file,usecols=4,dtype='str') #longer names, used for legend
+
+models = ['MM5']
+grids = ['g2,g3,g4']
+gridres = ['30,12,4']
 
 # thresholds for discluding erroneous data 
 precip_threshold = 250 #recorded at Buffalo Gap 1961 https://www.canada.ca/en/environment-climate-change/services/water-overview/quantity/floods/events-prairie-provinces.html
@@ -115,14 +119,19 @@ temp_max = 49.6 #recorded in Lytton, BC 2021 https://www.canada.ca/en/environmen
 #station_info
 station_df = pd.read_csv(station_file)
 
-stations_with_SFCTC = np.array(station_df.query("SFCTC==1")["Station ID"],dtype=str)
-stations_with_SFCWSPD = np.array(station_df.query("SFCWSPD==1")["Station ID"],dtype=str)
-stations_with_PCPTOT = np.array(station_df.query("PCPTOT==1")["Station ID"],dtype=str)
-stations_with_PCPT6 = np.array(station_df.query("PCPT6==1")["Station ID"],dtype=str)
-stations_with_PCPT24 = np.array(station_df.query("PCPT24==1")["Station ID"],dtype=str)
+#stations_with_SFCTC = np.array(station_df.query("SFCTC==1")["Station ID"],dtype=str)
+#stations_with_SFCWSPD = np.array(station_df.query("SFCWSPD==1")["Station ID"],dtype=str)
+#stations_with_PCPTOT = np.array(station_df.query("PCPTOT==1")["Station ID"],dtype=str)
+#stations_with_PCPT6 = np.array(station_df.query("PCPT6==1")["Station ID"],dtype=str)
+#stations_with_PCPT24 = np.array(station_df.query("PCPT24==1")["Station ID"],dtype=str)
 
-all_stations = np.array(station_df.query("`Small domain`==1")["Station ID"],dtype=str)
-    
+#all_stations = np.array(station_df.query("`Small domain`==1")["Station ID"],dtype=str)
+stations_with_SFCTC = ['3510']
+stations_with_SFCWSPD = ['3510']
+stations_with_PCPTOT = ['3510']
+stations_with_PCPT6 = ['3510']
+
+all_stations = ['3510']
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------
 ###########################################################
@@ -240,7 +249,7 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
     print("Reading observational dataframe for " + variable + ".. ")
     
     df_new = make_df(date_list_obs, start_date, end_date)
-    
+     
     if variable == 'SFCTC_KF' or variable == 'SFCTC':
         station_list = copy.deepcopy(stations_with_SFCTC)              
     elif variable == 'SFCWSPD_KF' or variable == 'SFCWSPD':  
@@ -253,7 +262,7 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
     
     elif variable == "PCPT6":
         station_list = copy.deepcopy(stations_with_PCPT6) 
-
+    
     #KF variables are the same as raw for obs
     if "_KF" in variable:
         variable = variable[:-3]
@@ -283,7 +292,7 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
         sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(start_date) + " AND 20" + str(end_date)       
         obs = pd.read_sql_query(sql_query, sql_con)
         obs['datetime'] = None
-
+        
         if len(period) >2:
             sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" +str(fall[2]) + " AND 20" + str(fall[3])       
             obs2 = pd.read_sql_query(sql_query, sql_con)
@@ -319,7 +328,6 @@ def get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with
    
         final_obs = np.array(obs_all).T
         obs_df[station] = final_obs.flatten() 
-
     return(obs_df)
 
 # returns the fcst data for the given model/grid
@@ -351,7 +359,7 @@ def get_fcst( filepath, variable, date_list,start_date, end_date, period):
         
         fcst = fcst.set_index('datetime')
         fcst_all = df_new.join(fcst, on='datetime')
-    
+        fcst_all = fcst_all['Val']
         final_obs = np.array(fcst_all).T
         fcst_df[station] = final_obs.flatten() 
     
@@ -359,117 +367,121 @@ def get_fcst( filepath, variable, date_list,start_date, end_date, period):
 
 def make_weights(fcst, obs, modelname):
     weights_all = []
-    for s in range(len(all_stations)):
-
+    for station in all_stations:
         for i in range(len(fcst)):
-            weight = 1/(1+exp(-k*(fcst[:,s][i]-obs[:,s][i])))
+            try:
+                weight = 1/(1+exp(-int(k)*(float(fcst[station][i])-float(obs[station][i]))))
+            except OverflowError:
+                weight = np.nan
+            if weight < 0.5:
+                weight = np.nan
             weights_all.append(weight)
-
-    weights = mean(weights_all)
-    weights = pd.DataFrame(weight, columns = modelname)
-    return(weights)
+    weight = np.nanmean(weights_all)
+    weight_df = pd.DataFrame({modelname: pd.Series(weight, index=[0])})
+    return(weight_df)
         
 def main(args):
     
     var_i = 0
     for var in variables: #loop through variables
-        
         weights_all = pd.DataFrame()
-        for i in range(len(models)):
-            model = models[i] #loops through each model
+        
+        fcst_all = pd.DataFrame()
+        obs_all = pd.DataFrame()
+        for s in range(len(seasons)):
+            if s == 0:
+                period = 'winter'
+                start_date = winter[0]
+                end_date = winter[1]
+            elif s ==1:
+                period = 'spring'
+                start_date = spring[0]
+                end_date = spring[1]
+            elif s ==2:
+                period = 'summer'
+                start_date = summer[0]
+                end_date = summer[1]
+            elif s == 3:
+                period = 'fall'
+                start_date = fall[0]
+                end_date = fall[1]
+
+
+        
+            for i in range(len(models)):
+                model = models[i] #loops through each model
        
-            for grid_i in range(len(grids[i].split(","))): #loops through each grid size for each model
+                for grid_i in range(len(grids[i].split(","))): #loops through each grid size for each model
                 
-                grid = grids[i].split(",")[grid_i]
+                    grid = grids[i].split(",")[grid_i]
                 
-                if "_KF" in var:
-                    file_var = var[:-3]
-                else:
-                    file_var = var
+                    if "_KF" in var:
+                        file_var = var[:-3]
+                    else:
+                        file_var = var
 
-                #ENS only has one grid (and its not saved in a g folder)
-                if model == 'ENS' and '_KF' in var:    
-                    filepath = fcst_filepath + model + '/' + file_var + '/fcst.KF_MH.t/'
-                    gridname = ''
-                    modelname = model + gridname
-                elif model == 'ENS':
-                    filepath = fcst_filepath + model + '/' + file_var + '/fcst.t/'
-                    gridname = ''
-                    modelname = model + gridname
+                    #ENS only has one grid (and its not saved in a g folder)
+                    if model == 'ENS' and '_KF' in var:    
+                        filepath = fcst_filepath + model + '/' + file_var + '/fcst.KF_MH.t/'
+                        gridname = ''
+                        modelname = model + gridname
+                    elif model == 'ENS':
+                        filepath = fcst_filepath + model + '/' + file_var + '/fcst.t/'
+                        gridname = ''
+                        modelname = model + gridname
 
-                elif model == "ENS_LR" and "_KF" in var:
-                    filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.LR.KF_MH.t/'
-                    gridname = ''
-                    modelname = model + gridname
+                    elif model == "ENS_LR" and "_KF" in var:
+                        filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.LR.KF_MH.t/'
+                        gridname = ''
+                        modelname = model + gridname
 
-                elif model == "ENS_lr" and "_KF" in var:
-                    filepath = fcst_filepath+model[:-3] + '/' + file_var + '/fcst.lr.KF_MH.t/'
-                    gridname = ''
-                    modelname = model + gridname
+                    elif model == "ENS_lr" and "_KF" in var:
+                        filepath = fcst_filepath+model[:-3] + '/' + file_var + '/fcst.lr.KF_MH.t/'
+                        gridname = ''
+                        modelname = model + gridname
 
-                elif model == "ENS_hr" and "_KF" in var:
-                    filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.hr.KF_MH.t/'
-                    gridname = ''
-                    modelname = model + gridname
+                    elif model == "ENS_hr" and "_KF" in var:
+                        filepath = fcst_filepath +model[:-3] + '/' + file_var + '/fcst.hr.KF_MH.t/'
+                        gridname = ''
+                        modelname = model + gridname
 
-                elif model =="ENS_hr":
-                    filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.hr.t/"
-                    gridname = ''
-                    modelname = model + gridname
+                    elif model =="ENS_hr":
+                        filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.hr.t/"
+                        gridname = ''
+                        modelname = model + gridname
 
-                elif model =="ENS_lr":
-                    filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.lr.t/"
-                    gridname = ''
-                    modelname = model + gridname
+                    elif model =="ENS_lr":
+                        filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.lr.t/"
+                        gridname = ''
+                        modelname = model + gridname
 
-                elif model =="ENS_LR":
-                    filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.LR.t/"
-                    gridname = ''
-                    modelname = model + gridname
+                    elif model =="ENS_LR":
+                        filepath = fcst_filepath +model[:-3] + '/' + file_var + "/fcst.LR.t/"
+                        gridname = ''
+                        modelname = model + gridname
 
-                elif "_KF" in var:
-                    filepath = fcst_filepath +model + '/' + grid + '/' + file_var + "/fcst.KF_MH/"          
-                    gridname = "_" + grid
-                    modelname = model + gridname
+                    elif "_KF" in var:
+                        filepath = fcst_filepath +model + '/' + grid + '/' + file_var + "/fcst.KF_MH/"          
+                        gridname = "_" + grid
+                        modelname = model + gridname
 
-                else:
-                    filepath = fcst_filepath + model + '/' + grid + '/' + file_var + '/fcst.t/'
-                    gridname = "_" + grid
-                    modelname = model + gridname
+                    else:
+                        filepath = fcst_filepath + model + '/' + grid + '/' + file_var + '/fcst.t/'
+                        gridname = "_" + grid
+                        modelname = model + gridname
 
                 
-                #if check_dates(start_date, delta, filepath, var, station='3510') == False:
-                #   print("   Skipping model " + model + gridname + " (check_dates flag)")
-                #   continue
+                    #if check_dates(start_date, delta, filepath, var, station='3510') == False:
+                    #   print("   Skipping model " + model + gridname + " (check_dates flag)")
+                    #   continue
             
-                # if it can't find the folder for the model/grid pair 
-                if not os.path.isdir(filepath):
-                    raise Exception("Missing grid/model pair (or wrong base filepath for" + model + gridname)
+                    # if it can't find the folder for the model/grid pair 
+                    if not os.path.isdir(filepath):
+                        raise Exception("Missing grid/model pair (or wrong base filepath for" + model + gridname)
                 
-                print("Now on.. " + model + gridname + " for " + var)
+                    print("Now on.. " + model + gridname + " for " + var)
 
-                fcst_all = pd.DataFrame()
-                obs_all = pd.DataFrame()
-                for s in range(len(seasons)):
-                    print(s) 
-                    if s == 0:
-                        period = 'winter'
-                        start_date = winter[0]
-                        end_date = winter[1]
-                    elif s ==1:
-                        period = 'spring'
-                        start_date = spring[0]
-                        end_date = spring[1]
-                    elif s ==2:
-                        period = 'summer'
-                        start_date = summer[0]
-                        end_date = summer[1]
-                    elif s == 3:
-                        period = 'fall'
-                        start_date = fall[0]
-                        end_date = fall[1]
                 
-                #these returned variables are lists that contain one stat for each model (so length=#num of models)
                     
                     date_list = listofdates(start_date, end_date, obs=False)
                     date_list_obs = listofdates(start_date, end_date, obs=True)
@@ -478,12 +490,13 @@ def main(args):
                     fcst = get_fcst(filepath, var, date_list, start_date, end_date, period)
 
                     fcst_all = pd.concat([fcst_all,fcst], ignore_index=True)
-                    obs_all.append(obs)
-
-                weights= make_weights(fcst_all, obs_all,modelname)
-                weights_all = pd.concat([weights_all, weights], axis =1)
-        
-        weights_all.to_csv(save_folder+str(k) + '/weights_all_'+time_domain+'_'+var+'_'+period)
+                    obs_all = pd.concat([obs_all,obs],ignore_index=True)
+                
+                    weights= make_weights(fcst_all, obs_all,modelname)
+            weights_all = pd.concat([weights_all, weights], axis =1)
+                
+            weights_all = weights_all/np.linalg.norm(weights_all)
+            weights_all.to_csv(save_folder+str(k) + '/weights_all_'+time_domain+'_'+var+'_'+period, mode='w')
                     
     var_i=var_i+1
             

@@ -57,7 +57,7 @@ save_folder = '/home/verif/verif-post-process/weights/ensemble/output-lf/'
 ###########################################################
 
 # takes an input date for the first and last day you want calculations for, must be a range of 7 or 30 days apart
-if len(sys.argv) == 10:
+if len(sys.argv) == 8:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
     input_startdate = datetime.strptime(start_date, "%y%m%d").date()
@@ -94,35 +94,39 @@ if len(sys.argv) == 10:
     if weight_type not in ['yearly', 'seasonal']:
         raise Exception("Invalid weight tyoe input entries. Options: yearly, seasonal. Case sensitive")
     
-    stat_type = sys.argv[6]
-    if stat_type not in ['CAT_', 'MAE_', 'RMSE_','spcorr_']:# statistic type used to get model: CAT_ includes 6 categorical scores within it, all these need tailing '_'
-        raise Exception("Invalid stat type input entries. Options: CAT_, MAE_, RMSE_, spcorr_. Case sensitive and tailing '_' required")
+    #stat_type = sys.argv[6]
+    #if stat_type not in ['CAT_', 'MAE_', 'RMSE_','spcorr_']:# statistic type used to get model: CAT_ includes 6 categorical scores within it, all these need tailing '_'
+    #    raise Exception("Invalid stat type input entries. Options: CAT_, MAE_, RMSE_, spcorr_. Case sensitive and tailing '_' required")
 
-    k = sys.argv[7]
+    k = sys.argv[6]
     if k not in ['40','80','100','150','200','500','1000']:
         raise Exception("Invalid k value. Options: 40, 80, 100, 150, 200, 500, 1000.")
     
-    time_domain = sys.argv[8]
+    time_domain = sys.argv[7]
     if time_domain not in ['60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']:
         raise Exception("Invalid time domain. Options: '60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7'")
     
-    stat_cat = sys.argv[9]
-    if stat_cat not in ['POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS', 'NA']:
-        raise Exception("Invalid CAT score type. Options: 'POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS' if stat type is \
-                        'CAT'; otherwise 'NA'; do not need tailing '_'")
+    #stat_cat = sys.argv[9]
+    #if stat_cat not in ['POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS', 'NA']:
+     #   raise Exception("Invalid CAT score type. Options: 'POD', 'POFD', 'PSS', 'HSS', 'CSI', 'GSS' if stat type is 'CAT'; otherwise 'NA'; do not need tailing '_'")
 
 
-    if stat_type == 'CAT_' and 'SFCTC' in input_variable:
-        raise Exception("Invalid input options. CAT_ can only be used with precip and wind variables NOT temp.")
+    #if stat_type == 'CAT_' and 'SFCTC' in input_variable:
+     #   raise Exception("Invalid input options. CAT_ can only be used with precip and wind variables NOT temp.")
 
 else:
-    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, stat type, k, time domain and the categorical stat (NA for continuous stats).")
+    raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, k, and time domain")
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
-models = np.loadtxt(models_file,usecols=0,dtype='str')
-grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
-gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
-hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
+#models = np.loadtxt(models_file,usecols=0,dtype='str')
+#grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
+#gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
+#hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
+
+models = ['MM5']
+grids = ['g2,g3,g4']
+gridres = ['36,12,4']
+hours = ['60,60,60']
 
 station_df = pd.read_csv(station_file)
 
@@ -251,7 +255,7 @@ def main(args):
                 
                 print("Now on.. " + model + gridname + " for " + input_variable)
 
-                fcst, model_df_name = fcst_grab(station_df, savetype, stat_type,  weight_type, filepath, delta, input_domain,  \
+                fcst, model_df_name = fcst_grab(station_df, savetype,  weight_type, filepath, delta, input_domain,  \
                     date_entry1, date_entry2, input_variable, date_list, model, grid, maxhour, gridname, filehours, \
                     obs_df, station)
                     
@@ -259,7 +263,7 @@ def main(args):
         
         print(fcst_all)
         
-        ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable, k)
+        ENS_W = mk_ensemble(weight_type, model_df_name, start_date, end_date, fcst_all, input_variable, k)
         
         # if stat_type == 'CAT_':
             
@@ -284,7 +288,7 @@ def main(args):
         # axs[1].plot(fcst_all)
         axs[1].plot(ENS_W, 'ko')
 
-        plt.savefig('obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+stat_type+'_'+stat_cat)
+        plt.savefig('obs__fcst_ens_'+input_variable+'_'+weight_type+'_LF')
         
         elapsed = time.time() - t #closes log file
     

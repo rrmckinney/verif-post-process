@@ -262,9 +262,10 @@ def main(args):
                 fcst_all = fcst_all.merge(fcst, on='datetime',how = 'left')
         
         print(fcst_all)
-        
+       
         ENS_W = mk_ensemble(weight_type, model_df_name, start_date, end_date, fcst_all, input_variable, k)
         
+        #ENS_W.to_csv(path+station+'.csv') 
         # if stat_type == 'CAT_':
             
         #     path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
@@ -285,7 +286,7 @@ def main(args):
         
         axs[0].plot(ENS_W, 'ko')
         
-        # axs[1].plot(fcst_all)
+        axs[1].plot(fcst_all)
         axs[1].plot(ENS_W, 'ko')
 
         plt.savefig('obs__fcst_ens_'+input_variable+'_'+weight_type+'_LF')

@@ -40,6 +40,7 @@ textfile_folder = '/verification/weighted-Statistics/'
 #folder where the weights are located
 weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
 
+save_folder='/home/verif/verif-post-process/weights/ensemble/src/'
 ###########################################################
 ### -------------------- INPUTS -- ------------------------
 ###########################################################
@@ -288,7 +289,6 @@ def mk_ensemble( weight_type,  model_df_name, start_date, end_date, df_all, vari
             weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
             #weight_file = weight_file/np.linalg.norm(weight_file)
             weight = float(weight_file.iloc[:,0])
-
             if len(seasons_dates[w]) == 2:
                 date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
                 date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
@@ -300,7 +300,7 @@ def mk_ensemble( weight_type,  model_df_name, start_date, end_date, df_all, vari
                     
                 #make the weighted ensemble in the last column     
                 df3 = df3.replace(0, np.NaN)
-                df3['ENS_W'] = df3.sum(axis=1)
+                df3['ENS_W'] = df3.sum()
                 
             #fall has four dates as september is a year later than oct/nov as stats started in oct
             elif len(seasons_dates[w]) > 2:
@@ -318,8 +318,8 @@ def mk_ensemble( weight_type,  model_df_name, start_date, end_date, df_all, vari
 
                 #make the weighted ensemble in the last column     
                 df3 = df3.replace(0, np.NaN)
-                df3['ENS_W'] = df3.sum(axis=1)
-
+                df3['ENS_W'] = df3.sum()
+                df3.to_csv(save_folder + 'lf_ens/output.csv', mode='w')
 
 
     elif weight_type == 'yearly':
@@ -352,7 +352,7 @@ def mk_ensemble( weight_type,  model_df_name, start_date, end_date, df_all, vari
                 df3 = df3.replace(0, np.NaN)
                 df3['ENS_W'] = df3.mean(axis=1)
 
-    return(df3)
+    return(df3['ENS_W'])
 
 def fcst_grab(station_df, savetype, weight_type, filepath, delta, input_domain,  \
                     date_entry1, date_entry2, variable, date_list, model, grid, maxhour, gridname, filehours, \

@@ -275,33 +275,37 @@ def remove_missing_data(fcst, obs):
     return(fcst,obs) 
 
 
-def mk_ensemble( weight_type,  model_df_name, start_date, end_date, df_all, variable, k):
+def mk_ensemble( weight_type, start_date, end_date, df_all, variable, k):
     
     start_date = datetime.strptime(start_date, '%y%m%d')
     end_date = datetime.strptime(end_date, '%y%m%d')
-    
+    #df_all.to_csv(save_folder + 'lf_ens/fcst_all.csv') 
+    print(df_all)
     if weight_type == 'seasonal':
         df3 = pd.DataFrame()
         for w in range(len(seasons_dates)):
-                
-            f = weights_folder + "weights-seasonal/" + k + '/weights_all_' \
+            for m in range(len(df_all.columns)):   
+                print(df_all.columns[m])
+                f = weights_folder + "weights-seasonal/" + k + '/weights_all_' \
                     +  weight_outlook + '_' + variable + '_' + seasons[w]
-            weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[model_df_name])
-            #weight_file = weight_file/np.linalg.norm(weight_file)
-            weight = float(weight_file.iloc[:,0])
-            if len(seasons_dates[w]) == 2:
-                date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
-                date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
+                weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[df_all.columns[m]])
+                #weight_file = weight_file/np.linalg.norm(weight_file)
+                weight = float(weight_file.iloc[:,0])
+                if len(seasons_dates[w]) == 2:
+                    print(seasons_dates[w])
+                    date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
+                    date2 = datetime.strptime(seasons_dates[w][1], '%y%m%d')
                     
-                df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
-                df = df.astype(float)*weight
-                df3 = pd.concat([df3,df])
-                df3 = df3.sort_index()
+                    df = df_all[(df_all.index >= date1) & (df_all.index < date2)]
+                    print(df)
+                    df = df.astype(float)*weight
+                    df3 = pd.concat([df3,df])
+                #df3 = df3.sort_index()
                     
                 #make the weighted ensemble in the last column     
-                df3 = df3.replace(0, np.NaN)
-                df3['ENS_W'] = df3.sum()
-                
+                #df3 = df3.replace(0, np.NaN)
+        df3['ENS_W'] = df3.abs().sum(axis=1)
+        '''    
             #fall has four dates as september is a year later than oct/nov as stats started in oct
             elif len(seasons_dates[w]) > 2:
                 date1 = datetime.strptime(seasons_dates[w][0], '%y%m%d')
@@ -317,10 +321,10 @@ def mk_ensemble( weight_type,  model_df_name, start_date, end_date, df_all, vari
                 df3 = df3.sort_index()
 
                 #make the weighted ensemble in the last column     
-                df3 = df3.replace(0, np.NaN)
-                df3['ENS_W'] = df3.sum()
+                #df3 = df3.replace(0, np.NaN)
+                df3['ENS_W'] = df3.abs().sum(axis=1)
                 df3.to_csv(save_folder + 'lf_ens/output.csv', mode='w')
-
+        '''
 
     elif weight_type == 'yearly':
         if stat_type == 'CAT_' and 'SFCTC' not in variable:

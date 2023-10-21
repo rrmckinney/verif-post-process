@@ -118,16 +118,17 @@ else:
     raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, a variable name, domain size, weight type, k, and time domain")
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
+
 models = np.loadtxt(models_file,usecols=0,dtype='str')
 grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
 gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
 hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
-
-#models = ['MM5']
-#grids = ['g2,g3,g4']
-#gridres = ['36,12,4']
-#hours = ['60,60,60']
-
+'''
+models = ['MM5']
+grids = ['g2,g3,g4']
+gridres = ['36,12,4']
+hours = ['60,60,60']
+'''
 station_df = pd.read_csv(station_file)
 
 #stations_with_SFCTC = np.array(station_df.query("SFCTC==1")["Station ID"],dtype=str)
@@ -260,11 +261,10 @@ def main(args):
                     obs_df, station)
                     
                 fcst_all = fcst_all.merge(fcst, on='datetime',how = 'left')
-        
         print(fcst_all)
        
-        ENS_W = mk_ensemble(weight_type, model_df_name, start_date, end_date, fcst_all, input_variable, k)
-        
+        ENS_W = mk_ensemble(weight_type, start_date, end_date, fcst_all, input_variable, k)
+        print(ENS_W)
         #ENS_W.to_csv(path+station+'.csv') 
         # if stat_type == 'CAT_':
             
@@ -289,12 +289,12 @@ def main(args):
         axs[1].plot(fcst_all)
         axs[1].plot(ENS_W, 'ko')
 
-        plt.savefig('obs__fcst_ens_'+input_variable+'_'+weight_type+'_LF')
+        plt.savefig('norm_ens_'+input_variable+'_'+weight_type+'_LF')
         
         elapsed = time.time() - t #closes log file
     
     
-        print(elapsed)
+        #print(elapsed)
         print("It took " + str(round(elapsed/60)) + " minutes to run")
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 This folder houses all the code that runs the verification and plotting for the https://weather.eos.ubc.ca/wxfcst/verification/
 
-# BIN
+# bin
 
 This folder is the executed code for the website stats and plots. ONLY the Bash scripts in this folder should be run
 operationally. 
@@ -11,7 +11,7 @@ within this folder you will find:
 
 **run-meteograms.sh** : creates meteograms for the UBC rooftop station for the different initialization times and variables. cron has this run every day at 2300 server time.
 
-## stats
+### stats
 **run-cont-weekly.sh** : calculates the stats for each week for all variables. cron has this running every Sunday for the previous Friday-Thurs.
 
 **run-cont-monthly.sh** : calculates the stats for each month for all variables.cron has this running the 7th of every month for the previous month 
@@ -20,7 +20,7 @@ within this folder you will find:
 
 **run-cat-monthly.sh** : NOT OPERATIONAL. can be run if you want categorial stats for wind and precip variables
 
-## plotting
+### plotting
 **run-plot-weekly.sh** : runs the plots for each week and all variables. can only be run for a week AFTER the stats have been calculated. cron has this running every tues for the following Friday-Thurs.
 
 **run-plot-monthly.sh** : runs the plots for each month and all variables. can only be run for a month AFTER the stats have been calculated. cron has this running every 10th of each month for the previous month. 

@@ -22,7 +22,10 @@ import sys
 import copy
 import matplotlib.pyplot as plt
 import time
-from funcs import *
+from utl.funcs import *
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_squared_error
+from scipy import stats
 import warnings
 warnings.filterwarnings("ignore",category=RuntimeWarning)
 
@@ -47,34 +50,37 @@ models_file = '/home/verif/verif-post-process/input/model_list_weights.txt'
 textfile_folder = '/verification/weighted-Statistics/'
 
 #folder where the weights are located
-weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
+weights_folder = '/home/verif/verif-post-process/weights/LF/output-rcut15/'
 
 #output folder for sql tables after weighted ensemble is made
-save_folder = '/home/verif/verif-post-process/weights/ensemble/output-lf/'
+save_folder = '/home/verif/verif-post-process/weights/ensemble/output-lf-rcut15/'
 
 ###########################################################
 ### -------------------- INPUT ----------------------------
 ###########################################################
 
 # takes an input date for the first and last day you want calculations for, must be a range of 7 or 30 days apart
-if len(sys.argv) == 8:
+if len(sys.argv) == 7:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
-    input_startdate = datetime.strptime(start_date, "%y%m%d").date()
+    input_startdate = datetime.strptime(start_date, "%y%m%d%H")
     
     date_entry2 = sys.argv[2]    #input date YYMMDD
     end_date = str(date_entry2)
-    input_enddate = datetime.strptime(end_date, "%y%m%d").date()
+    input_enddate = datetime.strptime(end_date, "%y%m%d%H")
     
     #subtract 6 to match boreas time, might need to change in future
+    '''
     today = datetime.now() - timedelta(hours=6) 
     needed_date = today - timedelta(days=8) #might need to change to 7
     if input_startdate > needed_date.date():
         raise Exception("Date too recent. Need start date to be at least 8 days ago.")
-
-    delta = (input_enddate-input_startdate).days
-
-    if delta == 365: # 6 is weekly bc it includes the start and end date (making 7)
+    '''
+    print(input_startdate)
+    print(input_enddate)
+    delta = (input_enddate-input_startdate).total_seconds()/(60*60)
+    print(delta)
+    if delta == 60: # 6 is weekly bc it includes the start and end date (making 7)
         print("Performing Yearly calculation for " + start_date + " to " + end_date)
         savetype = 'weekly'
 
@@ -98,11 +104,11 @@ if len(sys.argv) == 8:
     #if stat_type not in ['CAT_', 'MAE_', 'RMSE_','spcorr_']:# statistic type used to get model: CAT_ includes 6 categorical scores within it, all these need tailing '_'
     #    raise Exception("Invalid stat type input entries. Options: CAT_, MAE_, RMSE_, spcorr_. Case sensitive and tailing '_' required")
 
-    k = sys.argv[6]
-    if k not in ['40','80','100','150','200','500','1000']:
-        raise Exception("Invalid k value. Options: 40, 80, 100, 150, 200, 500, 1000.")
-    
-    time_domain = sys.argv[7]
+    #k = sys.argv[6]
+    #if k not in ['40','80','100','150','200','500','1000']:
+    #    raise Exception("Invalid k value. Options: 40, 80, 100, 150, 200, 500, 1000.")
+ 
+    time_domain = sys.argv[6]
     if time_domain not in ['60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7']:
         raise Exception("Invalid time domain. Options: '60hr','84hr', '120hr', '180hr', 'day1', 'day2', 'day3', 'day4', 'day5', 'day6', 'day7'")
     
@@ -126,7 +132,7 @@ hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for eac
 '''
 models = ['MM5']
 grids = ['g2,g3,g4']
-gridres = ['36,12,4']
+gridres = ['12,30,4']
 hours = ['60,60,60']
 '''
 station_df = pd.read_csv(station_file)
@@ -138,16 +144,16 @@ station_df = pd.read_csv(station_file)
 
 #all_stations = np.array(station_df.query("`Small domain`==1")["Station ID"],dtype=str)
 
-
+k = 100
 ##########################################################
 ###-------------------- FOR TESTING ---------------------
 ##########################################################
-stations_with_SFCTC = ['3510']
-stations_with_SFCWSPD = ['3510']
-stations_with_PCPTOT = ['3510']
-stations_with_PCPT6 = ['3510']
+stations_with_SFCTC = ['2094']
+stations_with_SFCWSPD = ['2094']
+stations_with_PCPTOT = ['2094']
+stations_with_PCPT6 = ['2094']
 
-all_stations = ['3510']
+all_stations = ['2094']
 
 #models = ['MM5']
 #grids = grids = np.loadtxt(models_file,usecols=1,dtype='str',max_rows = 2) 
@@ -198,7 +204,7 @@ def main(args):
             
         else:
             obs_df = get_all_obs(delta, station,  input_variable, start_date, end_date, date_list_obs, all_stations)
-
+            
         fcst_all = make_df(date_list_obs, start_date, end_date)
         for i in range(len(models)):
             model = models[i] #loops through each model
@@ -246,7 +252,7 @@ def main(args):
                     filepath = fcst_filepath + model + '/' + grid + '/' + file_var + '/fcst.t/'
                     gridname = "_" + grid
                 
-                if check_dates(start_date, delta, filepath, input_variable, station='3510') == False:
+                if check_dates(start_date, delta, filepath, input_variable, station) == False:
                     print("   Skipping model " + model + gridname + " (check_dates flag)")
                     continue
 
@@ -260,12 +266,62 @@ def main(args):
                     date_entry1, date_entry2, input_variable, date_list, model, grid, maxhour, gridname, filehours, \
                     obs_df, station)
                     
-                fcst_all = fcst_all.merge(fcst, on='datetime',how = 'left')
-        print(fcst_all)
-       
+        
+                fcst_all = fcst_all.merge(fcst, on='datetime',how='left')
+        path = '/home/verif/verif-post-process/weights/ensemble/src/'
+        #fcst_all.to_csv(path+fcst_all+'.csv', mode = 'w')
+        #print(fcst_all)
+        
+        #Combine Weighted ensemble and obs
         ENS_W = mk_ensemble(weight_type, start_date, end_date, fcst_all, input_variable, k)
-        print(ENS_W)
-        #ENS_W.to_csv(path+station+'.csv') 
+        ENS_W = ENS_W.to_frame() 
+        df = ENS_W.join(obs_df)
+        
+        #create regular ensemble and at it to dataframe with other (also need to drop nans for calcs)
+        #fcst_all.drop(['WRF3GEM_g3','WRF3GFS_g3', 'WRF4RDPS_g4','WRF3GFS_g3','WRF4ICON_g3','WRF4RDPS_g5','WRF3GEM_g4','WRF3GFS_g4','WRF3GFS_g5'], axis='columns',inplace = True)
+        ENS_M = fcst_all.mean(axis=1)
+        ENS_M = ENS_M.to_frame()
+        df = df.join(ENS_M)
+        df.columns = ['ENS_W','Obs','ENS_M']
+        df = df.dropna()
+        print(df)
+        
+        print(stats.ttest_ind(df.ENS_W, df.ENS_M))
+
+        #stats for weighted ensemble
+        ENS_W_spcorr = stats.spearmanr(df.ENS_W, df.Obs, nan_policy='omit')
+        ENS_W_MAE = mean_absolute_error(df.Obs, df.ENS_W)
+        ENS_W_RMSE = mean_squared_error(df.Obs, df.ENS_W, squared=False)
+        #ENS_W.to_csv(path+station+input_variable+'.csv') 
+        
+
+        #stats for standard ensemble
+        ENS_M_spcorr = stats.spearmanr(df.ENS_M, df.Obs, nan_policy='omit')
+        ENS_M_MAE = mean_absolute_error(df.Obs, df.ENS_M)
+        ENS_M_RMSE = mean_squared_error(df.Obs, df.ENS_M, squared=False)
+        #ENS_W.to_csv(path+station+input_variable+'.csv') 
+       
+        #write stats to textfiles
+        mae_f = open('MAE_'+input_variable+'_'+weight_type+'_LF_.txt','a')
+        mae_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+        mae_f.write("%3.3f  " % (ENS_W_MAE))
+        mae_f.write("%3.3f  " % (ENS_M_MAE) + "\n")
+        mae_f.close()
+
+        rmse_f = open('RMSE_'+input_variable+'_'+weight_type+'_LF_.txt','a')
+        rmse_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+        rmse_f.write("%3.3f  " % (ENS_W_RMSE))
+        rmse_f.write("%3.3f  " % (ENS_M_RMSE) + "\n")
+        rmse_f.close()
+
+        spcorr_f = open('spcorr_'+input_variable+'_'+weight_type+'_LF_.txt','a')
+        spcorr_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+        spcorr_f.write("%3.3f  " % (ENS_W_spcorr.statistic))
+        spcorr_f.write("%3.3f  " % (ENS_W_spcorr.pvalue))
+        spcorr_f.write("%3.3f  " % (ENS_M_spcorr.statistic))
+        spcorr_f.write("%3.3f  " % (ENS_M_spcorr.pvalue) + "\n")
+        spcorr_f.close()
+
         # if stat_type == 'CAT_':
             
         #     path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
@@ -284,16 +340,18 @@ def main(args):
         
         fig, axs = plt.subplots(2, figsize=(50,10))
         
-        axs[0].plot(ENS_W, 'ko')
+        axs[0].plot(df.ENS_W, 'ko')
         
-        axs[1].plot(fcst_all)
-        axs[1].plot(ENS_W, 'ko')
+        axs[0].plot(fcst_all)
+        axs[1].plot(df.ENS_W, 'ko')
+        axs[1].plot(df.ENS_M, 'bo')
+        axs[1].plot(df.Obs,'ro')
 
-        plt.savefig('norm_ens_'+input_variable+'_'+weight_type+'_LF')
+        plt.savefig('all_ens_'+input_variable+'_'+weight_type+'_LF_'+station)
         
         elapsed = time.time() - t #closes log file
     
-    
+         
         #print(elapsed)
         print("It took " + str(round(elapsed/60)) + " minutes to run")
 

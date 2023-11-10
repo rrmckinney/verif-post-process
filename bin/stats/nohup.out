@@ -8,3 +8,27 @@ A value is trying to be set on a copy of a slice from a DataFrame
 
 See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
   obs_all[i] = np.nan
+Traceback (most recent call last):
+  File "leaderboards-txt-sqlite2.py", line 200, in <module>
+    main(sys.argv)
+  File "leaderboards-txt-sqlite2.py", line 138, in main
+    obs_df_60hr,obs_df_84hr,obs_df_120hr,obs_df_180hr,obs_df_day1,obs_df_day2,obs_df_day3,obs_df_day4,obs_df_day5,obs_df_day6,obs_df_day7 = get_all_obs(delta, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6, stations_with_PCPT24, all_stations, input_variable, start_date, end_date, date_list_obs)
+  File "/nfs/neltharion/oper_users/verif/verif-post-process/src/utl/funcs.py", line 241, in get_all_obs
+    obs.loc[y,'datetime'] = pd.to_datetime(obs.loc[y,'Date'], format='%Y%m%d') + timedelta(hours=hour)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/pandas/core/indexing.py", line 671, in __setitem__
+    self._setitem_with_indexer(indexer, value)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/pandas/core/indexing.py", line 1029, in _setitem_with_indexer
+    setter(item, value)
+  File "/home/verif/.conda/envs/verification/lib/python3.8/site-packages/pandas/core/indexing.py", line 961, in setter
+    s = s.copy()
+KeyboardInterrupt
+/nfs/neltharion/oper_users/verif/verif-post-process/src/utl/funcs.py:255: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  obs_all[i] = np.nan
+/nfs/neltharion/oper_users/verif/verif-post-process/src/utl/funcs.py:255: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  obs_all[i] = np.nan

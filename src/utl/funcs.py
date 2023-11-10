@@ -312,14 +312,14 @@ def get_fcst(station, filepath, variable, date_list,filehours, start_date, end_d
     sql_con = sqlite3.connect(filepath + station + ".sqlite")
     sql_query = "SELECT * from 'All' WHERE date BETWEEN 20" + str(date_list[0]) + " AND 20" + str(date_list[len(date_list)-1])
     fcst = pd.read_sql_query(sql_query, sql_con)
-    
+     
     fcst['datetime'] = None 
     for x in range(len(fcst['Offset'])):
-        fcst.loc[x, 'datetime'] = pd.to_datetime(start_date, format='%y%m%d') + timedelta(hours=int(x))
+        y = fcst['Offset'][x]
+        fcst.loc[x, 'datetime'] = pd.to_datetime(fcst.loc[x,'Date'], format='%Y%m%d') + timedelta(hours=int(y))
     
     fcst = fcst.set_index('datetime')
-    df_all = df_new.join(fcst, on='datetime')
-    
+    df_all = df_new.join(fcst, on='datetime') 
     return(df_all['Val'])
 
 # this removes (NaNs) any fcst data where the obs is not recorded, or fcst is -999

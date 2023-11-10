@@ -313,7 +313,7 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
             MAE_weight = 1-abs(MAE_sorted[i]/sum(MAE_sorted))
             MAE_weights.append(MAE_weight)        
         
-        MAE_weights = MAE_weights/np.linalg.norm(MAE_weights)
+        MAE_weights = [i/sum(MAE_weights) for i in MAE_weights]
         return(MAE_weights, modelnames_sortedMAE)
 
     elif stat_type == "RMSE_":
@@ -324,7 +324,7 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
         for i in range(len(RMSE_sorted)):
             RMSE_weight = 1-abs(RMSE_sorted[i]/sum(RMSE_sorted))
             RMSE_weights.append(RMSE_weight)
-        
+        RMSE_weights = [i/sum(RMSE_weights) for i in RMSE_weights]
         return(RMSE_weights, modelnames_sortedRMSE)
 
     elif stat_type == "spcorr_":
@@ -339,7 +339,7 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
                 SPCORR_weight = 0
             SPCORR_weights.append(SPCORR_weight)
 
-
+        SPCORR_weights = [i/sum(SPCORR_weights) for i in SPCORR_weights]
         return(SPCORR_weights, modelnames_sortedSPCORR)
         
 def main(args):

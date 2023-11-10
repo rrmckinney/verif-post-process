@@ -1,5 +1,5 @@
-2023-10-16 17:11:24.655585
-Performing WEEKLY calculation for 231006 to 231012
+2023-11-07 14:35:32.105160
+Performing WEEKLY calculation for 231027 to 231102
 Reading observational dataframe for SFCTC_KF.. 
     Now on station 2162
     Now on station 1972
@@ -889,6 +889,7 @@ Now on.. WRF4NAM_g2 for SFCTC_KF
    Skipping station 0400 (No forecast data)
    Skipping station 0403 (No forecast data)
    Skipping station 0413 (No forecast data)
+
    Skipping station 0395 (No forecast data)
    Skipping station 2106 (No forecast data)
    Skipping station 0412 (No forecast data)

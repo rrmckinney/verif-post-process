@@ -21,9 +21,13 @@ from datetime import timedelta
 import sys
 import copy
 import matplotlib.pyplot as plt
-from funcs_pwa import *
+from utl.funcs_pwa import *
 import time
 import warnings
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_squared_error
+from scipy import stats
+from sklearn.impute import SimpleImputer
 warnings.filterwarnings("ignore",category=RuntimeWarning)
 
 
@@ -60,21 +64,22 @@ save_folder = '/home/verif/verif-post-process/weights/ensemble/output-pwa/'
 if len(sys.argv) == 9:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
-    input_startdate = datetime.strptime(start_date, "%y%m%d").date()
+    input_startdate = datetime.strptime(start_date, "%y%m%d%H")
     
     date_entry2 = sys.argv[2]    #input date YYMMDD
     end_date = str(date_entry2)
-    input_enddate = datetime.strptime(end_date, "%y%m%d").date()
+    input_enddate = datetime.strptime(end_date, "%y%m%d%H")
     
+    '''
     #subtract 6 to match boreas time, might need to change in future
     today = datetime.now() - timedelta(hours=6) 
     needed_date = today - timedelta(days=8) #might need to change to 7
     if input_startdate > needed_date.date():
         raise Exception("Date too recent. Need start date to be at least 8 days ago.")
+    '''
+    delta = (input_enddate-input_startdate).total_seconds()/(60*60)
 
-    delta = (input_enddate-input_startdate).days
-
-    if delta == 365: # 6 is weekly bc it includes the start and end date (making 7)
+    if delta == 60: # 6 is weekly bc it includes the start and end date (making 7)
         print("Performing Yearly calculation for " + start_date + " to " + end_date)
         savetype = 'weekly'
 
@@ -252,11 +257,55 @@ def main(args):
                     obs_df, station)
                     
                 fcst_all = fcst_all.merge(fcst, on='datetime',how = 'left')
-        
-        print(fcst_all)
+               
         
         ENS_W = mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, fcst_all, input_variable)
-        
+        ENS_W = ENS_W.to_frame()
+        df = ENS_W.join(obs_df)
+
+        #create regular ensemble and at it to dataframe with other (also need to drop nans for calcs)
+        ENS_M = fcst_all.mean(axis=1)
+        ENS_M = ENS_M.to_frame()
+        df = df.join(ENS_M)
+        df.columns = ['ENS_W','Obs','ENS_M']
+        df = df.dropna()
+        print(df)
+
+        #stats for weighted ensemble
+        ENS_W_spcorr = stats.spearmanr(df.ENS_W, df.Obs, nan_policy='omit')
+        ENS_W_MAE = mean_absolute_error(df.Obs, df.ENS_W)
+        ENS_W_RMSE = mean_squared_error(df.Obs, df.ENS_W, squared=False)
+        #ENS_W.to_csv(path+station+input_variable+'.csv') 
+
+
+        #stats for standard ensemble
+        ENS_M_spcorr = stats.spearmanr(df.ENS_M, df.Obs, nan_policy='omit')
+        ENS_M_MAE = mean_absolute_error(df.Obs, df.ENS_M)
+        ENS_M_RMSE = mean_squared_error(df.Obs, df.ENS_M, squared=False)
+        #ENS_W.to_csv(path+station+input_variable+'.csv') 
+
+        #write stats to textfiles
+        mae_f = open('MAE_'+input_variable+'_'+weight_type+'_PWA_'+stat_type+'_'+stat_cat+'.txt','a')
+        mae_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+        mae_f.write("%3.3f  " % (ENS_W_MAE))
+        mae_f.write("%3.3f  " % (ENS_M_MAE) + "\n")
+        mae_f.close()
+
+        rmse_f = open('rmse_'+input_variable+'_'+weight_type+'_PWA_'+stat_type+ '_'+stat_cat+'.txt','a')
+        rmse_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+        rmse_f.write("%3.3f  " % (ENS_W_RMSE))
+        rmse_f.write("%3.3f  " % (ENS_M_RMSE) + "\n")
+        rmse_f.close()
+
+        spcorr_f = open('spcorr_'+input_variable+'_'+weight_type+'_PWA_'+stat_type+ '_'+stat_cat+'.txt','a')
+        spcorr_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+        spcorr_f.write("%3.3f  " % (ENS_W_spcorr.statistic))
+        spcorr_f.write("%3.3f  " % (ENS_W_spcorr.pvalue))
+        spcorr_f.write("%3.3f  " % (ENS_M_spcorr.statistic))
+        spcorr_f.write("%3.3f  " % (ENS_M_spcorr.pvalue) + "\n")
+        spcorr_f.close()        
+
+        '''
         if stat_type == 'CAT_':
             
            path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
@@ -272,7 +321,7 @@ def main(args):
               os.makedirs(path)
             
           ENS_W.to_csv(path + station +'.csv')
-        
+        '''
         fig, axs = plt.subplots(2, figsize=(50,10))
         
         axs[0].plot(ENS_W, 'ko')

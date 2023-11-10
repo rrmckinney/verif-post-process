@@ -127,9 +127,7 @@ def get_statistics(variable,time_domain):
                 MAE_txt = pd.read_csv(MAE_file, sep="   | ", names=['start', 'end','stat', 'num hours', 'num stations'])
                 MAE_txt = MAE_txt.sort_values(by=['start'], ignore_index=True)
                 MAE_txt = MAE_txt.drop_duplicates()
-                
                 data_check = False 
-                
                 MAE_start = MAE_txt['start'].to_numpy()
                 MAE_end = MAE_txt['end'].to_numpy()
                 
@@ -140,9 +138,11 @@ def get_statistics(variable,time_domain):
                     skipped_modelnames.append(legend_labels[leg_count] + ":  (none)")
                     leg_count = leg_count+1
                     continue
+                
                 start_ind = np.where(MAE_start == int(date_entry1))
                 end_ind = np.where(MAE_end == int(date_entry2))
                 
+
                 if np.size(start_ind)==0:
                     start_ind=[0]
                 

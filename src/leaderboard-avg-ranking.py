@@ -310,8 +310,15 @@ def make_leaderboard_sorted(var, var_name, var_unit, time_domain, time_label,MAE
     MAE_sorted, modelnames_MAE, colors_MAE = zip(*sorted(zip(MAE[0], MAE['edited_names'],MAE['colors']),reverse=True))
     RMSE_sorted, modelnames_RMSE, colors_RMSE = zip(*sorted(zip(RMSE[0], RMSE['edited_names'], RMSE['colors']),reverse=True))
     corr_sorted, modelnames_corr, colors_corr = zip(*sorted(zip(corr[0], corr['edited_names'], corr['colors']),reverse=True))
-   
-      
+    
+    MAE_dat = pd.DataFrame({'models': modelnames_MAE, 'mae': MAE_sorted})
+    RMSE_dat = pd.DataFrame({'models': modelnames_RMSE, 'rmse': RMSE_sorted})
+    corr_dat = pd.DataFrame({'models': modelnames_corr, 'spearman correlation': corr_sorted})  
+    
+    MAE_dat.to_csv('MAE_ranks_'+var+'-'+time_domain)
+    RMSE_dat.to_csv('RMSE_ranks_'+var+'-'+time_domain)
+    corr_dat.to_csv('spcorr_ranks_'+var+'-'+time_domain)
+    
     #plotting
     x = np.arange(len(modelnames))
     width = 0.6

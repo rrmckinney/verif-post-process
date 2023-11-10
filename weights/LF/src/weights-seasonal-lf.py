@@ -96,7 +96,7 @@ seasons = [winter,spring,summer,fall]
 time_domain = '60hr'
 #stations = np.loadtxt(station_file,usecols=0,delimiter=',',dtype='str')
 
-variables = ['SFCTC', 'SFCTC_KF', 'SFCWSPD', 'SFCWSPD_KF', 'PCPTOT', 'PCPT6']
+variables = ['SFCTC','SFCTC_KF','SFCWSPD', 'SFCWSPD_KF', 'PCPTOT', 'PCPT6']
 variable_names = ['Temperature-Raw', 'Temperature-KF', 'Wind Speed-Raw', 'Wind Speed-KF', 'Hourly Precipitation','6-Hour Accumulated Precipitation']
 variable_units = ['[C]','[C]','[km/hr]','[km/hr]', '[mm/hr]','[mm/6hr]']
 
@@ -370,11 +370,13 @@ def make_weights(fcst, obs, modelname):
     weights_all = []
     for station in all_stations:
         for i in range(len(fcst)):
+            f = float(fcst[station][i])
+            o = float(obs[station][i])
             try:
-                weight = 1/(1+exp(-int(k)*(float(fcst[station][i])-float(obs[station][i]))))
+                if f > (o + o/4):
+                    f = f - o
+                weight = 1/(1+exp(-int(k)*(f - o/2)))
             except OverflowError:
-                weight = np.nan
-            if weight < 0.5:
                 weight = np.nan
             weights_all.append(weight)
     weight = np.nanmean(weights_all)
@@ -474,6 +476,7 @@ def main(args):
                     weights= make_weights(fcst_all, obs_all,modelname)
                     weights_all = np.append(weights_all, weights.values)
                     modelnames = np.append(modelnames, weights.columns)
+
             #print([i/sum(np.array(weights_all.values)) for i in np.array(weights_all.values)]) 
             #weights_norm = preprocessing.normalize(np.array(weights_all.values))
             weights_norm = weights_all/weights_all.sum()

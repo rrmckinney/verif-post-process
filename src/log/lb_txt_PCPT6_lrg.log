@@ -1,5 +1,5 @@
-2023-10-16 22:52:42.697419
-Performing WEEKLY calculation for 231006 to 231012
+2023-11-08 17:39:50.293180
+Performing MONTHLY calculation for 231001 to 231031
 Reading observational dataframe for PCPTOT.. 
     Now on station 3320
     Now on station 679
@@ -312,7 +312,6 @@ Now on.. MM5_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. MM5_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -345,7 +344,6 @@ Now on.. MM5_g3 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. MM5_g4 for PCPT6
    Skipping station 0604 (No obs data)
@@ -519,7 +517,6 @@ Now on.. WRF3GEM_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF3GEM_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -613,7 +610,6 @@ Now on.. WRF3NAM_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF3NAM_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -710,7 +706,6 @@ Now on.. WRF3GFS_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF3GFS_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -823,7 +818,6 @@ Now on.. WRF3NAVGEM_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF3NAVGEM_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -917,7 +911,6 @@ Now on.. WRF3GFSgc01_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF3GFSgc01_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -982,7 +975,6 @@ Now on.. WRF3ARPEGE_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF3ARPEGE_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1047,7 +1039,6 @@ Now on.. WRF4ICON_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF4ICON_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1112,7 +1103,6 @@ Now on.. WRF4NAM_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF4NAM_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1145,7 +1135,6 @@ Now on.. WRF4NAM_g3 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF4NAM_g4 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1178,7 +1167,6 @@ Now on.. WRF4NAM_g4 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. NMM3NAM_g2 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1211,7 +1199,6 @@ Now on.. NMM3NAM_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. NMM3NAM_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1304,7 +1291,6 @@ Now on.. NMM3GFS_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. NMM3GFS_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1368,7 +1354,6 @@ Now on.. WRF2NAM_g1 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF2NAM_g2 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1401,7 +1386,6 @@ Now on.. WRF2NAM_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF2NAM_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1466,7 +1450,6 @@ Now on.. WRF2NAM81_g1 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF2NAM81_g2 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1499,7 +1482,6 @@ Now on.. WRF2NAM81_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF2NAM81_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1564,7 +1546,6 @@ Now on.. WRF2GFS_g1 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF2GFS_g2 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1597,7 +1578,6 @@ Now on.. WRF2GFS_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF2GFS_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1662,7 +1642,6 @@ Now on.. WRF2GFS81_g1 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF2GFS81_g2 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1695,7 +1674,6 @@ Now on.. WRF2GFS81_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. WRF2GFS81_g3 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1845,7 +1823,6 @@ Now on.. MPAS25_g1 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. MPAS25_g2 for PCPT6
    Skipping station 0604 (No obs data)
@@ -1878,7 +1855,6 @@ Now on.. MPAS25_g2 for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. ENS for PCPT6
    Skipping station 0604 (No obs data)
@@ -1911,7 +1887,6 @@ Now on.. ENS for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. ENS_lr for PCPT6
    Skipping station 0604 (No obs data)
@@ -1944,7 +1919,6 @@ Now on.. ENS_lr for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 Now on.. ENS_hr for PCPT6
    Skipping station 0604 (No obs data)
@@ -2009,6 +1983,5 @@ Now on.. ENS_LR for PCPT6
    Skipping station 0597 (No obs data)
    Skipping station 0608 (No obs data)
    Skipping station 0599 (No obs data)
-   Skipping station 0689 (No obs data)
    Skipping station 0691 (No obs data)
 DONE!

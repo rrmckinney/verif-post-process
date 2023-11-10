@@ -40,7 +40,7 @@ variables and other characteristics each station and model holds.
 This is the quality check folder. Currenlty has a script that examines the distributions of the obs data at all stations.
 This script was used to manually examine the data before implementing qc in the operational scripts. It is not used operationally
 
-#src
+# src
 
 this is where all the source code run for the BIN are located.
 

@@ -5,7 +5,7 @@ Created in summer 2021 @author: evagnegy
 
 Adapted summer 2023 by rmckinney to new file system on specter.
 
-This script is for the weekly leadership time series board that is not quite operational.
+This script is for the weekly leadership time series board that is operational.
  
 """
 

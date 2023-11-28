@@ -39,13 +39,13 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 obs_filepath = "/verification/Observations/"
 
 #location where forecast files are 
-fcst_filepath = "/home/verif/verif-post-process/weights/ensemble/output/"
+fcst_filepath = "/home/verif/verif-post-process/weights/LF/output-rcut15/weights-seasonal/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list_master.txt'
 
 #folder where the stats save
-textfile_folder = '/verification/Statistics/ENS_W/'
+textfile_folder = '/home/verif/verif-post-process/weights/LF/output-rcut15/'
 
 ###########################################################
 ### -------------------- INPUT ----------------------------

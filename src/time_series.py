@@ -65,6 +65,9 @@ variables = ['SFCTC_KF','SFCTC','PCPTOT', 'SFCWSPD_KF', 'SFCWSPD', 'PCPT6']
 variable_names = ['Temperature-KF', 'Temperature-Raw','Hourly Precipitation', 'Wind Speed-KF ', 'Wind Speed-Raw', '6-Hour Accumulated Precipitation']
 variable_units = ['[C]','[C]', '[mm/hr]','[km/hr]','[km/hr]', '[mm/6hr]']
 
+#variables=['SFCTC_KF']
+#variable_names = ['Temperature-KF']
+#variable_units = ['[C]'] 
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
 models = np.loadtxt(models_file,usecols=0,dtype='str')
@@ -129,8 +132,7 @@ def get_statistics(variable,time_domain):
                 MAE_txt = MAE_txt.drop_duplicates()
                 data_check = False 
                 MAE_start = MAE_txt['start'].to_numpy()
-                MAE_end = MAE_txt['end'].to_numpy()
-                
+                MAE_end = MAE_txt['end'].to_numpy() 
                 if int(date_entry1) in MAE_start and int(date_entry2) in MAE_end:
                     data_check = True
                 else:
@@ -171,6 +173,10 @@ def get_statistics(variable,time_domain):
                 #RMSE_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else RMSE_list[x] for x in range(len(RMSE_list))] 
                 #spcorr_list[:] = ["nan" if int(actual[x]) < int(expected[x])/2 else spcorr_list[x] for x in range(len(spcorr_list))] 
                 
+                if 'PCPT' in variable:
+                    MAE_list = np.where(MAE_list > 250, np.nan, MAE_list)
+                    RMSE_list = np.where(RMSE_list > 250, np.nan, RMSE_list)
+
                 all_MAE_lists.append(MAE_list)
                 all_RMSE_lists.append(RMSE_list)
                 all_spcorr_lists.append(spcorr_list)
@@ -178,13 +184,14 @@ def get_statistics(variable,time_domain):
                 all_startdate_lists.append(startdate_list)
                 modelnames.append(legend_labels[leg_count])
                 modelcolors.append(model_colors[color_count])
-                
+                 
             #else:
                 #print("   Skipping  " + model + grid + "   " + time_domain + " (doesn't exist)")
                
             leg_count=leg_count+1
                 
         color_count=color_count+1
+     
      return(all_MAE_lists,all_RMSE_lists,all_spcorr_lists,all_startdate_lists,modelnames,modelcolors)
             
                    

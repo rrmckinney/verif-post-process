@@ -2,11 +2,11 @@
 
 source /home/verif/.bash_profile
 
-#start_date=`date --date="-9 days" +%y%m%d`
-#end_date=`date --date="-3 days" +%y%m%d`
+start_date=`date --date="-9 days" +%y%m%d`
+end_date=`date --date="-3 days" +%y%m%d`
 
-start_date='231027'
-end_date='231102'
+#start_date='231103'
+#end_date='231109'
 
 conda activate verification
 

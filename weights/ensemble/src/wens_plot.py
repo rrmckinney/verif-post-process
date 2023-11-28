@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 
-output_file = '/home/verif/verif-post-process/weights/ensemble/src/output-rcut15/'
+output_file = '/home/verif/verif-post-process/weights/ensemble/src/output-rcut30/'
 
 variables = ['SFCTC', 'SFCTC_KF', 'SFCWSPD','SFCWSPD_KF','PCPTOT']
 variable_name = ['Temperature-Raw','Temperature-KF', 'Wind Speed-Raw','Wind Speed-KF', 'Hourly Precipitation']
@@ -35,7 +35,8 @@ for v in variables:
             spcorr_W = round(spcorr['ENS_W'].mean(),4)
             spcorr_M = round(spcorr['ENS_M'].mean(),4)
 
-    fig, ax = plt.subplots(3, figsize=(40,10))
+    fig, ax = plt.subplots(3, figsize=(40,30))
+    plt.rcParams.update({'font.size': 25})
     ax[0].plot(mae['start_date'], mae['ENS_W'], 'm')
     ax[0].plot(mae['start_date'], mae['ENS_M'],'b')
     ax[0].set_title('Mean Absolute Error (MAE)')
@@ -55,7 +56,7 @@ for v in variables:
     ax[2].legend(["ENS_W: "+str(spcorr_W),"ENS_M: "+str(spcorr_M)],loc='best')
 
     #plt.legend(["ENS_W","ENS_M"],loc='best')
-    plt.savefig('ENS_W_vs_ENS_M_'+v, bbox_inches="tight")
+    plt.savefig('ENS_W_vs_ENS_M_rcut30_'+v, bbox_inches="tight")
     
     v_i += 1
 

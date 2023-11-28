@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 ###########################################################
 
 #location to save the images internally
-save_folder = "/home/verif/verif-post-process/weights/LF/output-rcut15/weights-seasonal/"
+save_folder = "/home/verif/verif-post-process/weights/LF/output-rcut30/weights-seasonal/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list.txt'
@@ -268,8 +268,8 @@ def get_rankings(variable,time_domain,season):
     
 def make_weights(MAE, RMSE, SPCORR, modelnames):
     
-    r_half = 7
-    r_cut = 15
+    r_half = 16
+    r_cut = 30
     if stat_type == "MAE_":
         MAE_weights = []
         MAE_sorted, modelnames_sortedMAE = zip(*sorted(zip(MAE, modelnames)))
@@ -298,11 +298,11 @@ def make_weights(MAE, RMSE, SPCORR, modelnames):
     
         SPCORR_weights = []
         SPCORR_sorted, modelnames_sortedSPCORR = zip(*sorted(zip(SPCORR, modelnames),reverse=True))
-        
+         
         for i in range(len(SPCORR_sorted)):
             f = exp(-6*(i-r_half)/(r_cut-r_half))
             spcorr_weight = f/(1+f)
-            SPCORR_weights.append(SPCORR_weight)
+            SPCORR_weights.append(spcorr_weight)
 
         SPCORR_weights = [i/sum(SPCORR_weights) for i in SPCORR_weights]
         return(SPCORR_weights, modelnames_sortedSPCORR)

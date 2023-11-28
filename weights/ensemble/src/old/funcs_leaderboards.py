@@ -30,7 +30,7 @@ warnings.filterwarnings("ignore",category=RuntimeWarning)
 obs_filepath = "/verification/Observations/"
 
 #location where forecast files are 
-fcst_filepath = "/home/verif/verif-post-process/weights/ensemble/output/"
+fcst_filepath = "/home/verif/verif-post-process/weights/LF/output-rcut15/weights-seasonal/"
 
 #description file for stations
 station_file = '/home/verif/verif-post-process/input/station_list_master.txt'
@@ -39,7 +39,7 @@ station_file = '/home/verif/verif-post-process/input/station_list_master.txt'
 models_file = '/home/verif/verif-post-process/input/model_list.txt'
 
 #folder where the stats save
-textfile_folder = '/verification/Statistics/ENS_W/'
+textfile_folder = '/home/verif/verif-post-process/weights/LF/output-rcut15/'
 
 #editting mode for textfile
 
@@ -293,7 +293,7 @@ def get_fcst(station, filepath, variable, date_list,filehours):
 
 # pulls out a list of the files for the given station+variable+hour wanted   
     
-    file = station + ".csv"
+    file = 'weights_all_60hr_'+variable+'_fall'
 
     all_dates = np.loadtxt(filepath + file,usecols=0,skiprows = 1, dtype=str)
     all_dates = pd.to_datetime(all_dates, format='%Y-%m-%d').strftime('%y%m%d')

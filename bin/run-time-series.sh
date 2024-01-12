@@ -1,7 +1,7 @@
 #!/bin/bash -l
-start_date='231110' #should not change, first day of stats calcs; must be the first of the month
-#end_date=`date -d "-16 days" +%y%m%d`
-end_date='231116'
+start_date='231201' #should not change, first day of stats calcs; must be the first of the month
+end_date=`date -d "-14 days" +%y%m%d`
+#end_date='231116'
 #echo $end_date
 source /home/verif/.bash_profile
 

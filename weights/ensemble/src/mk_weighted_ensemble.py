@@ -144,16 +144,16 @@ station_df = pd.read_csv(station_file)
 
 #all_stations = np.array(station_df.query("`Small domain`==1")["Station ID"],dtype=str)
 
-k = 200
+k = 40
 ##########################################################
 ###-------------------- FOR TESTING ---------------------
 ##########################################################
-stations_with_SFCTC = ['2094']
-stations_with_SFCWSPD = ['2094']
-stations_with_PCPTOT = ['2094']
-stations_with_PCPT6 = ['2094']
+stations_with_SFCTC = ['3510']
+stations_with_SFCWSPD = ['3510']
+stations_with_PCPTOT = ['3510']
+stations_with_PCPT6 = ['3510']
 
-all_stations = ['2094']
+all_stations = ['3510']
 
 #models = ['MM5']
 #grids = grids = np.loadtxt(models_file,usecols=1,dtype='str',max_rows = 2) 
@@ -302,19 +302,19 @@ def main(args):
         #ENS_W.to_csv(path+station+input_variable+'.csv') 
        
         #write stats to textfiles
-        mae_f = open('MAE_'+input_variable+'_'+weight_type+'_LF_200.txt','a')
+        mae_f = open('MAE_'+input_variable+'_'+weight_type+'.txt','a')
         mae_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         mae_f.write("%3.3f  " % (ENS_W_MAE))
         mae_f.write("%3.3f  " % (ENS_M_MAE) + "\n")
         mae_f.close()
 
-        rmse_f = open('RMSE_'+input_variable+'_'+weight_type+'_LF_200.txt','a')
+        rmse_f = open('RMSE_'+input_variable+'_'+weight_type+'.txt','a')
         rmse_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         rmse_f.write("%3.3f  " % (ENS_W_RMSE))
         rmse_f.write("%3.3f  " % (ENS_M_RMSE) + "\n")
         rmse_f.close()
 
-        spcorr_f = open('spcorr_'+input_variable+'_'+weight_type+'_LF_200.txt','a')
+        spcorr_f = open('spcorr_'+input_variable+'_'+weight_type+'.txt','a')
         spcorr_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         spcorr_f.write("%3.3f  " % (ENS_W_spcorr.statistic))
         spcorr_f.write("%3.3f  " % (ENS_W_spcorr.pvalue))

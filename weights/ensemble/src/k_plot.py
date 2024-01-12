@@ -18,14 +18,14 @@ for v in variables:
     mae15_W_all, mae30_W_all, rmse15_W_all,rmse30_W_all, spcorr15_W_all, spcorr30_W_all = [], [], [], [],[], []
     for s in stats:
         if s == "MAE":
-            mae15 = pd.read_csv(output_15 + s + '_' + v +'_seasonal_LF_.txt',sep = "\s+|,")
+            mae15 = pd.read_csv(output_15 + s + '_' + v +'_seasonal.txt',sep = "\s+|,")
             mae15.columns = ['start_date','end_date','ENS_W','ENS_M']
             mae15['start_date'] = pd.to_datetime(mae15['start_date'], format='%y%m%d%H')
             mae15_W = round(mae15['ENS_W'].mean(),4)
             mae15_M = round(mae15['ENS_M'].mean(),4)
             mae15_W_all.append(mae15.ENS_W)
 
-            mae30 = pd.read_csv(output_30 + s + '_' + v +'_seasonal_LF_200.txt',sep = "\s+|,")
+            mae30 = pd.read_csv(output_30 + s + '_' + v +'_seasonal.txt',sep = "\s+|,")
             mae30.columns = ['start_date','end_date','ENS_W','ENS_M']
             mae30['start_date'] = pd.to_datetime(mae30['start_date'], format='%y%m%d%H')
             mae30_W = round(mae30['ENS_W'].mean(),4)
@@ -33,14 +33,14 @@ for v in variables:
             mae30_W_all.append(mae30.ENS_W)
         
         elif s == "RMSE":
-            rmse15 = pd.read_csv(output_15 + s + '_' + v +'_seasonal_LF_.txt',sep = "\s+|,")
+            rmse15 = pd.read_csv(output_15 + s + '_' + v +'_seasonal.txt',sep = "\s+|,")
             rmse15.columns = ['start_date','end_date','ENS_W','ENS_M']
             rmse15['start_date'] = pd.to_datetime(rmse15['start_date'], format='%y%m%d%H')
             rmse15_W = round(rmse15['ENS_W'].mean(),4)
             rmse15_M = round(rmse15['ENS_M'].mean(),4)
             rmse15_W_all.append(rmse15.ENS_W)
 
-            rmse30 = pd.read_csv(output_30 + s + '_' + v +'_seasonal_LF_200.txt',sep = "\s+|,")
+            rmse30 = pd.read_csv(output_30 + s + '_' + v +'_seasonal.txt',sep = "\s+|,")
             rmse30.columns = ['start_date','end_date','ENS_W','ENS_M']
             rmse30['start_date'] = pd.to_datetime(rmse30['start_date'], format='%y%m%d%H')
             rmse30_W = round(rmse30['ENS_W'].mean(),4)
@@ -48,14 +48,14 @@ for v in variables:
             rmse30_W_all.append(rmse30.ENS_W)
 
         elif s == "spcorr":
-            spcorr15 = pd.read_csv(output_15 + s + '_' + v +'_seasonal_LF_.txt',sep = "\s+|,")
+            spcorr15 = pd.read_csv(output_15 + s + '_' + v +'_seasonal.txt',sep = "\s+|,")
             spcorr15.columns = ['start_date','end_date','ENS_W','w_pvalue','ENS_M','m_pvalue']
             spcorr15['start_date'] = pd.to_datetime(spcorr15['start_date'], format='%y%m%d%H') 
             spcorr15_W = round(spcorr15['ENS_W'].mean(),4)
             spcorr15_M = round(spcorr15['ENS_M'].mean(),4)
             spcorr15_W_all.append(spcorr15.ENS_W)
             
-            spcorr30 = pd.read_csv(output_30 + s + '_' + v +'_seasonal_LF_200.txt',sep = "\s+|,")
+            spcorr30 = pd.read_csv(output_30 + s + '_' + v +'_seasonal.txt',sep = "\s+|,")
             spcorr30.columns = ['start_date','end_date','ENS_W','w_pvalue','ENS_M','m_pvalue']
             spcorr30['start_date'] = pd.to_datetime(spcorr30['start_date'], format='%y%m%d%H')
             spcorr30_W = round(spcorr30['ENS_W'].mean(),4)

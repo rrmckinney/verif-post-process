@@ -1,5 +1,5 @@
-2023-11-26 18:50:57.017923
-Performing WEEKLY calculation for 231117 to 231123
+2024-01-07 18:53:08.061802
+Performing WEEKLY calculation for 231229 to 240104
 Reading observational dataframe for SFCWSPD_KF.. 
     Now on station 2162
     Now on station 1972
@@ -284,7 +284,6 @@ Now on.. MM5_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. MM5_g3 for SFCWSPD_KF
@@ -304,7 +303,6 @@ Now on.. MM5_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. MM5_g4 for SFCWSPD_KF
@@ -324,7 +322,6 @@ Now on.. MM5_g4 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. MM5G_g2 for SFCWSPD_KF
@@ -344,7 +341,6 @@ Now on.. MM5G_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. MM5G_g3 for SFCWSPD_KF
@@ -364,7 +360,6 @@ Now on.. MM5G_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. MM5G_g4 for SFCWSPD_KF
@@ -384,7 +379,6 @@ Now on.. MM5G_g4 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. MM5G_g5 for SFCWSPD_KF
@@ -404,7 +398,6 @@ Now on.. MM5G_g5 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3GEM_g2 for SFCWSPD_KF
@@ -424,7 +417,6 @@ Now on.. WRF3GEM_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3GEM_g3 for SFCWSPD_KF
@@ -444,7 +436,6 @@ Now on.. WRF3GEM_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3GEM_g4 for SFCWSPD_KF
@@ -464,7 +455,6 @@ Now on.. WRF3GEM_g4 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3NAM_g2 for SFCWSPD_KF
@@ -484,7 +474,6 @@ Now on.. WRF3NAM_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3NAM_g3 for SFCWSPD_KF
@@ -504,7 +493,6 @@ Now on.. WRF3NAM_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3NAM_g4 for SFCWSPD_KF
@@ -524,7 +512,6 @@ Now on.. WRF3NAM_g4 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3GFS_g2 for SFCWSPD_KF
@@ -544,7 +531,6 @@ Now on.. WRF3GFS_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3GFS_g3 for SFCWSPD_KF
@@ -564,7 +550,6 @@ Now on.. WRF3GFS_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3GFS_g4 for SFCWSPD_KF
@@ -584,7 +569,6 @@ Now on.. WRF3GFS_g4 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3GFS_g5 for SFCWSPD_KF
@@ -604,7 +588,6 @@ Now on.. WRF3GFS_g5 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3NAVGEM_g2 for SFCWSPD_KF
@@ -624,7 +607,6 @@ Now on.. WRF3NAVGEM_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No forecast data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3NAVGEM_g3 for SFCWSPD_KF
@@ -644,7 +626,6 @@ Now on.. WRF3NAVGEM_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3NAVGEM_g4 for SFCWSPD_KF
@@ -664,7 +645,6 @@ Now on.. WRF3NAVGEM_g4 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3GFSgc01_g2 for SFCWSPD_KF
@@ -684,7 +664,6 @@ Now on.. WRF3GFSgc01_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3GFSgc01_g3 for SFCWSPD_KF
@@ -704,7 +683,6 @@ Now on.. WRF3GFSgc01_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3ARPEGE_g2 for SFCWSPD_KF
@@ -724,7 +702,6 @@ Now on.. WRF3ARPEGE_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF3ARPEGE_g3 for SFCWSPD_KF
@@ -744,7 +721,6 @@ Now on.. WRF3ARPEGE_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF4ICON_g2 for SFCWSPD_KF
@@ -764,7 +740,6 @@ Now on.. WRF4ICON_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF4ICON_g3 for SFCWSPD_KF
@@ -784,7 +759,6 @@ Now on.. WRF4ICON_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF4NAM_g2 for SFCWSPD_KF
@@ -804,7 +778,6 @@ Now on.. WRF4NAM_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF4NAM_g3 for SFCWSPD_KF
@@ -824,7 +797,6 @@ Now on.. WRF4NAM_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF4NAM_g4 for SFCWSPD_KF
@@ -844,7 +816,6 @@ Now on.. WRF4NAM_g4 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. NMM3NAM_g2 for SFCWSPD_KF
@@ -864,7 +835,6 @@ Now on.. NMM3NAM_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. NMM3NAM_g3 for SFCWSPD_KF
@@ -884,7 +854,6 @@ Now on.. NMM3NAM_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. NMM3NAM_g4 for SFCWSPD_KF
@@ -904,7 +873,6 @@ Now on.. NMM3NAM_g4 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. NMM3GFS_g2 for SFCWSPD_KF
@@ -924,7 +892,6 @@ Now on.. NMM3GFS_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. NMM3GFS_g3 for SFCWSPD_KF
@@ -944,7 +911,6 @@ Now on.. NMM3GFS_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2NAM_g1 for SFCWSPD_KF
@@ -964,7 +930,6 @@ Now on.. WRF2NAM_g1 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2NAM_g2 for SFCWSPD_KF
@@ -984,7 +949,6 @@ Now on.. WRF2NAM_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2NAM_g3 for SFCWSPD_KF
@@ -1004,7 +968,6 @@ Now on.. WRF2NAM_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2NAM81_g1 for SFCWSPD_KF
@@ -1024,7 +987,6 @@ Now on.. WRF2NAM81_g1 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2NAM81_g2 for SFCWSPD_KF
@@ -1044,7 +1006,6 @@ Now on.. WRF2NAM81_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2NAM81_g3 for SFCWSPD_KF
@@ -1064,7 +1025,6 @@ Now on.. WRF2NAM81_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2GFS_g1 for SFCWSPD_KF
@@ -1084,7 +1044,6 @@ Now on.. WRF2GFS_g1 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2GFS_g2 for SFCWSPD_KF
@@ -1104,7 +1063,6 @@ Now on.. WRF2GFS_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2GFS_g3 for SFCWSPD_KF
@@ -1124,7 +1082,6 @@ Now on.. WRF2GFS_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2GFS81_g1 for SFCWSPD_KF
@@ -1144,7 +1101,6 @@ Now on.. WRF2GFS81_g1 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2GFS81_g2 for SFCWSPD_KF
@@ -1164,7 +1120,6 @@ Now on.. WRF2GFS81_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF2GFS81_g3 for SFCWSPD_KF
@@ -1184,7 +1139,6 @@ Now on.. WRF2GFS81_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF4RDPS_g3 for SFCWSPD_KF
@@ -1204,7 +1158,6 @@ Now on.. WRF4RDPS_g3 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF4RDPS_g4 for SFCWSPD_KF
@@ -1224,7 +1177,6 @@ Now on.. WRF4RDPS_g4 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. WRF4RDPS_g5 for SFCWSPD_KF
@@ -1244,7 +1196,6 @@ Now on.. WRF4RDPS_g5 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. MPAS25_g1 for SFCWSPD_KF
@@ -1264,7 +1215,6 @@ Now on.. MPAS25_g1 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. MPAS25_g2 for SFCWSPD_KF
@@ -1284,7 +1234,6 @@ Now on.. MPAS25_g2 for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. ENS for SFCWSPD_KF
@@ -1304,7 +1253,6 @@ Now on.. ENS for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. ENS_lr for SFCWSPD_KF
@@ -1324,7 +1272,6 @@ Now on.. ENS_lr for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. ENS_hr for SFCWSPD_KF
@@ -1344,7 +1291,6 @@ Now on.. ENS_hr for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 Now on.. ENS_LR for SFCWSPD_KF
@@ -1364,7 +1310,6 @@ Now on.. ENS_LR for SFCWSPD_KF
    Skipping station 0401 (No forecast data)
    Skipping station 0396 (No forecast data)
    Skipping station 0399 (No forecast data)
-   Skipping station 3568 (No obs data)
    Skipping station 0398 (No forecast data)
    Skipping station 0411 (No forecast data)
 DONE!

@@ -1,7 +1,7 @@
 source /home/verif/.bash_profile
 
-start_date=`date --date="-1 months -7 days" +%y%m%d`
-end_date=`date --date="-7 days" +%y%m%d`
+start_date=`date --date="-1 months -3 days" +%y%m%d`
+end_date=`date --date="-4 days" +%y%m%d`
 
 #start_date='231001'
 #end_date='231031'

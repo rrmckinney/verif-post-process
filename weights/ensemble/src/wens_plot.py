@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 
-output_file = '/home/verif/verif-post-process/weights/ensemble/src/output-rcut30/'
+input_file = '/home/verif/verif-post-process/weights/ensemble/output-rcut30/'
 
 variables = ['SFCTC', 'SFCTC_KF', 'SFCWSPD','SFCWSPD_KF','PCPTOT']
 variable_name = ['Temperature-Raw','Temperature-KF', 'Wind Speed-Raw','Wind Speed-KF', 'Hourly Precipitation']
@@ -17,19 +17,19 @@ for v in variables:
     var_unit = variable_unit[v_i]
     for s in stats:
         if s == "MAE":
-            mae = pd.read_csv(output_file + s + '_' + v + '_seasonal_LF_.txt',sep = "\s+|,")
+            mae = pd.read_csv(input_file + s + '_' + v + '_seasonal_LF_.txt',sep = "\s+|,")
             mae.columns = ['start_date','end_date','ENS_W','ENS_M']
             mae['start_date'] = pd.to_datetime(mae['start_date'], format='%y%m%d%H')
             mae_W = round(mae['ENS_W'].mean(),4)
             mae_M = round(mae['ENS_M'].mean(),4)
         elif s == "RMSE":
-            rmse = pd.read_csv(output_file + s + '_' + v + '_seasonal_LF_.txt',sep = "\s+|,")
+            rmse = pd.read_csv(input_file + s + '_' + v + '_seasonal_LF_.txt',sep = "\s+|,")
             rmse.columns = ['start_date','end_date','ENS_W','ENS_M']
             rmse['start_date'] = pd.to_datetime(rmse['start_date'], format='%y%m%d%H')
             rmse_W = round(rmse['ENS_W'].mean(),4)
             rmse_M = round(rmse['ENS_M'].mean(),4)
         elif s == "spcorr":
-            spcorr = pd.read_csv(output_file + s + '_' + v + '_seasonal_LF_.txt',sep = "\s+|,")
+            spcorr = pd.read_csv(input_file + s + '_' + v + '_seasonal_LF_.txt',sep = "\s+|,")
             spcorr.columns = ['start_date','end_date','ENS_W','w_pvalue','ENS_M','m_pvalue']
             spcorr['start_date'] = pd.to_datetime(spcorr['start_date'], format='%y%m%d%H') 
             spcorr_W = round(spcorr['ENS_W'].mean(),4)

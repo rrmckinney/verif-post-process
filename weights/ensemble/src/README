@@ -1,0 +1,25 @@
+Files in this directory:
+
+scripts for making ensembles:
+
+mk_weighted_ens.py : makes the weighted ensemble based on the weights specified in the input file on line 53. Specify the correct output on line 56. Only for LF weights (rank (rcuts) or values (200,40)). 
+run it in ../bin/run-all-wens-seasonal.sh
+
+mk_weighted_ens.py: makes weighted enesemble based on pwa weights. don't need to change anything since there is only one weighting scheme here. 
+run in ../bin/run-all-wens-seasonal-pwa.sh
+
+
+scripts for plotting:
+
+wens_plot.py: plots the weighted ensemble of interest to you alone. change the output file to be in the file you wish to plot against the equally averaged ensemble. ONLY for LF SCHEMES. i.e. rcut30 etc.
+
+wens_plot_pwa.py: plots the PWA weighted ensembel against the equally averaged ensemble. no need to change anything here. 
+
+wens_all.plot: plots all schemes together simultaneoulsy against the equally averaged ensemble. no need to change anything. 
+
+200v40_plot.py: script for plotting the LF schemes with different k-values. no need to change anything here.
+30v15_plot.py: script for plotting LF schemes with different rcut values. no nned to change anything here. 
+
+num_members_plot: plots the varying number of members from 1st rank to 51st rank. 
+
+

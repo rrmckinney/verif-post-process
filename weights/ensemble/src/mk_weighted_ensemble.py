@@ -50,10 +50,10 @@ models_file = '/home/verif/verif-post-process/input/model_list_weights.txt'
 textfile_folder = '/verification/weighted-Statistics/'
 
 #folder where the weights are located
-weights_folder = '/home/verif/verif-post-process/weights/LF/output/'
+weights_folder = '/home/verif/verif-post-process/weights/LF/output-rcut30/'
 
-#output folder for sql tables after weighted ensemble is made
-save_folder = '/home/verif/verif-post-process/weights/ensemble/output-40/'
+#output folder for txt files after weighted ensemble is made
+save_folder = '/home/verif/verif-post-process/weights/ensemble/output-rcut30/'
 
 ###########################################################
 ### -------------------- INPUT ----------------------------
@@ -286,8 +286,15 @@ def main(args):
         df = df.dropna()
         print(df)
         
-        print(stats.ttest_ind(df.ENS_W, df.ENS_M))
-
+        
+        ttest_res = stats.ttest_ind(df.ENS_W, df.ENS_M)
+        
+        ttest_file = open(save_folder + "ttest_results.txt", 'a')
+        ttest_file.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+        ttest_file.write("%3.3f " % (ttest_res.statistic) + " ")
+        ttest_file.write("%3.3f " % (ttest_res.pvalue) + "\n")
+        ttest_file.close()
+        
         #stats for weighted ensemble
         ENS_W_spcorr = stats.spearmanr(df.ENS_W, df.Obs, nan_policy='omit')
         ENS_W_MAE = mean_absolute_error(df.Obs, df.ENS_W)
@@ -302,19 +309,19 @@ def main(args):
         #ENS_W.to_csv(path+station+input_variable+'.csv') 
        
         #write stats to textfiles
-        mae_f = open('MAE_'+input_variable+'_'+weight_type+'.txt','a')
+        mae_f = open(save_folder + 'MAE_'+input_variable+'_'+weight_type+'.txt','a')
         mae_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         mae_f.write("%3.3f  " % (ENS_W_MAE))
         mae_f.write("%3.3f  " % (ENS_M_MAE) + "\n")
         mae_f.close()
 
-        rmse_f = open('RMSE_'+input_variable+'_'+weight_type+'.txt','a')
+        rmse_f = open(save_folder + 'RMSE_'+input_variable+'_'+weight_type+'.txt','a')
         rmse_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         rmse_f.write("%3.3f  " % (ENS_W_RMSE))
         rmse_f.write("%3.3f  " % (ENS_M_RMSE) + "\n")
         rmse_f.close()
 
-        spcorr_f = open('spcorr_'+input_variable+'_'+weight_type+'.txt','a')
+        spcorr_f = open(save_folder + 'spcorr_'+input_variable+'_'+weight_type+'.txt','a')
         spcorr_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         spcorr_f.write("%3.3f  " % (ENS_W_spcorr.statistic))
         spcorr_f.write("%3.3f  " % (ENS_W_spcorr.pvalue))
@@ -347,7 +354,7 @@ def main(args):
         axs[1].plot(df.ENS_M, 'bo')
         axs[1].plot(df.Obs,'ro')
 
-        plt.savefig('all_ens_'+input_variable+'_'+weight_type+'_LF_200'+station)
+        plt.savefig(save_folder + 'all_ens_'+input_variable+'_'+weight_type+'_'+station)
         
         elapsed = time.time() - t #closes log file
     

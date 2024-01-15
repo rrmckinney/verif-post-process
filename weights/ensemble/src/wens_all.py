@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-output_rcut30 = '/home/verif/verif-post-process/weights/ensemble/src/output-rcut30/'
-output_rcut15 = '/home/verif/verif-post-process/weights/ensemble/src/output-rcut15/'
-output_pwa = '/home/verif/verif-post-process/weights/ensemble/src/output-pwa/'
-output_k40 = '/home/verif/verif-post-process/weights/ensemble/src/output-40/'
-output_k200 = '/home/verif/verif-post-process/weights/ensemble/src/output-200/'
+input_rcut30 = '/home/verif/verif-post-process/weights/ensemble/output-rcut30/'
+input_rcut15 = '/home/verif/verif-post-process/weights/ensemble/output-rcut15/'
+input_pwa = '/home/verif/verif-post-process/weights/ensemble/output-pwa/'
+input_k40 = '/home/verif/verif-post-process/weights/ensemble/output-40/'
+input_k200 = '/home/verif/verif-post-process/weights/ensemble/output-200/'
 
-wens_type = [output_k200, output_k40,output_pwa,output_rcut30, output_rcut15]
+wens_type = [input_k200, input_k40,input_pwa,input_rcut30, input_rcut15]
 
 wens_names = ['VLF-k200','VLF-k40','PWA','RLF-rcut30', 'RLF-rcut15', 'WFRT-SREF']
 

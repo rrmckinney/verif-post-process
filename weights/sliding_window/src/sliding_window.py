@@ -53,7 +53,7 @@ save_folder = '/home/verif/verif-post-process/weights/sliding_window/output/'
 ###########################################################
 
 # takes an input date for the first and last day you want calculations for, must be a range of 7 or 30 days apart
-if len(sys.argv) == 6:
+if len(sys.argv) == 8:
     
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
@@ -87,6 +87,7 @@ if len(sys.argv) == 6:
     weight_type = sys.argv[6]
     if weight_type not in ['MAE', 'RMSE', 'corr']:
         raise Exception("Invalid weight type. Options: MAE, RMSE, and corr (spearman rank correlation)")
+    input_station = sys.argv[7]
 else:
     raise Exception("Invalid input entries. Needs 2 YYMMDD entries for start and end dates, window type, variable name, time domain, and weight type.")
 
@@ -94,14 +95,14 @@ input_domain = 'small'
 
 # list of model names as strings (names as they are saved in www_oper and my output folders)
 
-'''
 models = np.loadtxt(models_file,usecols=0,dtype='str')
 grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
 gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
 hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
 
-station_df = pd.read_csv(station_file)
 
+station_df = pd.read_csv(station_file)
+'''
 stations_with_SFCTC = np.array(station_df.query("SFCTC==1")["Station ID"],dtype=str)
 stations_with_SFCWSPD = np.array(station_df.query("SFCWSPD==1")["Station ID"],dtype=str)
 stations_with_PCPTOT = np.array(station_df.query("PCPTOT==1")["Station ID"],dtype=str)
@@ -113,24 +114,27 @@ all_stations = np.array(station_df.query("`Small domain`==1")["Station ID"],dtyp
 ##########################################################
 ###-------------------- FOR TESTING ---------------------
 ##########################################################
-stations_with_SFCTC = ['3510']
-stations_with_SFCWSPD = ['3510']
-stations_with_PCPTOT = ['3510']
-stations_with_PCPT6 = ['3510']
+#input_station = sys.argv[7]
+stations_with_SFCTC = [input_station]
+stations_with_SFCWSPD = [input_station]
+stations_with_PCPTOT = [input_station]
+stations_with_PCPT6 = [input_station]
 
-all_stations = ['3510']
-
+all_stations = [input_station]
+station_df = pd.read_csv(station_file)
+'''
 models = ['MM5']
 grids = grids = np.loadtxt(models_file,usecols=1,dtype='str',max_rows = 2) 
 gridres = gridres = np.loadtxt(models_file,usecols=2,dtype='str',max_rows = 2)
 hours = hours = np.loadtxt(models_file,usecols=3,dtype='str', max_rows = 2)
+'''
 ###########################################################
 
 # this loop makes the names for each model/grid pair that will go in the legend
 legend_labels = []
-for i in range(len(model_names)):
+for i in range(len(models)):
     for grid in gridres[i].split(","):
-        model = model_names[i]
+        model = models[i]
 
         if "_" in model: #only for ENS models, which don't have grid res options
             legend_labels.append(model.replace("_"," "))
@@ -172,8 +176,8 @@ def main(args):
             print("   Skipping station " + station + " (no " + input_variable + " data)")
             continue
 
-        if len(station) < 4:
-            station = "0" + str(station)
+        #if len(station) < 4:
+        #    station = "0" + str(station)
         
         #get obserational data in dataframe
         if input_variable == "PCPT6":
@@ -246,16 +250,16 @@ def main(args):
 
 
                 fcst_all = fcst_all.merge(fcst, on='datetime',how='left')
-        
+ 
         #rank each forecast based on previous performance
-        MAE_list, RMSE_list, correlation_list, modelnames, modelcolors, edit_modelnames, skipped _modelnames, numofstations = rank_models(variable, time_domain, input_domain, models, grids, window_type)
-
+        MAE_list, RMSE_list, correlation_list, modelnames, modelcolors, edit_modelnames, skipped_modelnames, numofstations = rank_models(delta, input_startdate, input_variable, time_domain, input_domain, models, grids, window_type, legend_labels)
+        
         #create weights based on rank of each model performance
-        MAE_weights, modelnames_sortedMAE,RMSE_weights,modelnames_sortedRMSE,spcorr_weights, modelnames_sortedSPCORR = make_weights(MAE, RMSE, correlation)
-
+        weights = make_weights(MAE_list, RMSE_list, correlation_list, weight_type, modelnames)
+        
         #apply weights to ensemble
-        df = mk_ensemble(MAE_w, RMSE_w,corr_w, start_date, end_date, variable, fcst_all)
-
+        df = mk_ensemble(weights, start_date, end_date, input_variable, fcst_all)
+        
         #combine weighted ensemble and obs
         df = df.to_frame()
         df1 = df.join(obs_df)
@@ -263,17 +267,18 @@ def main(args):
         #create regular ensemble and add it to dataframes with weighted and obs
         ENS_M = fcst_all.mean(axis=1)
         ENS_M = ENS_M.to_frame()
-
-        df1 = df1.join(ENS_M)
+        ENS_M.columns = ['ENS_M']
+        
+        df1 = df1.join(ENS_M, how='right')
         df1.columns = ['ENS_W', 'Obs', 'ENS_M']
         df1 =df1.dropna()
+         
+        #ttest(df1, date_entry1, date_entry2, weight_type, window_type,input_variable)
         
-        ttest(df1.ENS_W, df1.ENS_M, date_entry1, dateentry2)
-        
-        write_stats(df1)
+        write_stats(station,df1, date_entry1, date_entry2, input_variable, weight_type, window_type)
 
-        elasped = time_time() - t #closes log file
+        elapsed = time.time() - t #closes log file
         print("It took " + str(round(elapsed/60)) + " minutes to run")
 
 if __name__ == "__main__":
-    main(sys.argv)
+     main(sys.argv)

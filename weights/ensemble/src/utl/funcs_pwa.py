@@ -258,7 +258,7 @@ def get_fcst(stat_type, maxhour, station, filepath, variable, date_list, filehou
     fcst = fcst[0:61]
     for x in range(len(fcst['Offset'])):
         y = int(fcst.Offset[x])
-        fcst.loc[x, 'datetime'] = pd.to_datetime(fcst.loc[x,'Date'],format='%Y%m%d') + timedelta(hours=int(y-1))
+        fcst.loc[x, 'datetime'] = pd.to_datetime(fcst.loc[x,'Date'],format='%Y%m%d') + timedelta(hours=int(y))
     
     fcst = fcst.set_index('datetime')
     df_all = df_new.join(fcst, on='datetime')

@@ -1,0 +1,17 @@
+Info about folder. 
+
+This folder makes the weights for the logistic function weighting scheme ONLY. 
+
+value based lf:
+the script to run is src/weights-seasonall-lf.py
+run it via /bin/weights-lf-seasonal.sh
+
+output: has the output for the value based LF schemes that use the k parameter. 
+
+
+rank based lf:
+the script to run is src/weights-seasonal-lf-rs2.py
+run it via /bin/weights-lf2.sh
+
+output-rcut15 / output-rcut30: is the output for the rank based approaches that rely on the 
+rcut and rhalf in their functions. 

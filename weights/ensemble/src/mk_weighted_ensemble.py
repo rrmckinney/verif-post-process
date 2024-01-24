@@ -50,17 +50,17 @@ models_file = '/home/verif/verif-post-process/input/model_list_weights.txt'
 textfile_folder = '/verification/weighted-Statistics/'
 
 #folder where the weights are located
-weights_folder = '/home/verif/verif-post-process/weights/LF/output-rcut30/'
+#weights_folder = '/home/verif/verif-post-process/weights/LF/output-100/'
 
 #output folder for txt files after weighted ensemble is made
-save_folder = '/home/verif/verif-post-process/weights/ensemble/output-rcut30/'
+save_folder = '/home/verif/verif-post-process/weights/ensemble/output-100/'
 
 ###########################################################
 ### -------------------- INPUT ----------------------------
 ###########################################################
 
 # takes an input date for the first and last day you want calculations for, must be a range of 7 or 30 days apart
-if len(sys.argv) == 7:
+if len(sys.argv) == 8:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
     input_startdate = datetime.strptime(start_date, "%y%m%d%H")
@@ -129,31 +129,27 @@ models = np.loadtxt(models_file,usecols=0,dtype='str')
 grids = np.loadtxt(models_file,usecols=1,dtype='str') #list of grid sizings (g1, g2, g3 etc) for each model
 gridres = np.loadtxt(models_file,usecols=2,dtype='str') #list of grid resolution in km for each model
 hours = np.loadtxt(models_file,usecols=3,dtype='str') #list of max hours for each model
-'''
-models = ['MM5']
-grids = ['g2,g3,g4']
-gridres = ['12,30,4']
-hours = ['60,60,60']
-'''
+
 station_df = pd.read_csv(station_file)
+'''
+stations_with_SFCTC = np.array(station_df.query("SFCTC==1")["Station ID"],dtype=str)
+stations_with_SFCWSPD = np.array(station_df.query("SFCWSPD==1")["Station ID"],dtype=str)
+stations_with_PCPTOT = np.array(station_df.query("PCPTOT==1")["Station ID"],dtype=str)
+stations_with_PCPT6 = np.array(station_df.query("PCPT6==1")["Station ID"],dtype=str)
 
-#stations_with_SFCTC = np.array(station_df.query("SFCTC==1")["Station ID"],dtype=str)
-#stations_with_SFCWSPD = np.array(station_df.query("SFCWSPD==1")["Station ID"],dtype=str)
-#stations_with_PCPTOT = np.array(station_df.query("PCPTOT==1")["Station ID"],dtype=str)
-#stations_with_PCPT6 = np.array(station_df.query("PCPT6==1")["Station ID"],dtype=str)
-
-#all_stations = np.array(station_df.query("`Small domain`==1")["Station ID"],dtype=str)
-
+all_stations = np.array(station_df.query("`Small domain`==1")["Station ID"],dtype=str)
+'''
 k = 40
 ##########################################################
 ###-------------------- FOR TESTING ---------------------
 ##########################################################
-stations_with_SFCTC = ['3510']
-stations_with_SFCWSPD = ['3510']
-stations_with_PCPTOT = ['3510']
-stations_with_PCPT6 = ['3510']
+input_station = sys.argv[7]
+stations_with_SFCTC = [input_station]
+stations_with_SFCWSPD = [input_station]
+stations_with_PCPTOT = [input_station]
+stations_with_PCPT6 = [input_station]
 
-all_stations = ['3510']
+all_stations = [input_station]
 
 #models = ['MM5']
 #grids = grids = np.loadtxt(models_file,usecols=1,dtype='str',max_rows = 2) 
@@ -165,7 +161,7 @@ all_stations = ['3510']
 ###########################################################
 
 def main(args):
-
+   
     t = time.time() #get how long it takes to run
 
     #sys.stdout = open(logfilepath, "w") #opens log file
@@ -190,14 +186,16 @@ def main(args):
     for s in range(len(station_list)):
         
         station = station_list[s]
+        if station == '3320':
+            continue
         print( "    Now on station " + station)
 
         if check_variable(input_variable, station, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6) == False:
             print("   Skipping station " + station + " (no " + input_variable + " data)")
             continue
 
-        if len(station) < 4:
-            station = "0" + str(station)
+        #if len(station) < 4:
+        #    station = "0" + str(station)
 
         if input_variable == "PCPT6":       
             obs_df = PCPT_obs_df_6(date_list_obs, delta, input_variable, station, start_date, end_date, all_stations)
@@ -208,7 +206,6 @@ def main(args):
         fcst_all = make_df(date_list_obs, start_date, end_date)
         for i in range(len(models)):
             model = models[i] #loops through each model
-            
             for grid_i in range(len(grids[i].split(","))): #loops through each grid size for each model
                 
                 grid = grids[i].split(",")[grid_i]
@@ -268,12 +265,14 @@ def main(args):
                     
         
                 fcst_all = fcst_all.merge(fcst, on='datetime',how='left')
+
         path = '/home/verif/verif-post-process/weights/ensemble/src/'
         #fcst_all.to_csv(path+fcst_all+'.csv', mode = 'w')
         #print(fcst_all)
         
         #Combine Weighted ensemble and obs
         ENS_W = mk_ensemble(weight_type, start_date, end_date, fcst_all, input_variable, k)
+        print(obs_df)
         ENS_W = ENS_W.to_frame() 
         df = ENS_W.join(obs_df)
         
@@ -289,11 +288,11 @@ def main(args):
         
         ttest_res = stats.ttest_ind(df.ENS_W, df.ENS_M)
         
-        ttest_file = open(save_folder + "ttest_results.txt", 'a')
-        ttest_file.write(str(date_entry1) + " " + str(date_entry2) + "   ")
-        ttest_file.write("%3.3f " % (ttest_res.statistic) + " ")
-        ttest_file.write("%3.3f " % (ttest_res.pvalue) + "\n")
-        ttest_file.close()
+        #ttest_file = open(save_folder + "ttest_results.txt", 'a')
+        #ttest_file.write(str(date_entry1) + " " + str(date_entry2) + "   ")
+        #ttest_file.write("%3.3f " % (ttest_res.statistic) + " ")
+        #ttest_file.write("%3.3f " % (ttest_res.pvalue) + "\n")
+        #ttest_file.close()
         
         #stats for weighted ensemble
         ENS_W_spcorr = stats.spearmanr(df.ENS_W, df.Obs, nan_policy='omit')
@@ -309,19 +308,19 @@ def main(args):
         #ENS_W.to_csv(path+station+input_variable+'.csv') 
        
         #write stats to textfiles
-        mae_f = open(save_folder + 'MAE_'+input_variable+'_'+weight_type+'.txt','a')
+        mae_f = open(save_folder + 'MAE_'+input_variable+'_'+weight_type+'_'+station+'.txt','a')
         mae_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         mae_f.write("%3.3f  " % (ENS_W_MAE))
         mae_f.write("%3.3f  " % (ENS_M_MAE) + "\n")
         mae_f.close()
 
-        rmse_f = open(save_folder + 'RMSE_'+input_variable+'_'+weight_type+'.txt','a')
+        rmse_f = open(save_folder + 'RMSE_'+input_variable+'_'+weight_type+'_'+station+'.txt','a')
         rmse_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         rmse_f.write("%3.3f  " % (ENS_W_RMSE))
         rmse_f.write("%3.3f  " % (ENS_M_RMSE) + "\n")
         rmse_f.close()
 
-        spcorr_f = open(save_folder + 'spcorr_'+input_variable+'_'+weight_type+'.txt','a')
+        spcorr_f = open(save_folder + 'spcorr_'+input_variable+'_'+weight_type+'_'+station+'.txt','a')
         spcorr_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         spcorr_f.write("%3.3f  " % (ENS_W_spcorr.statistic))
         spcorr_f.write("%3.3f  " % (ENS_W_spcorr.pvalue))

@@ -8,14 +8,20 @@ that create the weigted ensemble and then estblish stats to compare it to our cu
 
 """
 
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime
 from datetime import timedelta
 import math
+from math import exp
 import sqlite3
 import warnings
 import matplotlib.pyplot as plt
+from scipy import stats
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_squared_error
+from dateutil.relativedelta import relativedelta
 warnings.filterwarnings("ignore",category=RuntimeWarning)
 
 ###########################################################
@@ -54,6 +60,9 @@ weight_outlook = '60hr'
 
 #editting mode for textfile
 wm = 'w'
+
+#colors to plot, must be same length (or longer) than models list
+model_colors = ['C0','C1','C2','C3','C4','C5','C6','C7','C8','C9','#ffc219','#CDB7F6','#65fe08','#fc3232','#754200','#00FFFF','#fc23ba','#a1a1a1','#000000','#000000','#000000','#000000']
 
 ###########################################################
 ### -------------------- FUNCTIONS ------------------------
@@ -264,6 +273,10 @@ def PCPT_obs_df_6(date_list_obs, delta, variable, station, start_date, end_date,
 
 # returns the fcst data for the given model/grid
 def get_fcst( maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
+    
+    if len(station) < 4:
+        station = '0' + station
+
     df_new = make_df(date_list, start_date, end_date)
     if "PCPT" in variable:
         variable = "PCPTOT"
@@ -336,21 +349,28 @@ def fcst_grab(station_df, savetype, weight_type, filepath, delta, input_domain, 
     else:
         return(all_fcst, model_df_name)
 
-def rank_models(input_startdate, variable, time_domain, input_domain, models, grids, window_type):
+def rank_models(delta, input_startdate, variable, time_domain, input_domain, models, grids, window_type, legend_labels):
+    
     MAE_list,RMSE_list,correlation_list,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations = [],[],[],[],[],[],[],[]
     
-    if window_type = 'weekly':
-        startdate = input_startdate - timedelta(days=7)
+    if window_type == 'weekly':
+        startdate = input_startdate - timedelta(days=8)
         enddate = startdate + timedelta(days=6)
+        
+        date_entry1 = startdate.strftime('%y%m%d')
+        date_entry2 = enddate.strftime('%y%m%d')
     
-    if window_type = 'monthly':
-        date = input_startdate - timedelta(months=1)
+    if window_type == 'monthly':
+        date = input_startdate - relativedelta(months=1)
         startdate = date.replace(day=1)
-        end_date = startdate + timedelta(months=1) - timedelta(days=1)
+        enddate = startdate + relativedelta(months=1) - timedelta(days=1)
+        
+        date_entry1 = startdate.strftime('%y%m%d')
+        date_entry2 = enddate.strftime('%y%m%d')
     
     leg_count = 0
     color_count = 0
-
+    print(date_entry1, date_entry2)
     for i in range(len(models)):
         model = models[i] #loops through each model
 
@@ -365,12 +385,10 @@ def rank_models(input_startdate, variable, time_domain, input_domain, models, gr
                 modelpath = model + '/' + grid + '/'
                 gridname = "_" + grid
 
-
-            print("Now on.. " + model + gridname + "   " + variable)
-
-            if os.path.isfile(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt"):
+            if os.path.isfile(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + window_type + '_' +  variable + "_" + time_domain + "_" + input_domain + ".txt"):
+                
                 #open the MAE file
-                with open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt") as f:
+                with open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "MAE_" + window_type + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt") as f:
                     MAE_lines = f.readlines()
 
                 data_check = False
@@ -382,7 +400,6 @@ def rank_models(input_startdate, variable, time_domain, input_domain, models, gr
                         numstations = MAE_line.split("   ")[3].strip()
                         data_check = True
 
-
                 if data_check == False:
                     print("   **Skipping " + model + grid + ", no data yet**")
                     skipped_modelnames.append(legend_labels[leg_count] + ":  (none)")
@@ -391,7 +408,7 @@ def rank_models(input_startdate, variable, time_domain, input_domain, models, gr
 
 
                 #open the RMSE file
-                with open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt") as f:
+                with open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "RMSE_" + window_type + '_' + variable + "_" + time_domain + "_" + input_domain + ".txt") as f:
                     RMSE_lines = f.readlines()
 
                 #find the line for the given dates
@@ -400,7 +417,7 @@ def rank_models(input_startdate, variable, time_domain, input_domain, models, gr
                         RMSE = RMSE_line.split("   ")[1]
 
                 #open the MAE file
-                with open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "spcorr_" + savetype + "_" + variable + "_" + time_domain + "_" + input_domain + ".txt") as f:
+                with open(textfile_folder +  modelpath  + input_domain + '/' + variable + '/' + "spcorr_" + window_type + '_' + variable + "_" + time_domain + "_" + input_domain + ".txt") as f:
                     spcorr_lines = f.readlines()
 
                 #find the line for the given dates
@@ -437,16 +454,16 @@ def rank_models(input_startdate, variable, time_domain, input_domain, models, gr
 
                 if int(dataratio.split("/")[0]) < int(dataratio.split("/")[1])-removed_hours*(delta+1):
                     if int(numstations.split("/")[0]) != int(numstations.split("/")[1]):
-                        modelnames.append(legend_labels[leg_count] + "*^")
+                        modelnames.append(model+gridname)
                     else:
-                        modelnames.append(legend_labels[leg_count] + "*")
+                        modelnames.append(model+gridname)
                     edited_modelnames.append(legend_labels[leg_count] + ":  (" + dataratio + ")")
 
                 else:
                     if int(numstations.split("/")[0]) != int(numstations.split("/")[1]):
-                        modelnames.append(legend_labels[leg_count] + "^")
+                        modelnames.append(model+gridname)
                     else:
-                        modelnames.append(legend_labels[leg_count])
+                        modelnames.append(model+gridname)
 
             #else:
             #    print("   Skipping  " + model + gridname + "   " + time_domain + " (doesn't exist)")
@@ -455,27 +472,29 @@ def rank_models(input_startdate, variable, time_domain, input_domain, models, gr
             leg_count = leg_count+1
 
         color_count = color_count+1
+    
+    return(MAE_list,RMSE_list,correlation_list,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
 
-     return(MAE_list,RMSE_list,correlation_list,modelnames,modelcolors,edited_modelnames,skipped_modelnames,numofstations)
-
-def make_weights(MAE, RMSE, correlation):
+def make_weights(MAE, RMSE, correlation, stat_type, modelnames):
 
     r_half = 16
     r_cut = 30
-    if stat_type == "MAE_":
+    if stat_type == "MAE":
         MAE_weights = []
         MAE_sorted, modelnames_sortedMAE = zip(*sorted(zip(MAE, modelnames)))
-        
+         
         for i in range(len(MAE_sorted)):
             f = exp(-6*(i-r_half)/(r_cut-r_half))
             MAE_weight = f/(1+f)
             MAE_weights.append(MAE_weight)        
         
         MAE_weights = [i/sum(MAE_weights) for i in MAE_weights]
-        MAE_w = pd.DataFrame(MAE_weights, columns = modelnames_sortedMAE)
+        
+        MAE_w = pd.DataFrame(MAE_weights).T
+        MAE_w.columns = modelnames_sortedMAE
         return(MAE_w)
 
-    elif stat_type == "RMSE_":
+    elif stat_type == "RMSE":
     
         RMSE_weights = []
         RMSE_sorted, modelnames_sortedRMSE = zip(*sorted(zip(RMSE, modelnames)))
@@ -485,10 +504,11 @@ def make_weights(MAE, RMSE, correlation):
             RMSE_weight = f/(1+f)
             RMSE_weights.append(RMSE_weight)
         RMSE_weights = [i/sum(RMSE_weights) for i in RMSE_weights]
-        RMSE_w = pd.DataFrame(RMSE_weights, columns = modelnames_sorted RMSE)
+        RMSE_w = pd.DataFrame(RMSE_weights).T
+        RMSE_w.columns = modelnames_sortedRMSE
         return(RMSE_w)
 
-    elif stat_type == "spcorr_":
+    elif stat_type == "spcorr":
     
         SPCORR_weights = []
         SPCORR_sorted, modelnames_sortedSPCORR = zip(*sorted(zip(SPCORR, modelnames),reverse=True))
@@ -499,28 +519,27 @@ def make_weights(MAE, RMSE, correlation):
             SPCORR_weights.append(spcorr_weight)
 
         SPCORR_weights = [i/sum(SPCORR_weights) for i in SPCORR_weights]
-        corr_w = pd.DataFrame(scporr_weights, columns = modelnames_sortedSPCORR)
+        corr_w = pd.DataFrame(scporr_weights).T
+        corr_w.columns = modelnames_sortedSPCORR
         return(corr_w)
     
-def mk_ensemble(MAE_w, RMSE_w,,corr_w, start_date, end_date, variable, fcst_all):
-
-    for m in range(len(fcst_all.columns)):
-        MAE_weight = MAE_w.loc[:,fcst_all.columns[m]][0]
-        MAE_df = fcst_all[fcst_all.columns[m]]*weight
-
-        RMSE_weight = RMSE_w.loc[:,fcst_all.columns[m]][0]
-        RMSE_df = fcst_all[fcst_all.columns[m]]*weight
-
-        corr_weight = corr_w.loc[:,fcst_all.columns[m]][0]
-        corr_df = fcst_all[fcst_all.columns[m]]*weight
+def mk_ensemble(weights,start_date, end_date, variable, fcst_all):
     
-    return(MAE_df, RMSE_df_corr_df)
+    df_all = pd.DataFrame()
+    for m in range(len(fcst_all.columns)):
+        weight = weights.loc[:,fcst_all.columns[m]][0]
+        df = fcst_all[fcst_all.columns[m]]*weight
+        df_all = pd.concat([df_all,df], axis=1)
+    
+    df_w = df_all.abs().sum(axis=1)
+    
+    return(df_w)
 
 
-def ttest(df1.ENS_W, df1.ENS_M, date_entry1, dateentry2):
-    ttest_res = stats.ttest_ind(i.ENS_W, i.ENS_M)
+def ttest(df, date_entry1, date_entry2, weight_type, window_type, variable):
+    ttest_res = stats.ttest_ind(df.ENS_W, df.ENS_M)
 
-    ttest_file = open(save_folder + "ttest_"+i+"_results.txt", 'a')
+    ttest_file = open(save_folder +window_type+ "/ttest_"+weight_type+"_"+variable+"_results.txt", 'a')
     ttest_file.write(str(date_entry1) + " " + str(date_entry2) + "   ")
     ttest_file.write("%3.3f " % (ttest_res.statistic) + " ")
     ttest_file.write("%3.3f " % (ttest_res.pvalue) + "\n")
@@ -528,7 +547,7 @@ def ttest(df1.ENS_W, df1.ENS_M, date_entry1, dateentry2):
 
     return()
 
-def write_stats(df):
+def write_stats(station,df, date_entry1, date_entry2, input_variable, weight_type, window_type):
         
     #stats for weighted ensemble
     ENS_W_spcorr = stats.spearmanr(df.ENS_W, df.Obs, nan_policy='omit')
@@ -542,19 +561,19 @@ def write_stats(df):
     ENS_M_RMSE = mean_squared_error(df.Obs, df.ENS_M, squared=False)
        
     #write stats to textfiles
-    mae_f = open(save_folder + 'MAE_'+input_variable+'_'+weight_type+'.txt','a')
+    mae_f = open(save_folder + window_type+ '/MAE_'+input_variable+'_'+weight_type+'_'+station+'.txt','a')
     mae_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
     mae_f.write("%3.3f  " % (ENS_W_MAE))
     mae_f.write("%3.3f  " % (ENS_M_MAE) + "\n")
     mae_f.close()
 
-    rmse_f = open(save_folder + 'RMSE_'+input_variable+'_'+weight_type+'.txt','a')
+    rmse_f = open(save_folder +window_type+ '/RMSE_'+input_variable+'_'+weight_type+'_'+station+'.txt','a')
     rmse_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
     rmse_f.write("%3.3f  " % (ENS_W_RMSE))
     rmse_f.write("%3.3f  " % (ENS_M_RMSE) + "\n")
     rmse_f.close()
 
-    spcorr_f = open(save_folder + 'spcorr_'+input_variable+'_'+weight_type+'.txt','a')
+    spcorr_f = open(save_folder + window_type+'/spcorr_'+input_variable+'_'+weight_type+'_'+station+'.txt','a')
     spcorr_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
     spcorr_f.write("%3.3f  " % (ENS_W_spcorr.statistic))
     spcorr_f.write("%3.3f  " % (ENS_W_spcorr.pvalue))

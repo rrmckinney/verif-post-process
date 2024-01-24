@@ -11,8 +11,6 @@ run in ../bin/run-all-wens-seasonal-pwa.sh
 
 scripts for plotting:
 
-wens_plot.py: plots the weighted ensemble of interest to you alone. change the output file to be in the file you wish to plot against the equally averaged ensemble. ONLY for LF SCHEMES. i.e. rcut30 etc.
-
 wens_plot_pwa.py: plots the PWA weighted ensembel against the equally averaged ensemble. no need to change anything here. 
 
 wens_all.plot: plots all schemes together simultaneoulsy against the equally averaged ensemble. no need to change anything. 

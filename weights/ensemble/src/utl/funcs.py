@@ -37,10 +37,13 @@ models_file = '/home/verif/verif-post-process/input/model_list.txt'
 #folder where the stats save
 textfile_folder = '/verification/weighted-Statistics/'
 
-#folder where the weights are located
-weights_folder = '/home/verif/verif-post-process/weights/LF/output2/'
+#folder where the weights are located for rcuts
+#weights_folder = '/home/verif/verif-post-process/weights/LF/output-rcut30/weights-seasonal/'
 
-save_folder='/home/verif/verif-post-process/weights/ensemble/src/'
+#folder where the weights are located for k
+weights_folder = '/home/verif/verif-post-process/weights/LF/output/weights-seasonal/100/'
+
+save_folder='/home/verif/verif-post-process/weights/ensemble/output-100/'
 ###########################################################
 ### -------------------- INPUTS -- ------------------------
 ###########################################################
@@ -244,6 +247,10 @@ def get_all_obs(delta, station, variable, start_date, end_date, date_list_obs, a
 
 # returns the fcst data for the given model/grid
 def get_fcst( maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
+    
+    if len(station) < 4:
+        station = "0" + str(station)
+
     df_new = make_df(date_list, start_date, end_date)
     if "PCPT" in variable:
         variable = "PCPTOT"
@@ -296,10 +303,16 @@ def mk_ensemble( weight_type, start_date, end_date, df_all, variable, k):
             season = seasons[0]
         for m in range(len(df_all.columns)):   
             #print(df_all.columns[m])
-            f = weights_folder + "weights-seasonal/MAE_" + '/weights_all_' \
+            f = weights_folder + "MAE_" + '/weights_all_' \
                     +  weight_outlook + '_' + variable + '_' + season
-            weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[df_all.columns[m]])
-            #weight_file = weight_file/np.linalg.norm(weight_file)
+            try:
+                weight_file = pd.read_csv(f, sep = "\s+|,", usecols=[df_all.columns[m]])
+                weight = float(weight_file.iloc[:,0])
+                #weight_file = weight_file/np.linalg.norm(weight_file) 
+            
+            except: 
+                weight = 0
+            
             weight = float(weight_file.iloc[:,0])
             df = df_all[df_all.columns[m]]*weight
             #print(df_all[df_all.columns[m]])
@@ -355,7 +368,7 @@ def fcst_grab(station_df, savetype, weight_type, filepath, delta, input_domain, 
 
     totalstations = 0
     num_stations = 0
-    
+     
     if station not in stations_in_domain:
         print("   Skipping station " + station)
         return()
@@ -372,7 +385,7 @@ def fcst_grab(station_df, savetype, weight_type, filepath, delta, input_domain, 
 
     
     num_stations = num_stations+1
-
+    
     #sometimes theres no forecast data for a model
     if num_stations == 0:
         print("   NO FORECAST DATA FOR " + model + grid) 

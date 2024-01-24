@@ -285,19 +285,19 @@ def main(args):
         #ENS_W.to_csv(path+station+input_variable+'.csv') 
 
         #write stats to textfiles
-        mae_f = open('MAE_'+input_variable+'_'+weight_type+'_PWA_'+stat_type+'_'+stat_cat+'.txt','a')
+        mae_f = open(save_folder + 'MAE_'+input_variable+'_'+weight_type+'.txt','a')
         mae_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         mae_f.write("%3.3f  " % (ENS_W_MAE))
         mae_f.write("%3.3f  " % (ENS_M_MAE) + "\n")
         mae_f.close()
 
-        rmse_f = open('rmse_'+input_variable+'_'+weight_type+'_PWA_'+stat_type+ '_'+stat_cat+'.txt','a')
+        rmse_f = open(save_folder+'rmse_'+input_variable+'_'+weight_type+'.txt','a')
         rmse_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         rmse_f.write("%3.3f  " % (ENS_W_RMSE))
         rmse_f.write("%3.3f  " % (ENS_M_RMSE) + "\n")
         rmse_f.close()
 
-        spcorr_f = open('spcorr_'+input_variable+'_'+weight_type+'_PWA_'+stat_type+ '_'+stat_cat+'.txt','a')
+        spcorr_f = open(save_folder+'spcorr_'+input_variable+'_'+weight_type+'.txt','a')
         spcorr_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         spcorr_f.write("%3.3f  " % (ENS_W_spcorr.statistic))
         spcorr_f.write("%3.3f  " % (ENS_W_spcorr.pvalue))
@@ -329,7 +329,7 @@ def main(args):
         axs[1].plot(fcst_all)
         axs[1].plot(ENS_W, 'ko')
 
-        plt.savefig(save_folder + 'img/obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+stat_type+'_'+stat_cat)
+        plt.savefig(save_folder + 'img/PWA_obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+stat_type+'_'+stat_cat)
         
         elapsed = time.time() - t #closes log file
     

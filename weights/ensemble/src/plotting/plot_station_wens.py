@@ -7,19 +7,21 @@ import os
 
 #### INPUT ##########
 
-station_output = '/home/verif/verif-post-process/weights/ensemble/output-100/'
-#station_output = '/home/verif/verif-post-process/weights/sliding_window/output/weekly/'
+#station_output = '/home/verif/verif-post-process/weights/ensemble/output/output-pwa/'
+station_output = '/home/verif/verif-post-process/weights/sliding_window/output/weekly/'
 
 input_file = '/home/verif/verif-post-process/input/station_list_small_loc.csv'
 
 score = 'MAE'
-var = 'SFCTC_KF'
-wens = 'VLFk100'
-file_insert = 'seasonal'
-title = 'Temperature (KF) [°C]'
-#title = 'Wind Speed (KF) [km/hr]'
+var = 'SFCWSPD_KF'
+wens = 'SWweekly'
+file_insert = 'MAE'
+#title = 'Temperature (KF) [°C]'
+title = 'Wind Speed (KF) [km/hr]'
 #title = 'Precipitation [mm/hr]'
-cb_title = r'$MAE_{VLFk100} - MAE_{SREF}$'
+cb_title = r'$MAE_{SWweekly} - MAE_{SREF}$'
+
+save_folder = '/home/verif/verif-post-process/weights/ensemble/imgs/map-plots/'
 ##### FUNCTIONS ######
 def convert(deg):
     a,b,c,d,e,f,g = re.split('[ \'"°]',deg)
@@ -76,16 +78,15 @@ def mk_plot(lats,lons,plot_diff):
 
     x, y = m(lons, lats)
 
-    sc = plt.scatter(x, y,50,marker='o',edgecolors='black',c=plot_diff,zorder=4,cmap='RdBu')
+    sc = plt.scatter(x, y,50,marker='o',edgecolors='black',c=plot_diff,zorder=4,cmap='RdBu', vmin=-1,vmax=1)
     fig.colorbar(sc,label = cb_title)
     plt.title(title)
-    plt.savefig('map_'+wens+'_'+score+'_'+var)
+    plt.savefig(save_folder+'map_'+wens+'_'+score+'_'+var)
 
 ##### RUN FUNCTIONS #####
 
 locs, lats, lons = get_latlon(input_file)
 plot_diff = get_station_data(locs)
-print(plot_diff)
 mk_plot(lats,lons,plot_diff)
 
 ########################

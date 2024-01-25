@@ -4,14 +4,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-input_rcut30 = '/home/verif/verif-post-process/weights/ensemble/output-rcut30/'
-input_rcut15 = '/home/verif/verif-post-process/weights/ensemble/output-rcut15/'
-input_pwa = '/home/verif/verif-post-process/weights/ensemble/output-pwa/'
-input_k40 = '/home/verif/verif-post-process/weights/ensemble/output-40/'
-input_k200 = '/home/verif/verif-post-process/weights/ensemble/output-200/'
-input_k100 = '/home/verif/verif-post-process/weights/ensemble/output-100/'
+input_rcut30 = '/home/verif/verif-post-process/weights/ensemble/output/output-rcut30/'
+input_rcut15 = '/home/verif/verif-post-process/weights/ensemble/output/output-rcut15/'
+input_pwa = '/home/verif/verif-post-process/weights/ensemble/output/output-pwa/'
+input_k40 = '/home/verif/verif-post-process/weights/ensemble/output/output-40/'
+input_k200 = '/home/verif/verif-post-process/weights/ensemble/output/output-200/'
+input_k100 = '/home/verif/verif-post-process/weights/ensemble/output/output-100/'
 input_week = '/home/verif/verif-post-process/weights/sliding_window/output/weekly/'
 input_month = '/home/verif/verif-post-process/weights/sliding_window/output/monthly/'
+
+save_folder = '/home/verif/verif-post-process/weights/ensemble/imgs/img-wens-all/'
 
 wens_type = [input_k40,input_k100,input_k200,input_pwa,input_rcut30, input_rcut15,input_week,input_month]
 
@@ -68,6 +70,6 @@ for v in variables:
         plt.legend(lines,wens_names,loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=6)
         n_i += 1
    
-    plt.savefig('WENS_all_'+v, bbox_inches="tight")
+    plt.savefig(save_folder+'WENS_all_'+v, bbox_inches="tight")
     
     v_i += 1

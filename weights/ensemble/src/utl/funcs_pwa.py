@@ -245,6 +245,10 @@ def get_all_obs(delta, station, variable, start_date, end_date, date_list_obs, a
 
 # returns the fcst data for the given model/grid
 def get_fcst(stat_type, maxhour, station, filepath, variable, date_list, filehours, start_date, end_date, weight_type, model_df_name):
+    
+    if len(station) < 4:
+        station = '0' + station
+    
     df_new = make_df(date_list, start_date, end_date)
 
     if "PCPT" in variable:
@@ -281,7 +285,7 @@ def remove_missing_data(fcst, obs):
 
 
 def mk_ensemble(stat_cat, weight_type, stat_type, model_df_name, start_date, end_date, df_all, variable):
-    
+
     start_date = datetime.strptime(start_date, '%y%m%d%H')
     end_date = datetime.strptime(end_date, '%y%m%d%H')
     
@@ -386,7 +390,6 @@ def fcst_grab(station_df, savetype, stat_type, weight_type, filepath, delta, inp
     all_fcst = get_fcst(stat_type,maxhour, station, filepath, variable, date_list,filehours, date_entry1, \
                         date_entry2, weight_type, model_df_name)    #goes to maxhour       
 
-    
     num_stations = num_stations+1
 
     #sometimes theres no forecast data for a model

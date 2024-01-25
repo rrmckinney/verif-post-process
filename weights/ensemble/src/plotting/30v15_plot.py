@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-input_rcut30 = '/home/verif/verif-post-process/weights/ensemble/output-rcut30/'
-input_rcut15 = '/home/verif/verif-post-process/weights/ensemble/output-rcut15/'
+input_rcut30 = '/home/verif/verif-post-process/weights/ensemble/output/output-rcut30/'
+input_rcut15 = '/home/verif/verif-post-process/weights/ensemble/output/output-rcut15/'
 
+save_folder = '/home/verif/verif-post-process/weights/ensemble/imgs/img-30v15/'
 wens_type = [input_rcut30, input_rcut15]
 
 wens_names = ['RLF-rcut30', 'RLF-rcut15', 'WFRT-SREF']
@@ -62,6 +63,6 @@ for v in variables:
         plt.legend(lines,wens_names,loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=6)
         n_i += 1
    
-    plt.savefig('30v15__'+v, bbox_inches="tight")
+    plt.savefig(save_folder+'30v15__'+v, bbox_inches="tight")
     
     v_i += 1

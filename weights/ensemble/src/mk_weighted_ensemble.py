@@ -53,7 +53,7 @@ textfile_folder = '/verification/weighted-Statistics/'
 #weights_folder = '/home/verif/verif-post-process/weights/LF/output-100/'
 
 #output folder for txt files after weighted ensemble is made
-save_folder = '/home/verif/verif-post-process/weights/ensemble/output-100/'
+save_folder = '/home/verif/verif-post-process/weights/ensemble/output/output-rcut30/'
 
 ###########################################################
 ### -------------------- INPUT ----------------------------
@@ -353,7 +353,7 @@ def main(args):
         axs[1].plot(df.ENS_M, 'bo')
         axs[1].plot(df.Obs,'ro')
 
-        plt.savefig(save_folder + 'all_ens_'+input_variable+'_'+weight_type+'_'+station)
+        #plt.savefig(save_folder + 'all_ens_'+input_variable+'_'+weight_type+'_'+station)
         
         elapsed = time.time() - t #closes log file
     

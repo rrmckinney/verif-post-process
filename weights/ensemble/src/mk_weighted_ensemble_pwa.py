@@ -54,14 +54,14 @@ textfile_folder = '/verification/weighted-Statistics/'
 weights_folder = '/home/verif/verif-post-process/weights/PWA/output/'
 
 #output folder for sql tables after weighted ensemble is made
-save_folder = '/home/verif/verif-post-process/weights/ensemble/output-pwa/'
+save_folder = '/home/verif/verif-post-process/weights/ensemble/output/output-pwa/'
 
 ###########################################################
 ### -------------------- INPUT ----------------------------
 ###########################################################
 
 # takes an input date for the first and last day you want calculations for, must be a range of 7 or 30 days apart
-if len(sys.argv) == 9:
+if len(sys.argv) == 10:
     date_entry1 = sys.argv[1]    #input date YYMMDD
     start_date = str(date_entry1) 
     input_startdate = datetime.strptime(start_date, "%y%m%d%H")
@@ -138,12 +138,13 @@ station_df = pd.read_csv(station_file)
 ##########################################################
 ###-------------------- FOR TESTING ---------------------
 ##########################################################
-stations_with_SFCTC = ['3510']
-stations_with_SFCWSPD = ['3510']
-stations_with_PCPTOT = ['3510']
-stations_with_PCPT6 = ['3510']
+input_station = sys.argv[9]
+stations_with_SFCTC = [input_station]
+stations_with_SFCWSPD = [input_station]
+stations_with_PCPTOT = [input_station]
+stations_with_PCPT6 = [input_station]
 
-all_stations = ['3510']
+all_stations = [input_station]
 
 #models = ['MM5']
 #grids = grids = np.loadtxt(models_file,usecols=1,dtype='str',max_rows = 2) 
@@ -185,9 +186,6 @@ def main(args):
         if check_variable(input_variable, station, stations_with_SFCTC, stations_with_SFCWSPD, stations_with_PCPTOT, stations_with_PCPT6) == False:
             print("   Skipping station " + station + " (no " + input_variable + " data)")
             continue
-
-        if len(station) < 4:
-            station = "0" + str(station)
 
         if input_variable == "PCPT6":       
             obs_df = PCPT_obs_df_6(date_list_obs, delta, input_variable, station, start_date, end_date, all_stations)
@@ -285,19 +283,19 @@ def main(args):
         #ENS_W.to_csv(path+station+input_variable+'.csv') 
 
         #write stats to textfiles
-        mae_f = open(save_folder + 'MAE_'+input_variable+'_'+weight_type+'.txt','a')
+        mae_f = open(save_folder + 'MAE_'+input_variable+'_'+stat_type+station+'.txt','a')
         mae_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         mae_f.write("%3.3f  " % (ENS_W_MAE))
         mae_f.write("%3.3f  " % (ENS_M_MAE) + "\n")
         mae_f.close()
 
-        rmse_f = open(save_folder+'rmse_'+input_variable+'_'+weight_type+'.txt','a')
+        rmse_f = open(save_folder+'RMSE_'+input_variable+'_'+stat_type+station+'.txt','a')
         rmse_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         rmse_f.write("%3.3f  " % (ENS_W_RMSE))
         rmse_f.write("%3.3f  " % (ENS_M_RMSE) + "\n")
         rmse_f.close()
 
-        spcorr_f = open(save_folder+'spcorr_'+input_variable+'_'+weight_type+'.txt','a')
+        spcorr_f = open(save_folder+'spcorr_'+input_variable+'_'+stat_type+station+'.txt','a')
         spcorr_f.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         spcorr_f.write("%3.3f  " % (ENS_W_spcorr.statistic))
         spcorr_f.write("%3.3f  " % (ENS_W_spcorr.pvalue))
@@ -329,7 +327,7 @@ def main(args):
         axs[1].plot(fcst_all)
         axs[1].plot(ENS_W, 'ko')
 
-        plt.savefig(save_folder + 'img/PWA_obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+stat_type+'_'+stat_cat)
+        #plt.savefig(save_folder + 'img/PWA_obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+station+'_'+stat_type+'_'+stat_cat)
         
         elapsed = time.time() - t #closes log file
     

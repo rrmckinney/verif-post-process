@@ -123,7 +123,7 @@ def plot_station_data(obs_all, variable, station_list):
 def data_quantity(station_list, len_all):
     for x in range(len(len_all)):
         percent_of_data = int(len_all[x]/tot_hours * 100)
-        if percent_of_data < 90:
+        if percent_of_data < 70:
             print(station_list[x] + " contains " + str(percent_of_data) + "% data")
 
 def contains_outliers(station_list, variable, obs_all):

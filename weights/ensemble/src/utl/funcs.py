@@ -41,9 +41,9 @@ textfile_folder = '/verification/weighted-Statistics/'
 #weights_folder = '/home/verif/verif-post-process/weights/LF/output-rcut30/weights-seasonal/'
 
 #folder where the weights are located for k
-weights_folder = '/home/verif/verif-post-process/weights/LF/output/weights-seasonal/100/'
+weights_folder = '/home/verif/verif-post-process/weights/LF/output-rcut30/weights-seasonal/'
 
-save_folder='/home/verif/verif-post-process/weights/ensemble/output-100/'
+save_folder='/home/verif/verif-post-process/weights/ensemble/output-rcut30/'
 ###########################################################
 ### -------------------- INPUTS -- ------------------------
 ###########################################################

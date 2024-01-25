@@ -4,7 +4,10 @@ import matplotlib.pyplot as plt
 
 
 
-input_file = '/home/verif/verif-post-process/weights/ensemble/output-pwa/'
+input_file = '/home/verif/verif-post-process/weights/ensemble/output/output-pwa/'
+
+save_folder = '/home/verif/verif-post-process/weights/ensemble/imgs/img-pwa/'
+
 variables = ['SFCTC', 'SFCTC_KF', 'SFCWSPD','SFCWSPD_KF','PCPTOT']
 variable_name = ['Temperature-Raw','Temperature-KF', 'Wind Speed-Raw','Wind Speed-KF', 'Hourly Precipitation']
 variable_unit = ['[C]','[C]','[km/hr]', '[km/hr]', '[mm/hr]']
@@ -56,7 +59,7 @@ for v in variables:
 
     #plt.legend(["PWA","SREF"],loc='best')
     plt.legend(["PWA","SREF"],loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=6)
-    plt.savefig('ENS_W_vs_ENS_M_pwa_'+v, bbox_inches="tight")
+    plt.savefig(save_folder+'ENS_W_vs_ENS_M_pwa_'+v, bbox_inches="tight")
     
     v_i += 1
 

@@ -4,10 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-input_40 = '/home/verif/verif-post-process/weights/ensemble/output-40/'
-input_100 = '/home/verif/verif-post-process/weights/ensemble/output-100/'
-input_200 = '/home/verif/verif-post-process/weights/ensemble/output-200/'
+input_40 = '/home/verif/verif-post-process/weights/ensemble/output/output-40/'
+input_100 = '/home/verif/verif-post-process/weights/ensemble/output/output-100/'
+input_200 = '/home/verif/verif-post-process/weights/ensemble/output/output-200/'
 
+save_folder = '/home/verif/verif-post-process/weights/ensemble/imgs/img-200v100v40/'
 wens_type = [input_40, input_100, input_200]
 
 wens_names = ['VLF-k=40', 'VLF-k=100','VLF-k=200', 'SREF']
@@ -63,6 +64,6 @@ for v in variables:
         plt.legend(lines,wens_names,loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=6)
         n_i += 1
    
-    plt.savefig('200v100v40_'+v, bbox_inches="tight")
+    plt.savefig(save_folder+'200v100v40_'+v, bbox_inches="tight")
     
     v_i += 1

@@ -3,14 +3,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
 
-save_folder = '/home/verif/verif-post-process/weights/ensemble/ttest_output/'
+save_folder = '/home/verif/verif-post-process/weights/ensemble/output/ttest_output/'
 
-input_rcut30 = '/home/verif/verif-post-process/weights/ensemble/output-rcut30/'
-input_rcut15 = '/home/verif/verif-post-process/weights/ensemble/output-rcut15/'
-input_pwa = '/home/verif/verif-post-process/weights/ensemble/output-pwa/'
-input_k40 = '/home/verif/verif-post-process/weights/ensemble/output-40/'
-input_k200 = '/home/verif/verif-post-process/weights/ensemble/output-200/'
-input_k100 = '/home/verif/verif-post-process/weights/ensemble/output-100/'
+input_rcut30 = '/home/verif/verif-post-process/weights/ensemble/output/output-rcut30/'
+input_rcut15 = '/home/verif/verif-post-process/weights/ensemble/output/output-rcut15/'
+input_pwa = '/home/verif/verif-post-process/weights/ensemble/output/output-pwa/'
+input_k40 = '/home/verif/verif-post-process/weights/ensemble/output/output-40/'
+input_k200 = '/home/verif/verif-post-process/weights/ensemble/output/output-200/'
+input_k100 = '/home/verif/verif-post-process/weights/ensemble/output/output-100/'
 input_week = '/home/verif/verif-post-process/weights/sliding_window/output/weekly/'
 input_month = '/home/verif/verif-post-process/weights/sliding_window/output/monthly/'
 

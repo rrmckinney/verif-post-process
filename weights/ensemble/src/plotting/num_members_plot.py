@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-output_file = '/home/verif/verif-post-process/weights/ensemble/src/output-num/'
+output_file = '/home/verif/verif-post-process/weights/ensemble/output/output-num/'
+
+save_folder='/home/verif/verif-post-process/weights/ensemble/imgs/num-mem/'
 
 variables = ['SFCTC', 'SFCTC_KF', 'SFCWSPD','SFCWSPD_KF','PCPTOT']
 variable_name = ['Temperature-Raw','Temperature-KF', 'Wind Speed-Raw','Wind Speed-KF', 'Hourly Precipitation']
@@ -71,7 +73,7 @@ for v in variables:
     
     labels = [str(l+1) + " members" for l in range(len(lines))]
     plt.legend(lines, labels, loc='upper center',bbox_to_anchor=(0.5, -0.1), ncol=10)
-    plt.savefig('ENS_W_vs_ENS_M_'+v+'_'+str(i), bbox_inches="tight")
+    plt.savefig(save_folder+'ENS_W_vs_ENS_M_'+v+'_'+str(i), bbox_inches="tight")
     
     v_i += 1
 

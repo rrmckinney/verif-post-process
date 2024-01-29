@@ -255,12 +255,12 @@ def make_leaderboard_sorted(POD,POFD,PSS, HSS, CSI, GSS,var, var_name, time_doma
     #ax4.set_xlim(-1,1)
     ax4.set_xlabel(var_name + " and PSS Weight",fontsize=20)
     
-    ax5.barh(x, HSS_sorted, width,color=modelcolors_sortedHSS,edgecolor='k',linewidth=2.5)
+    ax5.barh(x, CSI_sorted, width,color=modelcolors_sortedCSI,edgecolor='k',linewidth=2.5)
     ax5.set_yticks(x)
-    ax5.set_yticklabels(modelnames_sortedHSS,fontsize=18)
+    ax5.set_yticklabels(modelnames_sortedCSI,fontsize=18)
     #ax5.set_title("Heidke Skill Score (HSS)",fontsize=18)
-    #ax5.set_xlim(-1, 1)
-    ax5.set_xlabel(var_name + " and HSS Weight",fontsize=20)
+    ax5.set_xlim(0.01, 0.02)
+    ax5.set_xlabel(var_name + " and CSI Weight",fontsize=20)
     '''
     ax9.barh(x, CSI_sorted, width,color=modelcolors_sortedCSI,edgecolor='k',linewidth=2.5)
     ax9.set_yticks(x)

@@ -99,7 +99,7 @@ def get_filehours(hour1,hour2):
         else:
             hour = str(i)
         hours_list.append(hour)
-        
+    
     return(hours_list)
 
 

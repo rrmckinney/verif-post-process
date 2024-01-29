@@ -20,14 +20,20 @@ wens_f = ['k40','k100','k200','pwa','rcut30','rcut15','sw_week','sw_month']
 
 wens_names = ['VLF-k=40','VLF-k=100', 'VLF-k=200','IEM','RLF-rcut30', 'RLF-rcut15', 'SW-Weekly', 'SW-Monthly','SREF']
 
-variables = ['SFCTC', 'SFCTC_KF', 'SFCWSPD','SFCWSPD_KF','PCPTOT']
-variable_name = ['Temperature-Raw','Temperature-KF', 'Wind Speed-Raw','Wind Speed-KF', 'Hourly Precipitation']
-variable_unit = ['[C]','[C]','[km/hr]', '[km/hr]', '[mm/hr]']
+#variables = [ 'SFCTC_KF','SFCWSPD_KF','PCPTOT']
+#variable_name = ['Temperature-KF','Wind Speed-KF', 'Hourly Precipitation']
+#variable_unit = ['[°C]','[km/hr]' '[mm/hr]']
+
+variables = ['PCPTOT']
+variable_name = [ 'Hourly Precipitation']
+variable_unit = [ '[mm/hr]']
+
 
 #stat = ['MAE', 'RMSE', 'spcorr']
 stat = ['MAE','RMSE']
+stat_plot = ['MAE','RMSE','SRC']
 stat_names = ['Mean Absolute Error (MAE)', 'Root Mean Square Error (RMSE)']
-#stat_names = ['Mean Absolute Error (MAE)', 'Root Mean Square Error (RMSE)', 'Spearman Rank Correlation (spcorr)']
+#stat_names = ['Mean Absolute Error (MAE)', 'Root Mean Square Error (RMSE)', 'Spearman Rank Correlation (SRC)']
 
 
 def ttest(f, s,i,v ):
@@ -44,7 +50,7 @@ def ttest(f, s,i,v ):
         print(df.ENS_W[d])
         print(df.ENS_M[d])
         print(df.start_date[d])
-    '''
+    
     ttest_res = stats.ttest_ind(df.ENS_W, df.ENS_M)
 
     ttest_file = open(save_folder + "ttest_"+wens_f[i]+"_"+v+stat[s]+"_results.txt", 'w')
@@ -52,7 +58,7 @@ def ttest(f, s,i,v ):
     ttest_file.write("%3.3f " % (ttest_res.statistic) + " ")
     ttest_file.write("%3.3f " % (ttest_res.pvalue) + "\n")
     ttest_file.close()
-
+    '''
     return(df)
 
 v_i = 0
@@ -80,7 +86,7 @@ for v in variables:
         
         plt.xticks(ticks=[1,2,3,4,5,6,7,8,9], labels=wens_names, rotation=45, fontsize=14)
         ax[s].set_title(stat_names[s], fontsize=14)
-        ax[s].set_ylabel(stat[s] + ' '+ var_name+' ' + var_unit, fontsize=14)
+        ax[s].set_ylabel(stat_plot[s] + ' '+ var_name+' ' + var_unit, fontsize=14)
 
     plt.savefig(save_folder + 'boxplots_' +v)
     v_i += 1

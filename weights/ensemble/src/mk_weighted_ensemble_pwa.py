@@ -267,8 +267,9 @@ def main(args):
         df = df.join(ENS_M)
         df.columns = ['ENS_W','Obs','ENS_M']
         df = df.dropna()
-        print(df)
-
+        
+        df.to_csv(save_folder+'ENSW_'+input_variable+'.txt',mode='a',header=False)
+        '''
         #stats for weighted ensemble
         ENS_W_spcorr = stats.spearmanr(df.ENS_W, df.Obs, nan_policy='omit')
         ENS_W_MAE = mean_absolute_error(df.Obs, df.ENS_W)
@@ -303,7 +304,7 @@ def main(args):
         spcorr_f.write("%3.3f  " % (ENS_M_spcorr.pvalue) + "\n")
         spcorr_f.close()        
 
-        '''
+        
         if stat_type == 'CAT_':
             
            path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
@@ -319,14 +320,14 @@ def main(args):
               os.makedirs(path)
             
           ENS_W.to_csv(path + station +'.csv')
-        '''
+        
         fig, axs = plt.subplots(2, figsize=(50,10))
         
         axs[0].plot(ENS_W, 'ko')
         
         axs[1].plot(fcst_all)
         axs[1].plot(ENS_W, 'ko')
-
+        '''
         #plt.savefig(save_folder + 'img/PWA_obs__fcst_ens_'+input_variable+'_'+weight_type+'_'+station+'_'+stat_type+'_'+stat_cat)
         
         elapsed = time.time() - t #closes log file

@@ -69,7 +69,7 @@ if len(sys.argv) == 8:
         savetype = 'weekly'
 
     else:
-        raise Exception("Invalid date input entries. Start and end date must be 60 hours apart. Entered range was: " + str(delta+1) + " hours")
+       raise Exception("Invalid date input entries. Start and end date must be 60 hours apart. Entered range was: " + str(delta+1) + " hours")
 
     
     window_type = sys.argv[3]
@@ -270,12 +270,13 @@ def main(args):
         ENS_M.columns = ['ENS_M']
         
         df1 = df1.join(ENS_M, how='right')
-        df1.columns = ['ENS_W', 'Obs', 'ENS_M']
+        #df1.columns = ['ENS_W', 'Obs', 'ENS_M']
         df1 =df1.dropna()
-         
+        
+        df1.to_csv(save_folder+window_type+'/ENSW_'+input_variable+'.txt',mode='a',header=False)
         #ttest(df1, date_entry1, date_entry2, weight_type, window_type,input_variable)
         
-        write_stats(station,df1, date_entry1, date_entry2, input_variable, weight_type, window_type)
+        #write_stats(station,df1, date_entry1, date_entry2, input_variable, weight_type, window_type)
 
         elapsed = time.time() - t #closes log file
         print("It took " + str(round(elapsed/60)) + " minutes to run")

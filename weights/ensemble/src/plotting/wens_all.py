@@ -17,14 +17,15 @@ save_folder = '/home/verif/verif-post-process/weights/ensemble/imgs/img-wens-all
 
 wens_type = [input_k40,input_k100,input_k200,input_pwa,input_rcut30, input_rcut15,input_week,input_month]
 
-wens_names = ['VLF-k=40','VLF-k=100', 'VLF-k=200','PWA','RLF-rcut30', 'RLF-rcut15', 'Sliding Window-Weekly', 'Sliding Window-Monthly','SREF']
+wens_names = ['VLF-k=40','VLF-k=100', 'VLF-k=200','IEM','RLF-rcut30', 'RLF-rcut15', 'SW-Weekly', 'SW-Monthly','SREF']
 
-variables = ['SFCTC', 'SFCTC_KF', 'SFCWSPD','SFCWSPD_KF','PCPTOT']
-variable_name = ['Temperature-Raw','Temperature-KF', 'Wind Speed-Raw','Wind Speed-KF', 'Hourly Precipitation']
-variable_unit = ['[C]','[C]','[km/hr]', '[km/hr]', '[mm/hr]']
+variables = ['SFCTC_KF', 'SFCWSPD_KF','PCPTOT']
+variable_name = ['Temperature-KF','Wind Speed-KF', 'Hourly Precipitation']
+variable_unit = ['[°C]','[km/hr]', '[mm/hr]']
 
 stats = ['MAE', 'RMSE', 'spcorr']
-stat_names = ['Mean Absolute Error (MAE)', 'Root Mean Square Error (RMSE)', 'Spearman Rank Correlation (spcorr)']
+stats_plot = ['MAE', 'RMSE', 'SRC']
+stat_names = ['Mean Absolute Error (MAE)', 'Root Mean Square Error (RMSE)', 'Spearman Rank Correlation (SRC)']
 
 def get_data(f, s):
             
@@ -62,12 +63,13 @@ for v in variables:
             mvals.append(mval)
             
             lines += ax[s].plot(df['start_date'], df['ENS_W'])
-            ax[s].set_title(stat_names[s])
-            ax[s].set_ylabel(var_name +" "+stats[s]+" "+var_unit)
+            ax[s].set_title(stat_names[s], fontsize=40)
+            ax[s].set_ylabel(var_name +" "+stats_plot[s]+" "+var_unit,fontsize=30)
+            ax[s].set_xlim(pd.to_datetime('221001', format='%y%m%d'), pd.to_datetime('230930', format='%y%m%d'))
             print(i)
         
         lines += ax[s].plot(df['start_date'], df['ENS_M'])
-        plt.legend(lines,wens_names,loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=6)
+        plt.legend(lines,wens_names,loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=3, fontsize=40)
         n_i += 1
    
     plt.savefig(save_folder+'WENS_all_'+v, bbox_inches="tight")

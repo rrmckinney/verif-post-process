@@ -41,9 +41,9 @@ textfile_folder = '/verification/weighted-Statistics/'
 #weights_folder = '/home/verif/verif-post-process/weights/LF/output-rcut30/weights-seasonal/'
 
 #folder where the weights are located for k
-weights_folder = '/home/verif/verif-post-process/weights/LF/output-rcut30/weights-seasonal/'
+weights_folder = '/home/verif/verif-post-process/weights/LF/output/weights-seasonal/200/'
 
-save_folder='/home/verif/verif-post-process/weights/ensemble/output-rcut30/'
+#save_folder='/home/verif/verif-post-process/weights/ensemble/output-1/'
 ###########################################################
 ### -------------------- INPUTS -- ------------------------
 ###########################################################
@@ -139,7 +139,7 @@ def check_variable(variable, station, stations_with_SFCTC, stations_with_SFCWSPD
 # default station exists for when a new model is added (instead of new station)
 def check_dates(start_date, delta, filepath, variable, station):
     flag = True
-    
+     
     if len(station) < 4:
         station = "0" +station
     if "PCPT" in variable:

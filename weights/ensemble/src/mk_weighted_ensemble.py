@@ -53,7 +53,7 @@ textfile_folder = '/verification/weighted-Statistics/'
 #weights_folder = '/home/verif/verif-post-process/weights/LF/output-100/'
 
 #output folder for txt files after weighted ensemble is made
-save_folder = '/home/verif/verif-post-process/weights/ensemble/output/output-rcut30/'
+save_folder = '/home/verif/verif-post-process/weights/ensemble/output/output-200/'
 
 ###########################################################
 ### -------------------- INPUT ----------------------------
@@ -85,7 +85,7 @@ if len(sys.argv) == 8:
         savetype = 'weekly'
 
     else:
-        raise Exception("Invalid date input entries. Start and end date must be 7 or 28-31 days apart (for weekly and monthly stats) Entered range was: " + str(delta+1) + " days")
+       raise Exception("Invalid date input entries. Start and end date must be 7 or 28-31 days apart (for weekly and monthly stats) Entered range was: " + str(delta+1) + " days")
 
 
     input_variable = sys.argv[3]
@@ -281,19 +281,19 @@ def main(args):
         ENS_M = fcst_all.mean(axis=1)
         ENS_M = ENS_M.to_frame()
         df = df.join(ENS_M)
-        df.columns = ['ENS_W','Obs','ENS_M']
+        #df.columns = ['ENS_W','Obs','ENS_M']
         df = df.dropna()
-        print(df)
+        #print(df)
         
-        
-        ttest_res = stats.ttest_ind(df.ENS_W, df.ENS_M)
+        df.to_csv(save_folder+'ENSW_'+input_variable+'.txt',mode='a',header=False)
+        #ttest_res = stats.ttest_ind(df.ENS_W, df.ENS_M)
         
         #ttest_file = open(save_folder + "ttest_results.txt", 'a')
         #ttest_file.write(str(date_entry1) + " " + str(date_entry2) + "   ")
         #ttest_file.write("%3.3f " % (ttest_res.statistic) + " ")
         #ttest_file.write("%3.3f " % (ttest_res.pvalue) + "\n")
         #ttest_file.close()
-        
+        '''
         #stats for weighted ensemble
         ENS_W_spcorr = stats.spearmanr(df.ENS_W, df.Obs, nan_policy='omit')
         ENS_W_MAE = mean_absolute_error(df.Obs, df.ENS_W)
@@ -327,7 +327,7 @@ def main(args):
         spcorr_f.write("%3.3f  " % (ENS_M_spcorr.statistic))
         spcorr_f.write("%3.3f  " % (ENS_M_spcorr.pvalue) + "\n")
         spcorr_f.close()
-
+        
         # if stat_type == 'CAT_':
             
         #     path = save_folder + weight_type + '/' + stat_cat + '/' + input_variable + '/'
@@ -352,7 +352,7 @@ def main(args):
         axs[1].plot(df.ENS_W, 'ko')
         axs[1].plot(df.ENS_M, 'bo')
         axs[1].plot(df.Obs,'ro')
-
+        '''
         #plt.savefig(save_folder + 'all_ens_'+input_variable+'_'+weight_type+'_'+station)
         
         elapsed = time.time() - t #closes log file

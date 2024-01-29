@@ -12,13 +12,13 @@ variables = ['SFCTC', 'SFCTC_KF', 'SFCWSPD','SFCWSPD_KF','PCPTOT']
 variable_name = ['Temperature-Raw','Temperature-KF', 'Wind Speed-Raw','Wind Speed-KF', 'Hourly Precipitation']
 variable_unit = ['[C]','[C]','[km/hr]', '[km/hr]', '[mm/hr]']
 stats = ['MAE', 'RMSE', 'spcorr']
-
+stats_plot = ['MAE', 'RMSE', 'SRC']
 v_i = 0
 for v in variables:
     var_name = variable_name[v_i]
     var_unit = variable_unit[v_i]
     mae_W_all, rmse_W_all, spcorr_W_all = [], [], []
-    for i in range(1,50):
+    for i in range(1,51):
         for s in stats:
             if s == "MAE":
                 mae = pd.read_csv(output_file + s + '_' + v +'_'+str(i)+'_num_.txt',sep = "\s+|,")
@@ -67,8 +67,8 @@ for v in variables:
     for x in range(len(spcorr_W_all)):
         ax[2].plot(spcorr['start_date'], spcorr_W_all[x])
     ax[2].plot(spcorr['start_date'], spcorr['ENS_M'],'ko')
-    ax[2].set_title('Spearman Rank Correlation (spcorr)')
-    ax[2].set_ylabel(var_name+" spcorr "+var_unit)
+    ax[2].set_title('Spearman Rank Correlation (SRC)')
+    ax[2].set_ylabel(var_name+" SRC "+var_unit)
     #ax[2].legend(["ENS_W: "+str(spcorr_W),"ENS_M: "+str(spcorr_M)],loc='best')
     
     labels = [str(l+1) + " members" for l in range(len(lines))]

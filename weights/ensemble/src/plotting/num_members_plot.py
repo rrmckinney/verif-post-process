@@ -55,6 +55,7 @@ for v in variables:
     lines += ax[0].plot(mae['start_date'], mae['ENS_M'],'ko')
     ax[0].set_title('Mean Absolute Error (MAE)')
     ax[0].set_ylabel(var_name +" MAE "+var_unit)
+    ax[0].grid(True)
     #ax[0].legend(lines, labels, loc='best')
     
     for x in range(len(rmse_W_all)):
@@ -62,6 +63,7 @@ for v in variables:
     ax[1].plot(rmse['start_date'], rmse['ENS_M'],'ko')
     ax[1].set_title('Root Mean Square Error (RMSE)')
     ax[1].set_ylabel(var_name + " RMSE "+var_unit)
+    ax[1].grid(True)
     #ax[1].legend(loc='best')
     
     for x in range(len(spcorr_W_all)):
@@ -69,6 +71,7 @@ for v in variables:
     ax[2].plot(spcorr['start_date'], spcorr['ENS_M'],'ko')
     ax[2].set_title('Spearman Rank Correlation (SRC)')
     ax[2].set_ylabel(var_name+" SRC "+var_unit)
+    ax[2].grid(True)
     #ax[2].legend(["ENS_W: "+str(spcorr_W),"ENS_M: "+str(spcorr_M)],loc='best')
     
     labels = [str(l+1) + " members" for l in range(len(lines))]

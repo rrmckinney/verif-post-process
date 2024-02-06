@@ -2,7 +2,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-
+from datetime import datetime, timedelta
 
 input_rcut30 = '/home/verif/verif-post-process/weights/ensemble/output/output-rcut30/'
 input_rcut15 = '/home/verif/verif-post-process/weights/ensemble/output/output-rcut15/'
@@ -15,13 +15,17 @@ input_month = '/home/verif/verif-post-process/weights/sliding_window/output/mont
 
 save_folder = '/home/verif/verif-post-process/weights/ensemble/imgs/img-wens-all/'
 
-wens_type = [input_k40,input_k100,input_k200,input_pwa,input_rcut30, input_rcut15,input_week,input_month]
+#wens_type = [input_k40,input_k100,input_k200,input_pwa,input_rcut30, input_rcut15,input_week,input_month]
 
-wens_names = ['VLF-k=40','VLF-k=100', 'VLF-k=200','IEM','RLF-rcut30', 'RLF-rcut15', 'SW-Weekly', 'SW-Monthly','SREF']
+#wens_names = ['VLF-k=40','VLF-k=100', 'VLF-k=200','IEM','RLF-rcut30', 'RLF-rcut15', 'SW-Weekly', 'SW-Monthly','SREF']
 
-variables = ['SFCTC_KF', 'SFCWSPD_KF','PCPTOT']
-variable_name = ['Temperature-KF','Wind Speed-KF', 'Hourly Precipitation']
-variable_unit = ['[°C]','[km/hr]', '[mm/hr]']
+wens_type = [input_k100,input_pwa,input_week,input_rcut30]
+
+wens_names = ['VLF-k=100','IEM','SW-Weekly','RLF-rcut30','SREF']
+
+variables = ['SFCTC_KF', 'SFCWSPD_KF','PCPTOT','SFCTC_KF']
+variable_name = ['Temperature-KF','Wind Speed-KF', 'Hourly Precipitation','Temperature-KF']
+variable_unit = ['[°C]','[km/hr]', '[mm/hr]','[°C]']
 
 stats = ['MAE', 'RMSE', 'spcorr']
 stats_plot = ['MAE', 'RMSE', 'SRC']
@@ -45,7 +49,7 @@ for v in variables:
     var_name = variable_name[v_i]
     var_unit = variable_unit[v_i]
     
-    fig, ax = plt.subplots(3, figsize=(40,30))
+    fig, ax = plt.subplots(3, figsize=(60,40))
     plt.rcParams.update({'font.size': 30})
     
     for s in range(len(stats)):
@@ -54,7 +58,8 @@ for v in variables:
         num_colors = len(wens_names)
         cm=plt.get_cmap('tab10')
         ax[s].set_prop_cycle(color=[cm(1.*i/num_colors) for i in range(num_colors)])
-        
+        width = 0.3 
+        offset = 0
         for i in wens_type:
             
             f = i + stats[s] + '_' + v + '_seasonal.txt'
@@ -62,14 +67,17 @@ for v in variables:
             
             mvals.append(mval)
             
-            lines += ax[s].plot(df['start_date'], df['ENS_W'])
-            ax[s].set_title(stat_names[s], fontsize=40)
-            ax[s].set_ylabel(var_name +" "+stats_plot[s]+" "+var_unit,fontsize=30)
+            lines += ax[s].bar(df['start_date']+timedelta(days=offset), df['ENS_W'])
+            ax[s].set_title(stat_names[s], fontsize=45)
+            ax[s].set_ylabel(var_name +" "+stats_plot[s]+" "+var_unit,fontsize=35)
             ax[s].set_xlim(pd.to_datetime('221001', format='%y%m%d'), pd.to_datetime('230930', format='%y%m%d'))
+            ax[s].grid(True)
             print(i)
+            offset += 1
         
-        lines += ax[s].plot(df['start_date'], df['ENS_M'])
-        plt.legend(lines,wens_names,loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=3, fontsize=40)
+        lines += ax[s].bar(df['start_date']+timedelta(days=offset), df['ENS_M'])
+        plt.legend(wens_names,loc='upper center', bbox_to_anchor=(0.5,-0.1), ncol=3, fontsize=40)
+    
         n_i += 1
    
     plt.savefig(save_folder+'WENS_all_'+v, bbox_inches="tight")
